@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sales Commitment Tracker Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0a0c10;
+    --surface: #111318;
+    --surface2: #181c24;
+    --surface3: #1d2230;
+    --border: #1e2330;
+    --border2: #252c3a;
+    --accent: #00e5a0;
+    --accent2: #0099ff;
+    --accent3: #ff6b35;
+    --warn: #f5c842;
+    --text: #e8ecf4;
+    --text2: #8892a4;
+    --text3: #4a5568;
+    --total-col: #0d0f1a;
+    --row-hover: rgba(255,255,255,0.013);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ---- HEADER ---- */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    backdrop-filter: blur(12px);
+  }
+
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 19px;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+  .logo span { color: var(--accent); }
+  .logo sub {
+    font-size: 9px;
+    font-family: 'DM Mono', monospace;
+    font-weight: 400;
+    color: var(--text3);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    vertical-align: super;
+    margin-left: 4px;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .header-week-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text2);
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    padding: 5px 12px;
+    letter-spacing: 0.5px;
+  }
+  .header-week-badge strong {
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .header-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    text-align: right;
+    line-height: 1.6;
+  }
+  .header-meta strong {
+    display: block;
+    color: var(--text2);
+    font-size: 12px;
+  }
+
+  /* ---- SAVE INDICATOR ---- */
+  .save-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--text3);
+    transition: background 0.3s, box-shadow 0.3s;
+  }
+  .save-dot.saved {
+    background: var(--accent);
+    box-shadow: 0 0 6px rgba(0,229,160,0.5);
+  }
+
+  /* ---- KPI STRIP ---- */
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .kpi-card {
+    background: var(--surface);
+    padding: 20px 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .kpi-card:hover::after { opacity: 1; }
+  .kpi-card.blue::after  { background: var(--accent2); }
+  .kpi-card.green::after { background: var(--accent); }
+  .kpi-card.yellow::after{ background: var(--warn); }
+  .kpi-card.orange::after{ background: var(--accent3); }
+  .kpi-card.white::after { background: var(--text2); }
+
+  .kpi-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text3);
+  }
+  .kpi-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.1;
+    transition: color 0.3s;
+  }
+  .kpi-value.green  { color: var(--accent); }
+  .kpi-value.blue   { color: var(--accent2); }
+  .kpi-value.orange { color: var(--accent3); }
+  .kpi-value.yellow { color: var(--warn); }
+
+  .kpi-sub {
+    font-size: 10px;
+    color: var(--text2);
+    font-family: 'DM Mono', monospace;
+    margin-top: 2px;
+  }
+
+  /* mini sparkline */
+  .kpi-sparkline {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 20px;
+    margin-top: 8px;
+  }
+  .spark-bar {
+    flex: 1;
+    border-radius: 1px;
+    min-height: 2px;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+  }
+  .spark-bar.active { opacity: 1; }
+
+  /* confidence ring */
+  .conf-ring-wrap {
+    position: absolute;
+    top: 16px; right: 16px;
+  }
+  .conf-ring {
+    transform: rotate(-90deg);
+  }
+  .conf-ring-bg { fill: none; stroke: var(--border2); stroke-width: 3; }
+  .conf-ring-fill {
+    fill: none;
+    stroke: var(--accent3);
+    stroke-width: 3;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.5s ease;
+  }
+
+  /* ---- WEEK NAV ---- */
+  .week-nav {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0 32px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+  .week-nav-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    color: var(--text3);
+    padding-right: 20px;
+    white-space: nowrap;
+    border-right: 1px solid var(--border);
+    margin-right: 12px;
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+
+  .week-btn {
+    background: none;
+    border: none;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 14px 18px;
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+    position: relative;
+    letter-spacing: 0.3px;
+  }
+  .week-btn:hover { color: var(--text2); }
+  .week-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    background: rgba(0,229,160,0.04);
+  }
+
+  .week-dot {
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--accent3);
+    display: inline-block;
+    margin-right: 5px;
+    vertical-align: middle;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .week-btn.has-data .week-dot { opacity: 1; }
+
+  .week-copy-btn {
+    margin-left: auto;
+    background: none;
+    border: 1px solid var(--border2);
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 6px 14px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+    letter-spacing: 0.3px;
+  }
+  .week-copy-btn:hover {
+    color: var(--accent2);
+    border-color: rgba(0,153,255,0.4);
+    background: rgba(0,153,255,0.05);
+  }
+
+  /* ---- MAIN ---- */
+  .main { padding: 22px 32px; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text3);
+    letter-spacing: 0.5px;
+  }
+  .section-title span { color: var(--accent); }
+
+  .btn-group { display: flex; gap: 8px; }
+
+  .action-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 7px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.5px;
+    border: 1px solid;
+  }
+  .btn-add {
+    background: rgba(0,229,160,0.08);
+    border-color: rgba(0,229,160,0.2);
+    color: var(--accent);
+  }
+  .btn-add:hover {
+    background: rgba(0,229,160,0.15);
+    border-color: var(--accent);
+  }
+  .btn-clear {
+    background: rgba(255,107,53,0.06);
+    border-color: rgba(255,107,53,0.2);
+    color: var(--accent3);
+  }
+  .btn-clear:hover {
+    background: rgba(255,107,53,0.12);
+    border-color: var(--accent3);
+  }
+  .btn-export {
+    background: rgba(0,153,255,0.07);
+    border-color: rgba(0,153,255,0.2);
+    color: var(--accent2);
+  }
+  .btn-export:hover {
+    background: rgba(0,153,255,0.14);
+    border-color: var(--accent2);
+  }
+
+  /* ---- TABLE ---- */
+  .table-wrapper {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    position: relative;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1080px;
+  }
+
+  thead tr.group-header th {
+    padding: 9px 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  th.commit-group {
+    background: rgba(0,153,255,0.06);
+    color: var(--accent2);
+    border-left: 2px solid rgba(0,153,255,0.25);
+    border-right: 2px solid rgba(0,153,255,0.25);
+  }
+  th.upside-group {
+    background: rgba(0,229,160,0.06);
+    color: var(--accent);
+    border-left: 2px solid rgba(0,229,160,0.25);
+    border-right: 2px solid rgba(0,229,160,0.25);
+  }
+  th.meta-group {
+    background: rgba(245,200,66,0.04);
+    color: var(--warn);
+    border-left: 2px solid rgba(245,200,66,0.18);
+  }
+  th.name-group {
+    background: var(--surface2);
+    color: var(--text3);
+    text-align: left;
+    width: 160px;
+  }
+
+  thead tr.col-header th {
+    padding: 9px 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text3);
+    text-align: left;
+    border-bottom: 2px solid var(--border2);
+    white-space: nowrap;
+    background: var(--surface);
+  }
+  th.c-sub { background: rgba(0,153,255,0.03); border-left: 2px solid rgba(0,153,255,0.12); }
+  th.c-sub-last { border-right: 2px solid rgba(0,153,255,0.12); }
+  th.u-sub { background: rgba(0,229,160,0.025); border-left: 2px solid rgba(0,229,160,0.08); }
+  th.u-sub-last { border-right: 2px solid rgba(0,229,160,0.08); }
+  th.m-sub { background: rgba(245,200,66,0.015); border-left: 2px solid rgba(245,200,66,0.08); }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s, opacity 0.25s, transform 0.25s;
+  }
+  tbody tr:hover { background: var(--row-hover); }
+  tbody tr.entering { opacity: 0; transform: translateY(-6px); }
+  tbody tr.total-row {
+    background: var(--total-col);
+    border-top: 2px solid var(--border2);
+  }
+
+  td { padding: 0; vertical-align: middle; }
+
+  /* name cell */
+  .cell-name {
+    padding: 0 14px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 150px;
+  }
+  .rep-avatar {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+    letter-spacing: 0;
+  }
+  .rep-info { display: flex; flex-direction: column; gap: 1px; }
+  .rep-name-text {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--text);
+    cursor: pointer;
+    border-radius: 2px;
+    padding: 1px 3px;
+    transition: background 0.1s;
+    outline: none;
+  }
+  .rep-name-text:hover { background: rgba(255,255,255,0.06); }
+  .rep-name-text:focus {
+    background: rgba(0,229,160,0.08);
+    color: var(--accent);
+  }
+  .rep-role-badge {
+    font-size: 9px;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .total-label {
+    padding: 0 14px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: var(--accent);
+    text-transform: uppercase;
+    height: 54px;
+    display: flex;
+    align-items: center;
+  }
+
+  /* editable cells */
+  .editable {
+    width: 100%;
+    height: 50px;
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    padding: 0 12px;
+    text-align: right;
+    cursor: text;
+    transition: background 0.1s;
+  }
+  .editable:focus { background: rgba(255,255,255,0.035); }
+  .editable::placeholder { color: var(--text3); font-size: 11px; }
+
+  td.c-cell { background: rgba(0,153,255,0.018); border-left: 1px solid rgba(0,153,255,0.08); }
+  td.c-cell-last { background: rgba(0,153,255,0.018); border-right: 1px solid rgba(0,153,255,0.08); }
+  td.u-cell { background: rgba(0,229,160,0.015); border-left: 1px solid rgba(0,229,160,0.06); }
+  td.u-cell-last { background: rgba(0,229,160,0.015); border-right: 1px solid rgba(0,229,160,0.06); }
+  td.m-cell { background: rgba(245,200,66,0.012); border-left: 1px solid rgba(245,200,66,0.06); }
+
+  /* confidence */
+  .conf-inner {
+    padding: 0 10px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .conf-input {
+    width: 36px;
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--warn);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    text-align: right;
+  }
+  .conf-input:focus { background: rgba(255,255,255,0.04); border-radius: 2px; }
+  .pct { font-size: 9px; color: var(--text3); font-family: 'DM Mono', monospace; }
+  .bar-bg {
+    flex: 1;
+    height: 3px;
+    background: var(--border2);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.35s ease, background 0.35s;
+  }
+
+  /* stage */
+  .stage-sel {
+    background: none;
+    border: none;
+    color: var(--text2);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 0 10px;
+    height: 50px;
+    width: 100%;
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  .stage-sel:focus { background: rgba(255,255,255,0.025); }
+  .stage-sel option { background: #181c24; }
+
+  /* forecast */
+  .fcast-val {
+    padding: 0 12px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .fcast-val.zero { color: var(--text3); }
+
+  /* notes */
+  .notes-inp {
+    width: 100%;
+    height: 50px;
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text2);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    padding: 0 12px;
+  }
+  .notes-inp::placeholder { color: var(--text3); font-size: 10px; }
+  .notes-inp:focus { background: rgba(255,255,255,0.02); }
+
+  /* total row */
+  .tot-val {
+    padding: 0 12px;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .tot-val.blue   { color: var(--accent2); }
+  .tot-val.green  { color: var(--accent); }
+  .tot-val.yellow { color: var(--warn); }
+  .tot-val.orange { color: var(--accent3); }
+
+  /* del btn */
+  .del-btn {
+    background: none;
+    border: none;
+    color: transparent;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 0 10px;
+    height: 50px;
+    transition: color 0.15s;
+    font-family: 'DM Mono', monospace;
+  }
+  tr:hover .del-btn { color: var(--border2); }
+  .del-btn:hover { color: var(--accent3) !important; }
+
+  /* ---- LEGEND ---- */
+  .legend {
+    display: flex;
+    gap: 20px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--text3);
+    letter-spacing: 0.5px;
+  }
+  .legend-dot {
+    width: 7px; height: 7px;
+    border-radius: 2px;
+  }
+  .legend-formula {
+    margin-left: auto;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--text3);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    border-radius: 3px;
+  }
+  .legend-formula strong { color: var(--warn); }
+
+  /* ---- FOOTER ---- */
+  .footer {
+    margin-top: 32px;
+    padding: 16px 32px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+  .footer-left { display: flex; align-items: center; gap: 14px; }
+  .footer-note {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--text3);
+    letter-spacing: 0.5px;
+  }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+  /* print */
+  @media print {
+    .header { position: static; }
+    .week-nav, .btn-group, .del-btn, .footer { display: none; }
+    body { background: #fff; color: #000; }
+    .kpi-card { background: #f5f5f5; }
+  }
+
+  @media (max-width: 768px) {
+    .header { padding: 12px 16px; }
+    .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+    .main { padding: 14px 16px; }
+    .week-nav { padding: 0 12px; }
+    .footer { padding: 14px 16px; flex-direction: column; gap: 10px; }
+    .legend-formula { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="logo">Core<span>Track</span><sub>PRO</sub></div>
+  <div class="header-right">
+    <div class="save-dot" id="saveDot" title="Auto-saved"></div>
+    <div class="header-week-badge">Current: <strong id="hdrWeekBadge">Week 1</strong></div>
+    <div class="header-meta">
+      <strong>April 2026</strong>
+      <span id="hdrDate">Updated: Apr 16, 2026</span>
+    </div>
+  </div>
+</header>
+
+<!-- KPI STRIP -->
+<div class="kpi-strip">
+  <div class="kpi-card blue">
+    <div class="kpi-label">Total Commitment</div>
+    <div class="kpi-value blue" id="kpiCommitVal">$0</div>
+    <div class="kpi-sub" id="kpiCommitDev">0 devices</div>
+    <div class="kpi-sparkline" id="sparkCommit"></div>
+  </div>
+  <div class="kpi-card green">
+    <div class="kpi-label">Total Upside</div>
+    <div class="kpi-value green" id="kpiUpsideVal">$0</div>
+    <div class="kpi-sub" id="kpiUpsideDev">0 devices</div>
+    <div class="kpi-sparkline" id="sparkUpside"></div>
+  </div>
+  <div class="kpi-card yellow">
+    <div class="kpi-label">Weighted Forecast</div>
+    <div class="kpi-value yellow" id="kpiForecast">$0</div>
+    <div class="kpi-sub">confidence-adjusted</div>
+    <div class="kpi-sparkline" id="sparkForecast"></div>
+  </div>
+  <div class="kpi-card orange">
+    <div class="kpi-label">Avg. Confidence</div>
+    <div class="kpi-value orange" id="kpiAvgConf">0%</div>
+    <div class="kpi-sub" id="kpiRepsCount">0 reps active</div>
+    <div class="conf-ring-wrap">
+      <svg class="conf-ring" width="36" height="36" viewBox="0 0 36 36">
+        <circle class="conf-ring-bg" cx="18" cy="18" r="14"/>
+        <circle class="conf-ring-fill" id="confRingFill" cx="18" cy="18" r="14"
+          stroke-dasharray="87.96" stroke-dashoffset="87.96"/>
+      </svg>
+    </div>
+  </div>
+  <div class="kpi-card white">
+    <div class="kpi-label">Total Pipeline</div>
+    <div class="kpi-value" id="kpiPipeline">$0</div>
+    <div class="kpi-sub" id="kpiPipelineDev">commit + upside</div>
+    <div class="kpi-sparkline" id="sparkPipeline"></div>
+  </div>
+</div>
+
+<!-- WEEK NAV -->
+<nav class="week-nav">
+  <div class="week-nav-label">Weeks</div>
+  <button class="week-btn active" data-week="1" onclick="switchWeek(1)"><span class="week-dot"></span>Wk 1 &nbsp;Apr 1-5</button>
+  <button class="week-btn" data-week="2" onclick="switchWeek(2)"><span class="week-dot"></span>Wk 2 &nbsp;Apr 7-11</button>
+  <button class="week-btn" data-week="3" onclick="switchWeek(3)"><span class="week-dot"></span>Wk 3 &nbsp;Apr 14-18</button>
+  <button class="week-btn" data-week="4" onclick="switchWeek(4)"><span class="week-dot"></span>Wk 4 &nbsp;Apr 22-25</button>
+  <button class="week-btn" data-week="5" onclick="switchWeek(5)"><span class="week-dot"></span>Wk 5 &nbsp;Apr 28-30</button>
+  <button class="week-copy-btn" onclick="copyToNextWeek()">Copy to Next Week &rarr;</button>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="section-header">
+    <div class="section-title">Team Commitment &mdash; <span id="weekTitleLabel">Week 1 / Apr 1-5</span></div>
+    <div class="btn-group">
+      <button class="action-btn btn-add" onclick="addRow()">+ Add Rep</button>
+      <button class="action-btn btn-clear" onclick="clearWeek()">Clear Week</button>
+      <button class="action-btn btn-export" onclick="exportCSV()">Export CSV</button>
+    </div>
+  </div>
+
+  <div class="table-wrapper">
+    <table id="commitTable">
+      <colgroup>
+        <col style="width:160px" />
+        <col /><col /><col style="width:160px" />
+        <col /><col />
+        <col style="width:130px"/><col style="width:120px"/><col style="min-width:160px"/><col style="width:36px"/>
+      </colgroup>
+      <thead>
+        <tr class="group-header">
+          <th class="name-group"></th>
+          <th class="commit-group" colspan="3">COMMITMENT</th>
+          <th class="upside-group" colspan="2">UPSIDE</th>
+          <th class="meta-group" colspan="4">PIPELINE INTEL</th>
+        </tr>
+        <tr class="col-header">
+          <th>REP / ROLE</th>
+          <th class="c-sub">VALUE ($)</th>
+          <th class="c-sub">DEVICES</th>
+          <th class="c-sub c-sub-last">CONFIDENCE %</th>
+          <th class="u-sub">VALUE ($)</th>
+          <th class="u-sub u-sub-last">DEVICES</th>
+          <th class="m-sub">STAGE</th>
+          <th class="m-sub">WTD FORECAST</th>
+          <th class="m-sub">NOTES / BLOCKER</th>
+          <th class="m-sub"></th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:rgba(0,153,255,0.55)"></div>Commitment</div>
+    <div class="legend-item"><div class="legend-dot" style="background:rgba(0,229,160,0.55)"></div>Upside</div>
+    <div class="legend-item"><div class="legend-dot" style="background:rgba(245,200,66,0.55)"></div>Intel / Forecast</div>
+    <div class="legend-item" style="color:var(--text3);font-family:'DM Mono',monospace;font-size:9px;">Click rep name to rename</div>
+    <div class="legend-formula"><strong>WTD Forecast</strong> = Commit Value x Confidence %</div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-left">
+    <div class="save-dot saved" style="width:6px;height:6px;"></div>
+    <div class="footer-note">Data saved to browser &bull; Session-persistent &bull; Export CSV to share</div>
+  </div>
+  <div class="footer-note" id="footerTimestamp"></div>
+</div>
+
+<script>
+// ===================================================
+// CONFIG
+// ===================================================
+const WEEKS = {
+  1: { label: "Week 1", dates: "Apr 1-5"   },
+  2: { label: "Week 2", dates: "Apr 7-11"  },
+  3: { label: "Week 3", dates: "Apr 14-18" },
+  4: { label: "Week 4", dates: "Apr 22-25" },
+  5: { label: "Week 5", dates: "Apr 28-30" },
+};
+
+const STAGES = ["","Prospecting","Discovery","Demo","Proposal","Negotiation","Verbal","Closed Won","Closed Lost","On Hold"];
+
+const AVATAR_COLORS = [
+  ["#001a3d","#0099ff"],["#001a0f","#00e5a0"],["#2a0f00","#ff6b35"],
+  ["#221a00","#f5c842"],["#1a0020","#c084fc"],["#001a1a","#06b6d4"],
+];
+
+const SEED = [
+  { name:"Connor", role:"AE",  commitVal:140000, commitDev:3, conf:70, upsideVal:60000, upsideDev:2, stage:"Proposal",     notes:"" },
+  { name:"Jawdat", role:"AE",  commitVal:180000, commitDev:4, conf:90, upsideVal:40000, upsideDev:1, stage:"Negotiation",  notes:"" },
+  { name:"Wafiq",  role:"AE",  commitVal:0,      commitDev:0, conf:0,  upsideVal:40000, upsideDev:1, stage:"Discovery",    notes:"Needs intro call" },
+  { name:"Fatima", role:"AE",  commitVal:160000, commitDev:3, conf:80, upsideVal:40000, upsideDev:1, stage:"Proposal",     notes:"" },
+  { name:"Marios", role:"SDR", commitVal:0,      commitDev:0, conf:0,  upsideVal:40000, upsideDev:1, stage:"Prospecting",  notes:"Pipeline building" },
+  { name:"Hasan",  role:"AE",  commitVal:0,      commitDev:0, conf:0,  upsideVal:40000, upsideDev:1, stage:"Discovery",    notes:"" },
+];
+
+// ===================================================
+// DATA STORE — localStorage backed
+// ===================================================
+const STORAGE_KEY = "coretrack_pro_v2";
+let weekData = {};
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      weekData = JSON.parse(raw);
+      return;
+    }
+  } catch(e) {}
+  // default
+  for (let w = 1; w <= 5; w++) {
+    weekData[w] = w === 1
+      ? JSON.parse(JSON.stringify(SEED))
+      : SEED.map(r => ({ ...r, commitVal:0,commitDev:0,conf:0,upsideVal:0,upsideDev:0,stage:"",notes:"" }));
+  }
+}
+
+function saveData() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(weekData)); } catch(e){}
+  const dot = document.getElementById("saveDot");
+  if (dot) {
+    dot.classList.add("saved");
+    setTimeout(() => dot.classList.remove("saved"), 1200);
+  }
+  const ts = new Date();
+  const el = document.getElementById("footerTimestamp");
+  if (el) el.textContent = "Last saved " + ts.toLocaleTimeString('en-US', {hour:'2-digit',minute:'2-digit'});
+}
+
+let currentWeek = 1;
+
+// ===================================================
+// HELPERS
+// ===================================================
+function fmt(n) {
+  if (!n || isNaN(n) || n === 0) return "$0";
+  return "$" + Number(n).toLocaleString('en-US', {maximumFractionDigits:0});
+}
+
+function confColor(v) {
+  if (v >= 80) return "var(--accent)";
+  if (v >= 50) return "var(--warn)";
+  if (v > 0)   return "var(--accent3)";
+  return "var(--border2)";
+}
+
+function initials(name) {
+  return (name || "?").split(" ").map(p=>p[0]).join("").toUpperCase().slice(0,2);
+}
+
+function avatarColor(idx) {
+  return AVATAR_COLORS[idx % AVATAR_COLORS.length];
+}
+
+function weekTotal(w, key) {
+  return (weekData[w] || []).reduce((s,r) => s + (r[key]||0), 0);
+}
+
+function weekForecast(w) {
+  return (weekData[w] || []).reduce((s,r) => s + Math.round((r.commitVal||0)*((r.conf||0)/100)), 0);
+}
+
+// ===================================================
+// SPARKLINES
+// ===================================================
+function renderSparklines(activeWeek) {
+  const configs = [
+    { id:"sparkCommit",   fn: w => weekTotal(w,"commitVal"), color:"var(--accent2)" },
+    { id:"sparkUpside",   fn: w => weekTotal(w,"upsideVal"), color:"var(--accent)" },
+    { id:"sparkForecast", fn: w => weekForecast(w),           color:"var(--warn)" },
+    { id:"sparkPipeline", fn: w => weekTotal(w,"commitVal")+weekTotal(w,"upsideVal"), color:"var(--text2)" },
+  ];
+  configs.forEach(cfg => {
+    const el = document.getElementById(cfg.id);
+    if (!el) return;
+    const vals = [1,2,3,4,5].map(cfg.fn);
+    const mx = Math.max(...vals, 1);
+    el.innerHTML = vals.map((v,i) => {
+      const h = Math.max(2, Math.round((v/mx)*18));
+      const act = (i+1) === activeWeek ? " active" : "";
+      return `<div class="spark-bar${act}" style="height:${h}px;background:${cfg.color}"></div>`;
+    }).join("");
+  });
+}
+
+// ===================================================
+// RENDER TABLE
+// ===================================================
+function renderTable(animate) {
+  const data = weekData[currentWeek];
+  const tbody = document.getElementById("tableBody");
+  tbody.innerHTML = "";
+
+  data.forEach((rep, idx) => {
+    const tr = document.createElement("tr");
+    if (animate) tr.classList.add("entering");
+    tr.innerHTML = buildRow(rep, idx);
+    tbody.appendChild(tr);
+    if (animate) requestAnimationFrame(() => { tr.classList.remove("entering"); });
+  });
+
+  const totalTr = document.createElement("tr");
+  totalTr.className = "total-row";
+  totalTr.innerHTML = buildTotalRow(data);
+  tbody.appendChild(totalTr);
+
+  updateKPIs(data);
+  updateWeekDots();
+  renderSparklines(currentWeek);
+}
+
+function buildRow(rep, idx) {
+  const conf = rep.conf || 0;
+  const fill = confColor(conf);
+  const forecast = Math.round((rep.commitVal||0) * (conf/100));
+  const [bg, fg] = avatarColor(idx);
+  const stageOpts = STAGES.map(s =>
+    `<option value="${s}" ${rep.stage===s?"selected":""}>${s||"-- select --"}</option>`
+  ).join("");
+
+  return `
+    <td>
+      <div class="cell-name">
+        <div class="rep-avatar" style="background:${bg};color:${fg}">${initials(rep.name)}</div>
+        <div class="rep-info">
+          <div class="rep-name-text" contenteditable="true"
+            onblur="updateName(${idx},this.textContent)"
+            onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${rep.name}</div>
+          <div class="rep-role-badge">${rep.role}</div>
+        </div>
+      </div>
+    </td>
+    <td class="c-cell">
+      <input class="editable" type="number" min="0" placeholder="0"
+        value="${rep.commitVal||""}"
+        oninput="updateField(${idx},'commitVal',+this.value)" />
+    </td>
+    <td class="c-cell">
+      <input class="editable" type="number" min="0" placeholder="0"
+        value="${rep.commitDev||""}"
+        oninput="updateField(${idx},'commitDev',+this.value)" />
+    </td>
+    <td class="c-cell c-cell-last">
+      <div class="conf-inner">
+        <input class="conf-input" type="number" min="0" max="100" placeholder="0"
+          value="${conf||""}"
+          oninput="updateField(${idx},'conf',+this.value)" />
+        <span class="pct">%</span>
+        <div class="bar-bg">
+          <div class="bar-fill" style="width:${conf}%;background:${fill}"></div>
+        </div>
+      </div>
+    </td>
+    <td class="u-cell">
+      <input class="editable" type="number" min="0" placeholder="0"
+        value="${rep.upsideVal||""}"
+        oninput="updateField(${idx},'upsideVal',+this.value)" />
+    </td>
+    <td class="u-cell u-cell-last">
+      <input class="editable" type="number" min="0" placeholder="0"
+        value="${rep.upsideDev||""}"
+        oninput="updateField(${idx},'upsideDev',+this.value)" />
+    </td>
+    <td class="m-cell">
+      <select class="stage-sel" onchange="updateField(${idx},'stage',this.value)">${stageOpts}</select>
+    </td>
+    <td class="m-cell">
+      <div class="fcast-val ${forecast===0?"zero":""}">${fmt(forecast)}</div>
+    </td>
+    <td class="m-cell">
+      <input class="notes-inp" type="text" placeholder="Note or blocker..."
+        value="${rep.notes||""}"
+        onchange="updateField(${idx},'notes',this.value)" />
+    </td>
+    <td>
+      <button class="del-btn" onclick="deleteRow(${idx})" title="Remove">x</button>
+    </td>
+  `;
+}
+
+function buildTotalRow(data) {
+  const cv = data.reduce((s,r)=>s+(r.commitVal||0),0);
+  const cd = data.reduce((s,r)=>s+(r.commitDev||0),0);
+  const uv = data.reduce((s,r)=>s+(r.upsideVal||0),0);
+  const ud = data.reduce((s,r)=>s+(r.upsideDev||0),0);
+  const tf = data.reduce((s,r)=>s+Math.round((r.commitVal||0)*((r.conf||0)/100)),0);
+  const active = data.filter(r=>r.conf>0);
+  const ac = active.length ? Math.round(active.reduce((s,r)=>s+(r.conf||0),0)/active.length) : 0;
+  return `
+    <td><div class="total-label">TOTALS</div></td>
+    <td class="c-cell"><div class="tot-val blue">${fmt(cv)}</div></td>
+    <td class="c-cell"><div class="tot-val blue">${cd} dev</div></td>
+    <td class="c-cell c-cell-last"><div class="tot-val yellow">${ac}% avg</div></td>
+    <td class="u-cell"><div class="tot-val green">${fmt(uv)}</div></td>
+    <td class="u-cell u-cell-last"><div class="tot-val green">${ud} dev</div></td>
+    <td class="m-cell"></td>
+    <td class="m-cell"><div class="tot-val yellow">${fmt(tf)}</div></td>
+    <td class="m-cell"></td>
+    <td></td>
+  `;
+}
+
+function updateKPIs(data) {
+  const cv = data.reduce((s,r)=>s+(r.commitVal||0),0);
+  const cd = data.reduce((s,r)=>s+(r.commitDev||0),0);
+  const uv = data.reduce((s,r)=>s+(r.upsideVal||0),0);
+  const ud = data.reduce((s,r)=>s+(r.upsideDev||0),0);
+  const tf = data.reduce((s,r)=>s+Math.round((r.commitVal||0)*((r.conf||0)/100)),0);
+  const active = data.filter(r=>r.conf>0);
+  const ac = active.length ? Math.round(active.reduce((s,r)=>s+(r.conf||0),0)/active.length) : 0;
+
+  document.getElementById("kpiCommitVal").textContent  = fmt(cv);
+  document.getElementById("kpiCommitDev").textContent  = cd + " devices";
+  document.getElementById("kpiUpsideVal").textContent  = fmt(uv);
+  document.getElementById("kpiUpsideDev").textContent  = ud + " devices";
+  document.getElementById("kpiForecast").textContent   = fmt(tf);
+  document.getElementById("kpiAvgConf").textContent    = ac + "%";
+  document.getElementById("kpiRepsCount").textContent  = active.length + " reps active";
+  document.getElementById("kpiPipeline").textContent   = fmt(cv+uv);
+  document.getElementById("kpiPipelineDev").textContent= (cd+ud) + " total devices";
+
+  // confidence ring: circumference = 2*pi*14 = 87.96
+  const circ = 87.96;
+  const offset = circ - (ac/100)*circ;
+  const ring = document.getElementById("confRingFill");
+  if (ring) ring.style.strokeDashoffset = offset;
+}
+
+function updateWeekDots() {
+  for (let w=1;w<=5;w++) {
+    const hasData = (weekData[w]||[]).some(r=>r.commitVal>0||r.upsideVal>0);
+    const btn = document.querySelector(`.week-btn[data-week="${w}"]`);
+    if (btn) btn.classList.toggle("has-data", hasData);
+  }
+}
+
+// ===================================================
+// INTERACTIONS
+// ===================================================
+function updateField(idx, field, value) {
+  weekData[currentWeek][idx][field] = value;
+  renderTable(false);
+  saveData();
+}
+
+function updateName(idx, val) {
+  weekData[currentWeek][idx].name = val.trim() || "Rep";
+  saveData();
+  // re-render avatar only — avoids focus loss
+  renderTable(false);
+}
+
+function switchWeek(w) {
+  currentWeek = w;
+  document.querySelectorAll(".week-btn").forEach(b=>b.classList.remove("active"));
+  document.querySelector(`.week-btn[data-week="${w}"]`).classList.add("active");
+  document.getElementById("weekTitleLabel").textContent = WEEKS[w].label + " / " + WEEKS[w].dates;
+  document.getElementById("hdrWeekBadge").textContent = WEEKS[w].label;
+  renderTable(true);
+}
+
+function addRow() {
+  weekData[currentWeek].push({
+    name:"New Rep", role:"AE",
+    commitVal:0, commitDev:0, conf:0,
+    upsideVal:0, upsideDev:0, stage:"", notes:""
+  });
+  renderTable(true);
+  saveData();
+  // focus the new name
+  const nameCells = document.querySelectorAll(".rep-name-text");
+  if (nameCells.length) {
+    const last = nameCells[nameCells.length-1];
+    last.focus();
+    const range = document.createRange();
+    range.selectNodeContents(last);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+  }
+}
+
+function deleteRow(idx) {
+  weekData[currentWeek].splice(idx,1);
+  renderTable(false);
+  saveData();
+}
+
+function clearWeek() {
+  if (!confirm("Clear all values for " + WEEKS[currentWeek].label + "?")) return;
+  weekData[currentWeek].forEach(r => {
+    r.commitVal=0; r.commitDev=0; r.conf=0;
+    r.upsideVal=0; r.upsideDev=0; r.stage=""; r.notes="";
+  });
+  renderTable(false);
+  saveData();
+}
+
+function copyToNextWeek() {
+  if (currentWeek >= 5) { alert("Already on the last week."); return; }
+  const next = currentWeek + 1;
+  const msg = "Copy rep names and roles from " + WEEKS[currentWeek].label + " into " + WEEKS[next].label + "? (values will be zeroed)";
+  if (!confirm(msg)) return;
+  weekData[next] = weekData[currentWeek].map(r => ({
+    ...r, commitVal:0, commitDev:0, conf:0, upsideVal:0, upsideDev:0, stage:"", notes:""
+  }));
+  saveData();
+  switchWeek(next);
+}
+
+function exportCSV() {
+  const headers = ["Week","Rep","Role","Commit Value","Commit Devices","Confidence %","Upside Value","Upside Devices","Stage","Weighted Forecast","Notes"];
+  const rows = [headers.join(",")];
+  for (let w=1;w<=5;w++) {
+    (weekData[w]||[]).forEach(r => {
+      const f = Math.round((r.commitVal||0)*((r.conf||0)/100));
+      rows.push([
+        WEEKS[w].label, r.name, r.role,
+        r.commitVal||0, r.commitDev||0, r.conf||0,
+        r.upsideVal||0, r.upsideDev||0, r.stage, f,
+        `"${(r.notes||"").replace(/"/g,'""')}"`
+      ].join(","));
+    });
+  }
+  const blob = new Blob([rows.join("\n")], {type:"text/csv"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "sales-commitment-tracker-pro.csv";
+  a.click();
+}
+
+// ===================================================
+// INIT
+// ===================================================
+loadData();
+document.getElementById("hdrWeekBadge").textContent = WEEKS[1].label;
+document.getElementById("weekTitleLabel").textContent = WEEKS[1].label + " / " + WEEKS[1].dates;
+saveData();
+renderTable(false);
+</script>
+</body>
+</html>
