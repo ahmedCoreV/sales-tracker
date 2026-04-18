@@ -3,1598 +3,1396 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Sales Tracker</title>
+<title>OXEFIT Sales Commitment Tracker</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@400;600;700;800&display=swap');
 
   :root {
-    --bg: #0a0c10;
-    --surface: #13161d;
-    --surface2: #1c2030;
-    --border: #2a2f3e;
-    --accent: #f97316;
-    --accent2: #3b82f6;
-    --green: #22c55e;
-    --red: #ef4444;
-    --text: #e8eaf0;
-    --text2: #8b909e;
-    --text3: #555b6e;
-    --admin-color: #f97316;
-    --view-color: #3b82f6;
+    --navy:       #0d1b3e;
+    --navy-mid:   #152550;
+    --navy-light: #1e3370;
+    --accent:     #1a4db5;
+    --accent2:    #2563eb;
+    --accent-glow:#3b82f6;
+    --gold:       #f59e0b;
+    --gold-light: #fbbf24;
+    --success:    #10b981;
+    --danger:     #ef4444;
+    --warn:       #f59e0b;
+    --text:       #e2e8f0;
+    --text-muted: #94a3b8;
+    --border:     rgba(255,255,255,0.08);
+    --card:       rgba(255,255,255,0.04);
+    --card-hover: rgba(255,255,255,0.07);
+    --input-bg:   rgba(255,255,255,0.06);
+    --row-even:   rgba(255,255,255,0.02);
+    --row-hover:  rgba(30,100,200,0.15);
+    --shadow:     0 4px 24px rgba(0,0,0,0.5);
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: 'Manrope', sans-serif;
-    background: var(--bg);
+    font-family: 'Barlow', sans-serif;
+    background: var(--navy);
     color: var(--text);
     min-height: 100vh;
     overflow-x: hidden;
   }
 
-  /* ─── LOGIN ─── */
-  #login-screen {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: radial-gradient(ellipse at 30% 20%, #1a1030 0%, #0a0c10 60%),
-                radial-gradient(ellipse at 80% 80%, #0f1a20 0%, transparent 60%);
-    position: relative;
-    overflow: hidden;
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--navy-mid); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+  /* ══════════════════════════════
+     LOGIN SCREEN
+  ══════════════════════════════ */
+  #loginScreen {
+    position: fixed; inset: 0; z-index: 1000;
+    background: var(--navy);
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+    gap: 0;
   }
 
-  #login-screen::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(var(--border) 1px, transparent 1px),
-      linear-gradient(90deg, var(--border) 1px, transparent 1px);
-    background-size: 48px 48px;
-    opacity: 0.25;
+  .login-bg {
+    position: absolute; inset: 0; overflow: hidden;
   }
-
-  #login-screen::after {
+  .login-bg::before {
     content: '';
     position: absolute;
-    width: 600px; height: 600px;
+    top: -20%; left: -10%;
+    width: 60%; height: 70%;
+    background: radial-gradient(ellipse, rgba(37,99,235,0.18) 0%, transparent 70%);
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(249,115,22,0.08) 0%, transparent 70%);
-    top: -200px; left: -100px;
-    pointer-events: none;
+  }
+  .login-bg::after {
+    content: '';
+    position: absolute;
+    bottom: -10%; right: -5%;
+    width: 50%; height: 60%;
+    background: radial-gradient(ellipse, rgba(37,99,235,0.12) 0%, transparent 70%);
+    border-radius: 50%;
   }
 
   .login-card {
-    position: relative;
-    z-index: 10;
-    background: var(--surface);
-    border: 1px solid var(--border);
+    position: relative; z-index: 2;
+    background: var(--navy-mid);
+    border: 1px solid rgba(37,99,235,0.3);
     border-radius: 20px;
-    padding: 52px 44px;
-    width: 420px;
-    box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
+    padding: 48px 52px;
+    width: 100%; max-width: 440px;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(37,99,235,0.15);
   }
 
-  .login-logo {
-    font-family: 'Syne', sans-serif;
-    font-size: 28px;
-    font-weight: 800;
-    color: var(--text);
-    letter-spacing: -0.5px;
-    margin-bottom: 6px;
+  .login-logo-wrap {
+    display: flex; justify-content: center; margin-bottom: 32px;
+  }
+  .login-logo-img {
+    width: 220px; height: auto;
+    filter: drop-shadow(0 4px 16px rgba(37,99,235,0.4));
   }
 
-  .login-logo span { color: var(--accent); }
-
-  .login-tagline {
-    font-size: 13px;
-    color: var(--text3);
-    margin-bottom: 36px;
-    font-weight: 500;
+  .login-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 4px; text-transform: uppercase;
+    color: var(--text-muted);
+    text-align: center; margin-bottom: 28px;
   }
 
-  .login-label {
+  .login-field { margin-bottom: 18px; }
+  .login-field label {
     display: block;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1.2px;
-    text-transform: uppercase;
-    color: var(--text2);
-    margin-bottom: 8px;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 8px;
   }
-
-  .login-input {
+  .login-field input {
     width: 100%;
-    background: var(--surface2);
+    background: var(--input-bg);
     border: 1px solid var(--border);
     border-radius: 10px;
-    padding: 13px 16px;
     color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 14px;
-    margin-bottom: 20px;
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    padding: 13px 16px;
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
   }
-
-  .login-input:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(249,115,22,0.12);
+  .login-field input:focus {
+    border-color: var(--accent2);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.2);
   }
 
   .login-error {
-    background: rgba(239,68,68,0.1);
+    background: rgba(239,68,68,0.12);
     border: 1px solid rgba(239,68,68,0.3);
     border-radius: 8px;
+    color: #fca5a5;
+    font-size: 13px; font-weight: 500;
     padding: 10px 14px;
-    font-size: 12px;
-    color: #ef4444;
     margin-bottom: 18px;
     display: none;
   }
 
   .login-btn {
     width: 100%;
-    background: var(--accent);
-    border: none;
-    border-radius: 10px;
-    padding: 14px;
-    font-family: 'Syne', sans-serif;
-    font-size: 15px;
-    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none; border-radius: 10px;
     color: #fff;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    padding: 14px;
     cursor: pointer;
-    transition: transform 0.15s, box-shadow 0.2s, background 0.2s;
-    letter-spacing: 0.3px;
-    margin-top: 4px;
+    transition: opacity 0.2s, transform 0.1s;
+    box-shadow: 0 4px 20px rgba(37,99,235,0.4);
   }
-
-  .login-btn:hover {
-    background: #ea6c0a;
-    transform: translateY(-1px);
-    box-shadow: 0 8px 24px rgba(249,115,22,0.3);
-  }
+  .login-btn:hover { opacity: 0.9; }
+  .login-btn:active { transform: scale(0.98); }
 
   .login-hint {
-    margin-top: 22px;
-    padding-top: 18px;
-    border-top: 1px solid var(--border);
-    font-size: 11.5px;
-    color: var(--text3);
     text-align: center;
-    line-height: 1.7;
+    font-size: 11px; color: var(--text-muted);
+    margin-top: 18px;
+    line-height: 1.6;
   }
 
-  /* ─── APP ─── */
-  #app { display: none; }
+  /* ══════════════════════════════
+     MAIN APP
+  ══════════════════════════════ */
+  #app { display: none; flex-direction: column; min-height: 100vh; }
+  #app.visible { display: flex; }
 
-  /* TOP BAR */
+  /* VIEW-ONLY BANNER */
+  .view-banner {
+    background: linear-gradient(90deg, rgba(37,99,235,0.25), rgba(37,99,235,0.1));
+    border-bottom: 1px solid rgba(37,99,235,0.3);
+    padding: 8px 24px;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+    color: #93c5fd;
+  }
+  .view-banner-dot { width:7px; height:7px; border-radius:50%; background:#3b82f6; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{ opacity:1; } 50%{ opacity:0.4; } }
+
+  /* TOPBAR */
   .topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 28px;
-    height: 60px;
-    background: var(--surface);
+    background: var(--navy-mid);
     border-bottom: 1px solid var(--border);
-    position: sticky;
-    top: 0;
-    z-index: 100;
+    padding: 0 28px;
+    height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.4);
   }
 
-  .topbar-left {
-    display: flex;
-    align-items: center;
-    gap: 20px;
+  .topbar-logo {
+    display: flex; align-items: center; gap: 0;
   }
-
-  .app-logo {
-    font-family: 'Syne', sans-serif;
-    font-size: 20px;
-    font-weight: 800;
-    letter-spacing: -0.5px;
-  }
-
-  .app-logo span { color: var(--accent); }
-
-  .role-badge {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    font-weight: 500;
-    padding: 3px 10px;
-    border-radius: 20px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-
-  .role-badge.admin {
-    background: rgba(249,115,22,0.15);
-    color: var(--admin-color);
-    border: 1px solid rgba(249,115,22,0.3);
-  }
-
-  .role-badge.view {
-    background: rgba(59,130,246,0.15);
-    color: var(--view-color);
-    border: 1px solid rgba(59,130,246,0.3);
-  }
-
-  .topbar-center {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .month-nav-btn {
-    width: 32px; height: 32px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text2);
-    font-size: 15px;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.15s;
-  }
-
-  .month-nav-btn:hover {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #fff;
-  }
-
-  .month-display-btn {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 6px 18px;
-    font-family: 'Syne', sans-serif;
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--text);
-    cursor: pointer;
-    transition: all 0.15s;
-    display: flex; align-items: center; gap: 8px;
-  }
-
-  .month-display-btn:hover {
-    border-color: var(--accent);
-    color: var(--accent);
+  .topbar-logo-img {
+    height: 38px; width: auto;
+    filter: brightness(1.05) drop-shadow(0 2px 6px rgba(37,99,235,0.3));
   }
 
   .topbar-right {
-    display: flex;
-    align-items: center;
-    gap: 14px;
+    display: flex; align-items: center; gap: 16px;
+  }
+
+  .role-badge {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 12px; border-radius: 20px;
+  }
+  .role-badge.admin {
+    background: rgba(30,51,112,0.5);
+    border: 1px solid rgba(37,99,235,0.5);
+    color: #93c5fd;
+  }
+  .role-badge.viewer {
+    background: rgba(37,99,235,0.15);
+    border: 1px solid rgba(37,99,235,0.3);
+    color: #93c5fd;
   }
 
   .user-chip {
-    font-size: 12px;
-    color: var(--text2);
-    font-weight: 600;
+    display: flex; align-items: center; gap: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 24px; padding: 6px 14px 6px 8px;
   }
+  .user-avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: #fff;
+  }
+  .user-name { font-size: 13px; font-weight: 600; }
 
   .signout-btn {
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 6px 14px;
-    color: var(--text3);
-    font-family: 'Manrope', sans-serif;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.15s;
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.2);
+    border-radius: 8px; color: #fca5a5;
+    font-family: 'Barlow', sans-serif; font-size: 12px;
+    font-weight: 600; padding: 6px 14px; cursor: pointer;
+    transition: background 0.2s;
+  }
+  .signout-btn:hover { background: rgba(239,68,68,0.2); }
+
+  /* MONTH NAV */
+  .month-nav-bar {
+    background: var(--navy-mid);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 28px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px;
   }
 
-  .signout-btn:hover {
-    border-color: var(--red);
-    color: var(--red);
+  .month-nav-controls {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .month-arrow {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text);
+    width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 16px; transition: background 0.2s, border-color 0.2s;
+  }
+  .month-arrow:hover { background: var(--accent); border-color: var(--accent2); }
+
+  .month-label-btn {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; color: var(--text);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 17px; font-weight: 700; letter-spacing: 1px;
+    padding: 6px 20px; cursor: pointer;
+    transition: background 0.2s; min-width: 170px; text-align: center;
+  }
+  .month-label-btn:hover { background: var(--navy-light); border-color: var(--accent2); }
+
+  .month-dot-row {
+    display: flex; gap: 6px; align-items: center;
+  }
+  .month-dot-item {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    cursor: pointer; padding: 4px 6px; border-radius: 6px;
+    transition: background 0.15s;
+  }
+  .month-dot-item:hover { background: var(--card-hover); }
+  .month-dot-item span { font-size: 9px; color: var(--text-muted); letter-spacing: 0.5px; }
+  .month-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--border);
+    transition: background 0.2s;
+  }
+  .month-dot.has-data { background: var(--accent-glow); }
+  .month-dot.current { background: var(--gold); box-shadow: 0 0 6px var(--gold); }
+
+  /* MONTH PICKER MODAL */
+  .modal-backdrop {
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+    display: none; align-items: center; justify-content: center;
+  }
+  .modal-backdrop.open { display: flex; }
+  .month-picker-modal {
+    background: var(--navy-mid);
+    border: 1px solid rgba(37,99,235,0.3);
+    border-radius: 16px; padding: 28px;
+    width: 340px; box-shadow: var(--shadow);
+  }
+  .modal-year-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .modal-year-btn {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text);
+    width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 16px;
+  }
+  .modal-year-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px; font-weight: 700;
+  }
+  .modal-months-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+  }
+  .modal-month-btn {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; color: var(--text);
+    font-family: 'Barlow', sans-serif; font-size: 13px; font-weight: 600;
+    padding: 10px 4px; cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+    text-align: center; position: relative;
+  }
+  .modal-month-btn:hover { background: var(--navy-light); border-color: var(--accent2); }
+  .modal-month-btn.selected { background: var(--accent); border-color: var(--accent2); color: #fff; }
+  .modal-month-btn .mdot {
+    position: absolute; top: 5px; right: 6px;
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent-glow);
   }
 
-  /* VIEW ONLY BANNER */
-  .view-banner {
-    background: rgba(59,130,246,0.1);
-    border-bottom: 1px solid rgba(59,130,246,0.25);
-    padding: 9px 28px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 12.5px;
-    color: var(--view-color);
-    font-weight: 600;
-  }
+  /* CONTENT */
+  .content { flex: 1; padding: 28px; max-width: 1600px; margin: 0 auto; width: 100%; }
 
-  .view-banner-dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: var(--view-color);
-    animation: pulse-dot 2s infinite;
-  }
-
-  @keyframes pulse-dot {
-    0%,100% { opacity: 1; }
-    50% { opacity: 0.3; }
-  }
-
-  /* MAIN CONTENT */
-  .main-content { padding: 24px 28px; }
-
-  /* KPI STRIP */
-  .kpi-strip {
+  /* KPI CARDS */
+  .kpi-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 14px;
-    margin-bottom: 24px;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px; margin-bottom: 28px;
   }
 
   .kpi-card {
-    background: var(--surface);
+    background: var(--card);
     border: 1px solid var(--border);
     border-radius: 14px;
-    padding: 20px 22px;
-    position: relative;
-    overflow: hidden;
-    transition: border-color 0.2s;
+    padding: 20px 18px;
+    position: relative; overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
   }
-
+  .kpi-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
   .kpi-card::before {
     content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: var(--accent);
-    opacity: 0;
-    transition: opacity 0.2s;
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
   }
-
-  .kpi-card:hover::before { opacity: 1; }
-  .kpi-card:hover { border-color: rgba(249,115,22,0.3); }
-
   .kpi-label {
-    font-size: 10.5px;
-    font-weight: 700;
-    letter-spacing: 1.1px;
-    text-transform: uppercase;
-    color: var(--text3);
-    margin-bottom: 12px;
+    font-size: 10px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--text-muted);
+    margin-bottom: 10px;
   }
-
-  /* INCREASED FONT SIZE FOR KPI VALUES */
   .kpi-value {
-    font-family: 'Syne', sans-serif;
-    font-size: 32px;
-    font-weight: 800;
-    color: var(--text);
-    line-height: 1;
-    letter-spacing: -1px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 28px; font-weight: 800;
+    color: var(--text); line-height: 1;
+    letter-spacing: -0.5px;
   }
-
-  .kpi-value.green { color: var(--green); }
-  .kpi-value.red { color: var(--red); }
-  .kpi-value.orange { color: var(--accent); }
-  .kpi-value.blue { color: var(--accent2); }
-
+  .kpi-value.accent  { color: var(--accent-glow); }
+  .kpi-value.success { color: var(--success); }
+  .kpi-value.gold    { color: var(--gold-light); }
   .kpi-sub {
-    font-size: 12px;
-    color: var(--text3);
-    margin-top: 8px;
-    font-weight: 500;
+    font-size: 11px; color: var(--text-muted); margin-top: 4px;
   }
 
   /* WEEK TABS */
-  .section-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
-  }
-
   .week-tabs {
-    display: flex;
-    gap: 6px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 5px;
+    display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap;
   }
-
   .week-tab {
-    padding: 7px 16px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 700;
-    font-family: 'DM Mono', monospace;
-    cursor: pointer;
-    color: var(--text2);
-    background: transparent;
-    border: none;
-    transition: all 0.15s;
-    position: relative;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; color: var(--text-muted);
+    font-family: 'Barlow', sans-serif; font-size: 12px; font-weight: 600;
+    padding: 8px 16px; cursor: pointer;
+    transition: all 0.2s; position: relative;
   }
-
+  .week-tab:hover { border-color: var(--accent2); color: var(--text); }
   .week-tab.active {
-    background: var(--accent);
-    color: #fff;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-color: transparent; color: #fff;
+  }
+  .week-tab .wdot {
+    position: absolute; top: 4px; right: 4px;
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--gold);
   }
 
-  .week-tab .dot {
-    position: absolute;
-    top: 4px; right: 4px;
-    width: 5px; height: 5px;
-    border-radius: 50%;
-    background: var(--green);
-  }
-
-  .section-actions {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-  }
-
-  .btn-export {
-    background: var(--surface2);
+  /* TABLE SECTION */
+  .table-section {
+    background: var(--navy-mid);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 8px 16px;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--text2);
-    cursor: pointer;
-    transition: all 0.15s;
-    font-family: 'Manrope', sans-serif;
+    border-radius: 16px; overflow: hidden;
+    box-shadow: var(--shadow); margin-bottom: 24px;
   }
 
-  .btn-export:hover {
-    border-color: var(--accent);
-    color: var(--accent);
+  .table-header {
+    background: var(--navy-light);
+    padding: 16px 20px;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
   }
 
-  .btn-add-rep {
-    background: var(--accent);
-    border: none;
-    border-radius: 8px;
-    padding: 8px 16px;
-    font-size: 12px;
-    font-weight: 700;
+  .table-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px; font-weight: 700; letter-spacing: 1px;
+    color: var(--text);
+  }
+  .table-subtitle { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+  .table-actions { display: flex; gap: 8px; }
+
+  .btn {
+    font-family: 'Barlow', sans-serif; font-size: 12px; font-weight: 600;
+    padding: 7px 16px; border-radius: 8px; border: none; cursor: pointer;
+    transition: all 0.2s; letter-spacing: 0.5px;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
     color: #fff;
-    cursor: pointer;
-    transition: all 0.15s;
-    font-family: 'Manrope', sans-serif;
+    box-shadow: 0 2px 12px rgba(37,99,235,0.35);
   }
+  .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+  .btn-ghost {
+    background: var(--card); border: 1px solid var(--border); color: var(--text-muted);
+  }
+  .btn-ghost:hover { border-color: var(--accent2); color: var(--text); }
 
-  .btn-add-rep:hover {
-    background: #ea6c0a;
-    transform: translateY(-1px);
-  }
-
-  /* TABLE */
-  .table-wrap {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    overflow: hidden;
-    margin-bottom: 20px;
-  }
+  .table-wrap { overflow-x: auto; }
 
   table {
-    width: 100%;
-    border-collapse: collapse;
+    width: 100%; border-collapse: collapse; font-size: 13px;
   }
 
   thead th {
-    background: var(--surface2);
-    padding: 13px 14px;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 1.1px;
-    text-transform: uppercase;
-    color: var(--text3);
+    background: rgba(0,0,0,0.25);
+    padding: 10px 12px;
     text-align: left;
+    font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--text-muted);
     border-bottom: 1px solid var(--border);
     white-space: nowrap;
   }
+  thead th:first-child { border-radius: 0; }
 
-  thead th.notes-col {
-    min-width: 220px;
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+  tbody tr:nth-child(even) { background: var(--row-even); }
+  tbody tr:hover { background: var(--row-hover); }
+  tbody tr.totals-row {
+    background: rgba(37,99,235,0.1) !important;
+    border-top: 2px solid var(--accent);
+  }
+  tbody tr.totals-row td {
+    font-weight: 700; color: var(--accent-glow);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
   }
 
-  .view-badge-col {
-    font-size: 9px;
-    background: rgba(59,130,246,0.1);
-    color: var(--view-color);
-    padding: 2px 6px;
-    border-radius: 4px;
-    margin-left: 4px;
-    letter-spacing: 0.5px;
-    vertical-align: middle;
-    display: inline-block;
-  }
+  td { padding: 10px 12px; vertical-align: middle; }
 
-  tbody tr {
-    border-bottom: 1px solid rgba(42,47,62,0.5);
-    transition: background 0.15s;
-  }
-
-  tbody tr:last-child { border-bottom: none; }
-  tbody tr:hover { background: rgba(255,255,255,0.02); }
-
-  tbody td {
-    padding: 10px 14px;
-    font-size: 13px;
-    vertical-align: middle;
-  }
-
-  .rep-name-cell {
-    font-weight: 700;
-    font-size: 13.5px;
-    color: var(--text);
-    white-space: nowrap;
-  }
-
-  /* EDITABLE INPUTS */
   .cell-input {
-    width: 100%;
     background: transparent;
     border: 1px solid transparent;
-    border-radius: 6px;
-    padding: 5px 8px;
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 13px;
-    outline: none;
-    transition: all 0.15s;
-    -webkit-appearance: none;
-    -moz-appearance: textfield;
-    text-align: right;
-    min-width: 80px;
+    border-radius: 6px; color: var(--text);
+    font-family: 'Barlow', sans-serif; font-size: 13px;
+    padding: 4px 8px; width: 100%; outline: none;
+    transition: border-color 0.15s, background 0.15s;
   }
-
-  .cell-input::-webkit-outer-spin-button,
-  .cell-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-
   .cell-input:focus {
-    border-color: var(--accent);
-    background: rgba(249,115,22,0.06);
+    border-color: var(--accent2);
+    background: rgba(37,99,235,0.12);
   }
+  .cell-input:hover:not(:focus) { border-color: var(--border); background: var(--input-bg); }
+  .cell-input[readonly] { cursor: default; }
 
-  .cell-input.readonly {
-    pointer-events: none;
-    color: var(--text2);
-    background: transparent;
-    border-color: transparent;
-  }
-
-  /* STAGE SELECT */
-  .stage-select {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 5px 10px;
-    color: var(--text);
-    font-size: 11px;
-    font-weight: 600;
-    font-family: 'Manrope', sans-serif;
-    outline: none;
+  select.cell-input {
     cursor: pointer;
-    transition: border-color 0.15s;
   }
+  select.cell-input option { background: var(--navy-mid); }
 
-  .stage-select:focus { border-color: var(--accent); }
+  .rep-name-input { min-width: 120px; font-weight: 600; }
+  .num-input { min-width: 80px; text-align: right; }
 
-  .stage-select.readonly {
-    pointer-events: none;
-    opacity: 0.6;
-    cursor: default;
+  /* CONFIDENCE BADGE */
+  .conf-badge {
+    display: inline-block;
+    padding: 3px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
   }
+  .conf-high   { background: rgba(16,185,129,0.15); color: var(--success); border: 1px solid rgba(16,185,129,0.3); }
+  .conf-mid    { background: rgba(245,158,11,0.15);  color: var(--gold-light); border: 1px solid rgba(245,158,11,0.3); }
+  .conf-low    { background: rgba(239,68,68,0.15);   color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
 
-  /* COMPUTED CELLS */
-  .computed-cell {
-    font-family: 'DM Mono', monospace;
-    font-size: 13px;
-    color: var(--text2);
-    text-align: right;
-    padding-right: 8px;
-    white-space: nowrap;
+  /* STAGE BADGE */
+  .stage-badge {
+    font-size: 10px; padding: 2px 8px; border-radius: 12px; font-weight: 600;
+    background: rgba(37,99,235,0.15); color: var(--accent-glow);
+    border: 1px solid rgba(37,99,235,0.3);
   }
-
-  .computed-cell.highlight { color: var(--green); font-weight: 600; }
 
   /* NOTES */
+  .notes-cell { min-width: 180px; max-width: 240px; }
   .notes-display {
     cursor: pointer;
-    min-height: 36px;
-    padding: 6px 8px;
+    min-height: 32px;
+    padding: 4px 8px;
     border-radius: 6px;
     border: 1px solid transparent;
-    transition: all 0.15s;
+    transition: border-color 0.15s, background 0.15s;
     font-size: 12px;
-    line-height: 1.6;
-    color: var(--text2);
-    min-width: 200px;
+    line-height: 1.5;
   }
-
-  .notes-display:hover {
-    border-color: var(--border);
-    background: rgba(255,255,255,0.03);
+  .notes-display:hover { border-color: var(--border); background: var(--input-bg); }
+  .notes-placeholder { color: var(--text-muted); font-style: italic; font-size: 11px; }
+  .notes-bullet-list { list-style: none; padding: 0; margin: 0; }
+  .notes-bullet-list li { display: flex; align-items: flex-start; gap: 6px; margin-bottom: 3px; }
+  .notes-bullet-list li::before {
+    content: '';
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent-glow);
+    margin-top: 6px; flex-shrink: 0;
   }
-
-  .notes-display.readonly {
-    cursor: default;
-  }
-
-  .notes-display.readonly:hover {
-    border-color: transparent;
-    background: transparent;
-  }
-
-  .notes-bullet {
-    display: flex;
-    align-items: flex-start;
-    gap: 6px;
-    margin-bottom: 3px;
-  }
-
-  .notes-bullet-dot {
-    width: 5px; height: 5px;
-    border-radius: 50%;
-    background: var(--accent);
-    margin-top: 6px;
-    flex-shrink: 0;
-  }
-
-  .notes-placeholder {
-    color: var(--text3);
-    font-style: italic;
-    font-size: 11.5px;
-  }
-
-  .notes-editor-wrap {
-    display: none;
-    flex-direction: column;
-    gap: 6px;
-    min-width: 220px;
-  }
-
-  .notes-editor-wrap.active { display: flex; }
-
+  .notes-editor-wrap { display: flex; flex-direction: column; gap: 4px; }
   .notes-textarea {
-    background: var(--surface2);
-    border: 1px solid var(--accent);
-    border-radius: 8px;
-    padding: 10px;
-    color: var(--text);
-    font-family: 'Manrope', sans-serif;
-    font-size: 12px;
-    line-height: 1.7;
-    resize: vertical;
-    min-height: 90px;
-    outline: none;
-    width: 100%;
-    box-shadow: 0 0 0 3px rgba(249,115,22,0.1);
+    background: rgba(37,99,235,0.08);
+    border: 1px solid var(--accent2);
+    border-radius: 6px; color: var(--text);
+    font-family: 'Barlow', sans-serif; font-size: 12px;
+    padding: 6px 8px; resize: vertical;
+    min-height: 72px; outline: none; line-height: 1.5; width: 100%;
   }
-
-  .notes-actions {
-    display: flex;
-    gap: 6px;
-  }
-
+  .notes-btn-row { display: flex; gap: 4px; }
   .notes-save-btn {
-    background: var(--accent);
-    border: none;
-    border-radius: 6px;
-    padding: 5px 12px;
-    font-size: 11px;
-    font-weight: 700;
-    color: #fff;
-    cursor: pointer;
-    font-family: 'Manrope', sans-serif;
+    background: var(--accent); color: #fff;
+    border: none; border-radius: 5px; font-size: 10px;
+    font-weight: 700; padding: 3px 10px; cursor: pointer;
   }
-
   .notes-cancel-btn {
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 5px 12px;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--text3);
-    cursor: pointer;
-    font-family: 'Manrope', sans-serif;
-  }
-
-  /* TOTALS ROW */
-  .totals-row td {
-    background: var(--surface2);
-    font-family: 'DM Mono', monospace;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--accent);
-    border-top: 2px solid var(--border);
-    padding: 12px 14px;
-  }
-
-  .totals-row td:first-child {
-    font-family: 'Syne', sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--text3);
+    background: transparent; color: var(--text-muted);
+    border: 1px solid var(--border); border-radius: 5px;
+    font-size: 10px; padding: 3px 10px; cursor: pointer;
   }
 
   /* MONTH SUMMARY BAR */
-  .month-summary {
-    background: var(--surface);
+  .summary-bar {
+    background: var(--navy-mid);
     border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 20px 24px;
+    border-radius: 14px; padding: 18px 24px;
     margin-bottom: 20px;
   }
-
-  .month-summary-title {
-    font-size: 10.5px;
-    font-weight: 700;
-    letter-spacing: 1.2px;
-    text-transform: uppercase;
-    color: var(--text3);
-    margin-bottom: 16px;
+  .summary-bar-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--text-muted);
+    margin-bottom: 14px;
   }
-
-  .summary-bars {
-    display: flex;
-    gap: 12px;
-    align-items: flex-end;
+  .summary-weeks {
+    display: flex; gap: 10px; align-items: flex-end;
     height: 80px;
   }
-
-  .summary-bar-wrap {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    height: 100%;
-    justify-content: flex-end;
+  .summary-week {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: flex-end; gap: 4px;
   }
-
-  .summary-bar-val {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--text2);
-    font-weight: 500;
-  }
-
-  .summary-bar-track {
-    width: 100%;
-    background: var(--surface2);
-    border-radius: 6px 6px 0 0;
-    min-height: 4px;
+  .summary-bar-inner {
+    width: 100%; background: linear-gradient(180deg, var(--accent2), var(--accent));
+    border-radius: 4px 4px 0 0; min-height: 4px;
+    transition: height 0.4s ease;
     position: relative;
-    transition: height 0.4s cubic-bezier(.4,0,.2,1);
+  }
+  .summary-bar-inner.active-week {
+    background: linear-gradient(180deg, var(--gold-light), var(--gold));
+    box-shadow: 0 0 12px rgba(245,158,11,0.4);
+  }
+  .summary-week-label {
+    font-size: 10px; color: var(--text-muted);
+    font-weight: 600; letter-spacing: 0.5px;
+  }
+  .summary-week-val {
+    font-size: 10px; color: var(--accent-glow); font-weight: 700;
+    white-space: nowrap;
   }
 
-  .summary-bar-track.filled { background: var(--accent); opacity: 0.85; }
-
-  .summary-bar-label {
-    font-size: 10px;
-    font-weight: 700;
-    color: var(--text3);
-    letter-spacing: 0.5px;
+  /* DELETE BTN */
+  .delete-row-btn {
+    background: transparent; border: none;
+    color: var(--text-muted); cursor: pointer;
+    font-size: 14px; padding: 4px 8px;
+    border-radius: 5px; transition: all 0.2s;
+    line-height: 1;
   }
+  .delete-row-btn:hover { background: rgba(239,68,68,0.15); color: #f87171; }
 
-  /* CALENDAR MODAL */
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(4px);
-    z-index: 200;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
+  /* VIEW ONLY LOCK REMINDER */
+  .lock-reminder {
+    position: fixed; bottom: 20px; right: 20px; z-index: 200;
+    background: rgba(37,99,235,0.15);
+    border: 1px solid rgba(37,99,235,0.3);
+    border-radius: 12px; padding: 10px 16px;
+    font-size: 12px; color: #93c5fd;
+    display: none;
+  }
+  .lock-reminder.show { display: block; }
+
+  /* DISABLED STATES */
+  .readonly-field {
+    opacity: 0.65; cursor: not-allowed !important;
     pointer-events: none;
-    transition: opacity 0.2s;
   }
-
-  .modal-overlay.open {
-    opacity: 1;
-    pointer-events: all;
-  }
-
-  .calendar-modal {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 28px;
-    width: 340px;
-    box-shadow: 0 32px 80px rgba(0,0,0,0.7);
-    transform: translateY(10px);
-    transition: transform 0.2s;
-  }
-
-  .modal-overlay.open .calendar-modal { transform: translateY(0); }
-
-  .cal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-  }
-
-  .cal-year-nav {
-    width: 28px; height: 28px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--text2);
-    font-size: 14px;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.15s;
-  }
-
-  .cal-year-nav:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
-
-  .cal-year-label {
-    font-family: 'Syne', sans-serif;
-    font-size: 20px;
-    font-weight: 800;
-    color: var(--text);
-  }
-
-  .cal-months {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-  }
-
-  .cal-month-btn {
-    padding: 10px 6px;
-    border-radius: 8px;
-    border: 1px solid transparent;
-    background: var(--surface2);
-    color: var(--text2);
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.15s;
-    position: relative;
-    font-family: 'Manrope', sans-serif;
-  }
-
-  .cal-month-btn:hover { border-color: var(--accent); color: var(--accent); }
-
-  .cal-month-btn.active {
-    background: var(--accent);
-    color: #fff;
-    border-color: var(--accent);
-  }
-
-  .cal-month-btn .has-data {
-    position: absolute;
-    bottom: 4px; right: 4px;
-    width: 4px; height: 4px;
-    border-radius: 50%;
-    background: var(--green);
-  }
-
-  .cal-close {
-    margin-top: 18px;
-    width: 100%;
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 9px;
-    color: var(--text3);
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: 'Manrope', sans-serif;
-    transition: all 0.15s;
-  }
-
-  .cal-close:hover { border-color: var(--text2); color: var(--text2); }
-
-  /* LOCK TOOLTIP */
-  .lock-tooltip {
-    position: fixed;
-    bottom: 20px; right: 20px;
-    background: rgba(59,130,246,0.12);
-    border: 1px solid rgba(59,130,246,0.25);
-    border-radius: 10px;
-    padding: 10px 16px;
-    font-size: 11.5px;
-    color: var(--view-color);
-    font-weight: 600;
-    z-index: 50;
-  }
-
-  /* SCROLLBAR */
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--text3); }
 
   /* RESPONSIVE */
-  @media (max-width: 1100px) {
-    .kpi-strip { grid-template-columns: repeat(3, 1fr); }
-  }
   @media (max-width: 768px) {
-    .kpi-strip { grid-template-columns: repeat(2, 1fr); }
-    .main-content { padding: 16px; }
-    .topbar { padding: 0 16px; }
+    .content { padding: 14px; }
+    .topbar { padding: 0 14px; }
+    .month-nav-bar { padding: 8px 14px; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
   }
 </style>
 </head>
 <body>
 
-<!-- ═══════════════ LOGIN SCREEN ═══════════════ -->
-<div id="login-screen">
+<!-- ══ LOGIN ══ -->
+<div id="loginScreen">
+  <div class="login-bg"></div>
   <div class="login-card">
-    <div class="login-logo">Sales<span>Pro</span></div>
-    <div class="login-tagline">Performance Tracker — AED</div>
-
-    <label class="login-label">Username</label>
-    <input class="login-input" type="text" id="login-username" placeholder="Enter username" autocomplete="off"/>
-
-    <label class="login-label">Password</label>
-    <input class="login-input" type="password" id="login-password" placeholder="Enter password" autocomplete="off"/>
-
-    <div class="login-error" id="login-error">Incorrect username or password. Please try again.</div>
-
-    <button class="login-btn" onclick="doLogin()">Sign In</button>
-
+    <div class="login-logo-wrap">
+      <!-- OXEFIT BY COREW SVG LOGO (reproduced from brand) -->
+      <svg class="login-logo-img" viewBox="0 0 460 140" xmlns="http://www.w3.org/2000/svg">
+        <!-- dark blue bg pill -->
+        <rect width="460" height="140" rx="14" fill="#1e3a8a"/>
+        <!-- OXEFIT letters -->
+        <text x="24" y="82" font-family="Arial Black,sans-serif" font-weight="900" font-size="72" fill="white" letter-spacing="-2">O</text>
+        <!-- X made of chevrons -->
+        <g fill="white">
+          <polygon points="122,18 134,18 152,50 134,82 122,82 140,50"/>
+          <polygon points="106,18 118,18 136,50 118,82 106,82 124,50"/>
+          <polygon points="90,18 102,18 120,50 102,82 90,82 108,50"/>
+        </g>
+        <text x="158" y="82" font-family="Arial Black,sans-serif" font-weight="900" font-size="72" fill="white" letter-spacing="-2">EFIT</text>
+        <!-- BY COREW bottom -->
+        <text x="160" y="112" font-family="Arial,sans-serif" font-weight="700" font-size="18" fill="white" letter-spacing="2">BY</text>
+        <!-- COREW box -->
+        <rect x="198" y="94" width="134" height="30" rx="3" fill="none" stroke="white" stroke-width="2.5"/>
+        <text x="205" y="116" font-family="Arial Black,sans-serif" font-weight="900" font-size="20" fill="white" letter-spacing="1">CORE</text>
+        <!-- W as triple lines -->
+        <g fill="white">
+          <polygon points="327,94 331,94 341,124 337,124"/>
+          <polygon points="333,94 337,94 347,124 343,124"/>
+          <polygon points="339,94 343,94 353,124 349,124"/>
+        </g>
+      </svg>
+    </div>
+    <div class="login-title">Sales Commitment Tracker</div>
+    <div class="login-field">
+      <label>Username</label>
+      <input type="text" id="loginUser" placeholder="Enter your name" autocomplete="off"/>
+    </div>
+    <div class="login-field">
+      <label>Password</label>
+      <input type="password" id="loginPass" placeholder="Enter password"/>
+    </div>
+    <div class="login-error" id="loginError">Incorrect username or password.</div>
+    <button class="login-btn" onclick="handleLogin()">Enter Tracker</button>
     <div class="login-hint">
-      Admin access is restricted.<br/>
-      All other users will have View Only access.
+      Admin access requires specific credentials.<br/>
+      All other sign-ins enter as <strong>View Only</strong>.
     </div>
   </div>
 </div>
 
-<!-- ═══════════════ APP SCREEN ═══════════════ -->
+<!-- ══ MONTH PICKER MODAL ══ -->
+<div class="modal-backdrop" id="monthModal" onclick="closeMonthModal(event)">
+  <div class="month-picker-modal" onclick="event.stopPropagation()">
+    <div class="modal-year-nav">
+      <div class="modal-year-btn" onclick="changeModalYear(-1)">&#8249;</div>
+      <div class="modal-year-label" id="modalYearLabel">2025</div>
+      <div class="modal-year-btn" onclick="changeModalYear(1)">&#8250;</div>
+    </div>
+    <div class="modal-months-grid" id="modalMonthsGrid"></div>
+  </div>
+</div>
+
+<!-- ══ MAIN APP ══ -->
 <div id="app">
 
-  <!-- TOP BAR -->
+  <!-- VIEW-ONLY BANNER -->
+  <div class="view-banner" id="viewBanner" style="display:none;">
+    <div class="view-banner-dot"></div>
+    <span>View Only Mode — Editing Disabled</span>
+  </div>
+
+  <!-- TOPBAR -->
   <div class="topbar">
-    <div class="topbar-left">
-      <div class="app-logo">Sales<span>Pro</span></div>
-      <div class="role-badge" id="role-badge"></div>
-    </div>
-    <div class="topbar-center">
-      <button class="month-nav-btn" onclick="shiftMonth(-1)">&#8249;</button>
-      <button class="month-display-btn" onclick="openCalendar()">
-        <span id="month-display-text">---</span>
-        <span style="font-size:10px; color:var(--text3);">&#9660;</span>
-      </button>
-      <button class="month-nav-btn" onclick="shiftMonth(1)">&#8250;</button>
+    <div class="topbar-logo">
+      <!-- same logo smaller -->
+      <svg class="topbar-logo-img" viewBox="0 0 460 140" xmlns="http://www.w3.org/2000/svg">
+        <rect width="460" height="140" rx="14" fill="#1e3a8a"/>
+        <text x="24" y="82" font-family="Arial Black,sans-serif" font-weight="900" font-size="72" fill="white" letter-spacing="-2">O</text>
+        <g fill="white">
+          <polygon points="122,18 134,18 152,50 134,82 122,82 140,50"/>
+          <polygon points="106,18 118,18 136,50 118,82 106,82 124,50"/>
+          <polygon points="90,18 102,18 120,50 102,82 90,82 108,50"/>
+        </g>
+        <text x="158" y="82" font-family="Arial Black,sans-serif" font-weight="900" font-size="72" fill="white" letter-spacing="-2">EFIT</text>
+        <text x="160" y="112" font-family="Arial,sans-serif" font-weight="700" font-size="18" fill="white" letter-spacing="2">BY</text>
+        <rect x="198" y="94" width="134" height="30" rx="3" fill="none" stroke="white" stroke-width="2.5"/>
+        <text x="205" y="116" font-family="Arial Black,sans-serif" font-weight="900" font-size="20" fill="white" letter-spacing="1">CORE</text>
+        <g fill="white">
+          <polygon points="327,94 331,94 341,124 337,124"/>
+          <polygon points="333,94 337,94 347,124 343,124"/>
+          <polygon points="339,94 343,94 353,124 349,124"/>
+        </g>
+      </svg>
     </div>
     <div class="topbar-right">
-      <span class="user-chip" id="user-chip"></span>
-      <button class="signout-btn" onclick="doSignOut()">Sign Out</button>
+      <div class="role-badge" id="roleBadge"></div>
+      <div class="user-chip">
+        <div class="user-avatar" id="userAvatar">?</div>
+        <div class="user-name" id="userNameDisplay">-</div>
+      </div>
+      <button class="signout-btn" onclick="signOut()">Sign Out</button>
     </div>
   </div>
 
-  <!-- VIEW ONLY BANNER -->
-  <div class="view-banner" id="view-banner" style="display:none;">
-    <div class="view-banner-dot"></div>
-    View Only Mode — You cannot edit data in this session.
+  <!-- MONTH NAV -->
+  <div class="month-nav-bar">
+    <div class="month-nav-controls">
+      <div class="month-arrow" onclick="shiftMonth(-1)">&#8249;</div>
+      <div class="month-label-btn" onclick="openMonthModal()" id="monthLabelBtn">January 2025</div>
+      <div class="month-arrow" onclick="shiftMonth(1)">&#8250;</div>
+    </div>
+    <div class="month-dot-row" id="monthDotRow"></div>
   </div>
 
-  <div class="main-content">
+  <!-- CONTENT -->
+  <div class="content">
 
-    <!-- KPI STRIP -->
-    <div class="kpi-strip" id="kpi-strip"></div>
-
-    <!-- MONTH SUMMARY -->
-    <div class="month-summary">
-      <div class="month-summary-title">Monthly Commit Overview — All Weeks</div>
-      <div class="summary-bars" id="summary-bars"></div>
-    </div>
-
-    <!-- TABLE SECTION -->
-    <div class="section-header">
-      <div class="week-tabs" id="week-tabs"></div>
-      <div class="section-actions">
-        <button class="btn-export" onclick="exportWeekCSV()">Export Week CSV</button>
-        <button class="btn-export" id="btn-export-month" onclick="exportMonthCSV()">Export Month CSV</button>
-        <button class="btn-add-rep" id="btn-add-rep" onclick="addRep()">+ Add Rep</button>
+    <!-- KPI CARDS -->
+    <div class="kpi-grid" id="kpiGrid">
+      <div class="kpi-card">
+        <div class="kpi-label">Total Commit (AED)</div>
+        <div class="kpi-value accent" id="kpiTotalAED">0</div>
+        <div class="kpi-sub">This week</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Committed Devices</div>
+        <div class="kpi-value" id="kpiDevices">0</div>
+        <div class="kpi-sub">Units this week</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Avg Confidence</div>
+        <div class="kpi-value gold" id="kpiConf">0%</div>
+        <div class="kpi-sub">Across active reps</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Upside Value (AED)</div>
+        <div class="kpi-value success" id="kpiUpAED">0</div>
+        <div class="kpi-sub">Best case</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Upside Devices</div>
+        <div class="kpi-value success" id="kpiUpDev">0</div>
+        <div class="kpi-sub">Potential units</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Active Reps</div>
+        <div class="kpi-value" id="kpiReps">0</div>
+        <div class="kpi-sub">With data this week</div>
       </div>
     </div>
 
-    <div class="table-wrap">
-      <table id="main-table">
-        <thead id="table-head"></thead>
-        <tbody id="table-body"></tbody>
-        <tfoot id="table-foot"></tfoot>
-      </table>
+    <!-- MONTH SUMMARY BAR -->
+    <div class="summary-bar">
+      <div class="summary-bar-title">Monthly Commit Overview (AED)</div>
+      <div class="summary-weeks" id="summaryWeeks"></div>
     </div>
 
-  </div>
+    <!-- WEEK TABS -->
+    <div class="week-tabs" id="weekTabs"></div>
 
-  <!-- LOCK TOOLTIP (View Only) -->
-  <div class="lock-tooltip" id="lock-tooltip" style="display:none;">
-    Read Only — Contact admin to make changes
-  </div>
-
-</div>
-
-<!-- CALENDAR MODAL -->
-<div class="modal-overlay" id="cal-modal" onclick="closeCalendarOnOverlay(event)">
-  <div class="calendar-modal">
-    <div class="cal-header">
-      <button class="cal-year-nav" onclick="shiftCalYear(-1)">&#8249;</button>
-      <div class="cal-year-label" id="cal-year-label">2025</div>
-      <button class="cal-year-nav" onclick="shiftCalYear(1)">&#8250;</button>
+    <!-- TABLE -->
+    <div class="table-section">
+      <div class="table-header">
+        <div>
+          <div class="table-title" id="tableTitle">Week 1</div>
+          <div class="table-subtitle" id="tableSubtitle"></div>
+        </div>
+        <div class="table-actions" id="tableActions"></div>
+      </div>
+      <div class="table-wrap">
+        <table id="mainTable">
+          <thead id="mainThead"></thead>
+          <tbody id="mainTbody"></tbody>
+        </table>
+      </div>
     </div>
-    <div class="cal-months" id="cal-months"></div>
-    <button class="cal-close" onclick="closeCalendar()">Close</button>
+
+  </div><!-- /content -->
+
+  <div class="lock-reminder" id="lockReminder">
+    View Only — contact admin to edit
   </div>
-</div>
+
+</div><!-- /app -->
 
 <script>
-// ═══════════════════════════════════════════════════
-// AUTH — Ahmed / Liverp00l = Admin | everyone else = View
-// ═══════════════════════════════════════════════════
-const ADMIN_USER = 'Ahmed';
-const ADMIN_PASS = 'Liverp00l';
+/* ══════════════════════════════════════
+   STATE
+══════════════════════════════════════ */
+const MONTHS = ['January','February','March','April','May','June',
+                'July','August','September','October','November','December'];
 
+const STAGES = ['Prospect','Qualification','Demo','Proposal','Negotiation','Closed Won','Closed Lost'];
+const CONF_LEVELS = ['High','Medium','Low'];
+
+let currentRole = null; // 'admin' | 'viewer'
 let currentUser = '';
-let currentRole = 'view'; // 'admin' | 'view'
-const isAdmin = () => currentRole === 'admin';
 
-function doLogin() {
-  const user = document.getElementById('login-username').value.trim();
-  const pass = document.getElementById('login-password').value;
-  const errEl = document.getElementById('login-error');
+// { "2025-0": { weekIdx: 0, weeks: [ [row,...], ...] } }
+let allData = {};
+let curYear  = new Date().getFullYear();
+let curMonth = new Date().getMonth();
+let curWeek  = 0;
+let modalYear = curYear;
 
-  if (!user || !pass) {
-    errEl.textContent = 'Please enter both username and password.';
-    errEl.style.display = 'block';
-    return;
+const defaultRow = () => ({
+  rep: '', stage: 'Proposal',
+  commitAED: '', devices: '', confidence: 'High',
+  upsideAED: '', upsideDevices: '',
+  notes: ''
+});
+
+/* ══════════════════════════════════════
+   STORAGE
+══════════════════════════════════════ */
+function saveAll() {
+  localStorage.setItem('oxefit_data_v4', JSON.stringify(allData));
+}
+function loadAll() {
+  const raw = localStorage.getItem('oxefit_data_v4');
+  if (raw) { try { allData = JSON.parse(raw); } catch(e){} }
+}
+
+function getMonthKey(y,m) { return `${y}-${m}`; }
+function getMonthData(y,m) {
+  const k = getMonthKey(y,m);
+  if (!allData[k]) {
+    allData[k] = { weeks: [[], [], [], [], []] };
   }
+  return allData[k];
+}
+function getCurMonthData() { return getMonthData(curYear, curMonth); }
+function getCurWeekRows() {
+  const md = getCurMonthData();
+  if (!md.weeks[curWeek]) md.weeks[curWeek] = [];
+  return md.weeks[curWeek];
+}
 
-  // Determine role
-  if (user === ADMIN_USER && pass === ADMIN_PASS) {
+/* ══════════════════════════════════════
+   LOGIN
+══════════════════════════════════════ */
+function handleLogin() {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  if (!u) { showLoginError('Please enter your name.'); return; }
+  if (!p) { showLoginError('Please enter a password.'); return; }
+
+  const ADMIN_USER = 'Ahmed';
+  const ADMIN_PASS = 'Liverp00l';
+
+  if (u === ADMIN_USER && p === ADMIN_PASS) {
     currentRole = 'admin';
   } else {
-    // Everyone else is View Only — but they still need SOME credentials
-    currentRole = 'view';
+    // Anyone else: view only — but require SOME password attempt
+    currentRole = 'viewer';
   }
 
-  currentUser = user;
-  errEl.style.display = 'none';
-
-  // Store session
-  sessionStorage.setItem('sp_user', currentUser);
-  sessionStorage.setItem('sp_role', currentRole);
-
+  currentUser = u;
+  sessionStorage.setItem('oxefit_role', currentRole);
+  sessionStorage.setItem('oxefit_user', currentUser);
   launchApp();
 }
 
-function doSignOut() {
-  sessionStorage.removeItem('sp_user');
-  sessionStorage.removeItem('sp_role');
-  currentUser = '';
-  currentRole = 'view';
-  document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('login-username').value = '';
-  document.getElementById('login-password').value = '';
-  document.getElementById('login-error').style.display = 'none';
+function showLoginError(msg) {
+  const el = document.getElementById('loginError');
+  el.textContent = msg; el.style.display = 'block';
+}
+
+document.getElementById('loginPass').addEventListener('keydown', e => {
+  if (e.key === 'Enter') handleLogin();
+});
+document.getElementById('loginUser').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('loginPass').focus();
+});
+
+function signOut() {
+  sessionStorage.removeItem('oxefit_role');
+  sessionStorage.removeItem('oxefit_user');
+  currentRole = null; currentUser = '';
+  document.getElementById('loginError').style.display = 'none';
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('app').classList.remove('visible');
 }
 
 function launchApp() {
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
+  document.getElementById('loginScreen').style.display = 'none';
+  const app = document.getElementById('app');
+  app.classList.add('visible');
 
-  // Role badge
-  const badge = document.getElementById('role-badge');
-  badge.textContent = isAdmin() ? 'Admin' : 'View Only';
-  badge.className = 'role-badge ' + (isAdmin() ? 'admin' : 'view');
+  // Role UI
+  const isAdmin = currentRole === 'admin';
+  const badge = document.getElementById('roleBadge');
+  badge.textContent = isAdmin ? 'Admin' : 'View Only';
+  badge.className   = 'role-badge ' + (isAdmin ? 'admin' : 'viewer');
 
-  // User chip
-  document.getElementById('user-chip').textContent = currentUser;
+  document.getElementById('userAvatar').textContent = currentUser.charAt(0).toUpperCase();
+  document.getElementById('userNameDisplay').textContent = currentUser;
 
-  // View banner + lock
-  document.getElementById('view-banner').style.display = isAdmin() ? 'none' : 'flex';
-  document.getElementById('lock-tooltip').style.display = isAdmin() ? 'none' : 'block';
+  document.getElementById('viewBanner').style.display = isAdmin ? 'none' : 'flex';
+  document.getElementById('lockReminder').className = 'lock-reminder' + (isAdmin ? '' : ' show');
 
-  // Add rep button
-  document.getElementById('btn-add-rep').style.display = isAdmin() ? 'inline-flex' : 'none';
-
-  // Export month (admin only)
-  document.getElementById('btn-export-month').style.display = isAdmin() ? 'inline-flex' : 'none';
-
-  loadState();
   renderAll();
 }
 
-// ═══════════════════════════════════════════════════
-// DATA & STATE
-// ═══════════════════════════════════════════════════
-const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const STAGES = ['Prospecting','Qualified','Proposal','Negotiation','Closed Won','Closed Lost'];
-const CURRENCY = 'AED';
-
-let curYear, curMonth, curWeek;
-let calYear;
-
-// allData[year][month][week] = [ {rep, target, pipeline, commit, stage, notes}, ... ]
-let allData = {};
-
-function monthKey(y, m) { return y + '-' + m; }
-function weekKey(y, m, w) { return y + '-' + m + '-' + w; }
-
-function ensureWeek(y, m, w) {
-  if (!allData[y]) allData[y] = {};
-  if (!allData[y][m]) allData[y][m] = {};
-  if (!allData[y][m][w]) allData[y][m][w] = defaultRows();
+/* ══════════════════════════════════════
+   MONTH MODAL
+══════════════════════════════════════ */
+function openMonthModal() {
+  modalYear = curYear;
+  renderModalMonths();
+  document.getElementById('monthModal').classList.add('open');
 }
-
-function defaultRows() {
-  return [
-    { rep:'Ahmed Al-Farsi', target:50000, pipeline:35000, commit:28000, stage:'Proposal', notes:'' },
-    { rep:'Sara Malik',     target:45000, pipeline:40000, commit:38000, stage:'Negotiation', notes:'' },
-    { rep:'Omar Hassan',    target:55000, pipeline:20000, commit:15000, stage:'Qualified', notes:'' },
-    { rep:'Layla Nasser',   target:48000, pipeline:44000, commit:42000, stage:'Closed Won', notes:'' },
-  ];
+function closeMonthModal(e) {
+  document.getElementById('monthModal').classList.remove('open');
 }
-
-function getRows(y, m, w) {
-  ensureWeek(y, m, w);
-  return allData[y][m][w];
+function changeModalYear(d) {
+  modalYear += d;
+  renderModalMonths();
 }
-
-function saveState() {
-  localStorage.setItem('sp_data', JSON.stringify(allData));
-  localStorage.setItem('sp_cur', JSON.stringify({ y: curYear, m: curMonth, w: curWeek }));
-}
-
-function loadState() {
-  const raw = localStorage.getItem('sp_data');
-  if (raw) { try { allData = JSON.parse(raw); } catch(e) {} }
-  const cur = localStorage.getItem('sp_cur');
-  if (cur) {
-    try {
-      const obj = JSON.parse(cur);
-      curYear = obj.y; curMonth = obj.m; curWeek = obj.w;
-    } catch(e) {}
-  }
-  if (!curYear) {
-    const now = new Date();
-    curYear = now.getFullYear();
-    curMonth = now.getMonth();
-    curWeek = 0;
-  }
-  calYear = curYear;
-}
-
-// ═══════════════════════════════════════════════════
-// WEEK DATE RANGES
-// ═══════════════════════════════════════════════════
-function getWeekRanges(y, m) {
-  const ranges = [];
-  const firstDay = new Date(y, m, 1);
-  let start = new Date(firstDay);
-  for (let w = 0; w < 5; w++) {
-    if (start.getMonth() !== m) break;
-    let end = new Date(start);
-    end.setDate(end.getDate() + 6);
-    if (end.getMonth() !== m) end = new Date(y, m + 1, 0);
-    ranges.push({
-      label: 'W' + (w+1),
-      range: start.getDate() + ' - ' + end.getDate() + ' ' + MONTHS[m]
+function renderModalMonths() {
+  document.getElementById('modalYearLabel').textContent = modalYear;
+  const grid = document.getElementById('modalMonthsGrid');
+  grid.innerHTML = '';
+  MONTHS.forEach((mn,mi) => {
+    const k = getMonthKey(modalYear, mi);
+    const hasData = allData[k] && allData[k].weeks.some(w => w && w.length > 0);
+    const sel = (modalYear === curYear && mi === curMonth);
+    const btn = document.createElement('button');
+    btn.className = 'modal-month-btn' + (sel ? ' selected' : '');
+    btn.textContent = mn.slice(0,3);
+    if (hasData && !sel) {
+      const dot = document.createElement('div');
+      dot.className = 'mdot'; btn.appendChild(dot);
+    }
+    btn.addEventListener('click', () => {
+      curYear = modalYear; curMonth = mi; curWeek = 0;
+      closeMonthModal();
+      renderAll();
     });
-    start.setDate(end.getDate() + 1);
+    grid.appendChild(btn);
+  });
+}
+
+function shiftMonth(d) {
+  curMonth += d;
+  if (curMonth < 0)  { curMonth = 11; curYear--; }
+  if (curMonth > 11) { curMonth = 0;  curYear++; }
+  curWeek = 0;
+  renderAll();
+}
+
+/* ══════════════════════════════════════
+   WEEK DATE RANGES
+══════════════════════════════════════ */
+function getWeekRanges(year, month) {
+  const ranges = [];
+  // start: Monday of first week containing days of this month
+  const firstDay = new Date(year, month, 1);
+  const dow = firstDay.getDay(); // 0=Sun
+  const startOffset = dow === 0 ? -6 : 1 - dow;
+  let cursor = new Date(year, month, 1 + startOffset);
+  for (let w = 0; w < 5; w++) {
+    const from = new Date(cursor);
+    const to   = new Date(cursor); to.setDate(to.getDate() + 6);
+    ranges.push({ from, to });
+    cursor.setDate(cursor.getDate() + 7);
   }
   return ranges;
 }
 
-// ═══════════════════════════════════════════════════
-// RENDER
-// ═══════════════════════════════════════════════════
-function renderAll() {
-  renderMonthDisplay();
-  renderWeekTabs();
-  renderKPIs();
-  renderSummaryBars();
-  renderTable();
+function fmtDate(d) {
+  return d.toLocaleDateString('en-GB', { day:'2-digit', month:'short' });
 }
 
-function renderMonthDisplay() {
-  document.getElementById('month-display-text').textContent = MONTHS[curMonth] + ' ' + curYear;
+/* ══════════════════════════════════════
+   RENDER ALL
+══════════════════════════════════════ */
+function renderAll() {
+  renderMonthLabel();
+  renderMonthDots();
+  renderWeekTabs();
+  renderSummaryBar();
+  renderTable();
+  renderKPIs();
+}
+
+function renderMonthLabel() {
+  document.getElementById('monthLabelBtn').textContent = MONTHS[curMonth] + ' ' + curYear;
+}
+
+function renderMonthDots() {
+  const row = document.getElementById('monthDotRow');
+  row.innerHTML = '';
+  const md = getCurMonthData();
+  for (let w = 0; w < 5; w++) {
+    const hasData = md.weeks[w] && md.weeks[w].some(r => r.rep || r.commitAED);
+    const item = document.createElement('div');
+    item.className = 'month-dot-item';
+    item.innerHTML = `<div class="month-dot ${w === curWeek ? 'current' : (hasData ? 'has-data' : '')}"></div><span>W${w+1}</span>`;
+    item.addEventListener('click', () => { curWeek = w; renderAll(); });
+    row.appendChild(item);
+  }
 }
 
 function renderWeekTabs() {
+  const tabs = document.getElementById('weekTabs');
+  tabs.innerHTML = '';
   const ranges = getWeekRanges(curYear, curMonth);
-  const container = document.getElementById('week-tabs');
-  container.innerHTML = '';
-  ranges.forEach((r, i) => {
-    const hasData = weekHasData(curYear, curMonth, i);
-    const btn = document.createElement('button');
-    btn.className = 'week-tab' + (i === curWeek ? ' active' : '');
-    btn.innerHTML = r.label + '<br><span style="font-size:9px;font-weight:500;opacity:0.7;">' + r.range + '</span>'
-      + (hasData ? '<span class="dot"></span>' : '');
-    btn.onclick = () => { curWeek = i; saveState(); renderAll(); };
-    container.appendChild(btn);
-  });
-}
-
-function weekHasData(y, m, w) {
-  if (!allData[y]?.[m]?.[w]) return false;
-  return allData[y][m][w].some(r => r.commit > 0 || r.pipeline > 0);
-}
-
-function monthHasData(y, m) {
-  for (let w = 0; w < 5; w++) { if (weekHasData(y, m, w)) return true; }
-  return false;
-}
-
-function renderKPIs() {
-  const rows = getRows(curYear, curMonth, curWeek);
-  const totalTarget   = rows.reduce((s,r) => s + (+r.target || 0), 0);
-  const totalPipeline = rows.reduce((s,r) => s + (+r.pipeline || 0), 0);
-  const totalCommit   = rows.reduce((s,r) => s + (+r.commit || 0), 0);
-  const attainment    = totalTarget > 0 ? Math.round((totalCommit / totalTarget) * 100) : 0;
-  const gap           = totalTarget - totalCommit;
-  const attClass      = attainment >= 100 ? 'green' : attainment >= 70 ? 'orange' : 'red';
-  const gapClass      = gap <= 0 ? 'green' : 'red';
-
-  const fmt = v => CURRENCY + ' ' + Number(v).toLocaleString();
-
-  const kpis = [
-    { label:'Total Target',   value: fmt(totalTarget),    sub: curWeek+1+' of '+getWeekRanges(curYear,curMonth).length+' weeks', cls:'' },
-    { label:'Total Pipeline', value: fmt(totalPipeline),  sub: 'Active opportunities', cls:'blue' },
-    { label:'Total Commit',   value: fmt(totalCommit),    sub: 'Committed revenue', cls:'orange' },
-    { label:'Attainment',     value: attainment + '%',    sub: 'vs target', cls: attClass },
-    { label:'Gap to Target',  value: fmt(Math.abs(gap)),  sub: gap <= 0 ? 'Achieved!' : 'Remaining', cls: gapClass },
-  ];
-
-  const strip = document.getElementById('kpi-strip');
-  strip.innerHTML = '';
-  kpis.forEach(k => {
-    strip.innerHTML += `
-      <div class="kpi-card">
-        <div class="kpi-label">${k.label}</div>
-        <div class="kpi-value ${k.cls}">${k.value}</div>
-        <div class="kpi-sub">${k.sub}</div>
-      </div>`;
-  });
-}
-
-function renderSummaryBars() {
-  const container = document.getElementById('summary-bars');
-  container.innerHTML = '';
-  const ranges = getWeekRanges(curYear, curMonth);
-  const vals = ranges.map((r,i) => {
-    const rows = getRows(curYear, curMonth, i);
-    return rows.reduce((s,r2) => s + (+r2.commit || 0), 0);
-  });
-  const maxVal = Math.max(...vals, 1);
-  const fmt = v => v >= 1000 ? (v/1000).toFixed(0)+'k' : v;
-
-  vals.forEach((v, i) => {
-    const pct = Math.round((v / maxVal) * 68);
-    container.innerHTML += `
-      <div class="summary-bar-wrap">
-        <div class="summary-bar-val">${v > 0 ? CURRENCY+' '+fmt(v) : ''}</div>
-        <div class="summary-bar-track ${v > 0 ? 'filled' : ''}" style="height:${Math.max(pct,4)}px;"></div>
-        <div class="summary-bar-label">${ranges[i].label}</div>
-      </div>`;
-  });
-}
-
-function renderTable() {
-  const rows = getRows(curYear, curMonth, curWeek);
-  const head = document.getElementById('table-head');
-  const body = document.getElementById('table-body');
-  const foot = document.getElementById('table-foot');
-  const readOnly = !isAdmin();
-  const notesColExtra = readOnly ? `<span class="view-badge-col">READ ONLY</span>` : '';
-
-  head.innerHTML = `
-    <tr>
-      <th>Rep Name</th>
-      <th style="text-align:right;">Target (${CURRENCY})</th>
-      <th style="text-align:right;">Pipeline (${CURRENCY})</th>
-      <th style="text-align:right;">Commit (${CURRENCY})</th>
-      <th style="text-align:right;">Attainment</th>
-      <th style="text-align:right;">Gap (${CURRENCY})</th>
-      <th>Stage</th>
-      <th class="notes-col">Notes ${notesColExtra}</th>
-      ${isAdmin() ? '<th></th>' : ''}
-    </tr>`;
-
-  body.innerHTML = '';
-  rows.forEach((row, idx) => {
-    const target   = +row.target   || 0;
-    const pipeline = +row.pipeline || 0;
-    const commit   = +row.commit   || 0;
-    const att      = target > 0 ? Math.round((commit / target) * 100) : 0;
-    const gap      = target - commit;
-    const attCls   = att >= 100 ? 'style="color:var(--green)"' : att >= 70 ? 'style="color:var(--accent)"' : 'style="color:var(--red)"';
-    const gapCls   = gap <= 0 ? 'style="color:var(--green)"' : 'style="color:var(--red)"';
-    const fmt = v => Number(v).toLocaleString();
-
-    // Notes HTML
-    let notesHTML = '';
-    if (!readOnly) {
-      const bullets = parseNotes(row.notes);
-      const displayHTML = bullets.length > 0
-        ? bullets.map(b => `<div class="notes-bullet"><div class="notes-bullet-dot"></div><span>${escHtml(b)}</span></div>`).join('')
-        : `<span class="notes-placeholder">Click to add notes...</span>`;
-      notesHTML = `
-        <div class="notes-display" onclick="openNotesEditor(${idx})" id="notes-display-${idx}">${displayHTML}</div>
-        <div class="notes-editor-wrap" id="notes-editor-${idx}">
-          <textarea class="notes-textarea" id="notes-textarea-${idx}" rows="4" placeholder="Enter each point on a new line...">${escHtml(row.notes)}</textarea>
-          <div class="notes-actions">
-            <button class="notes-save-btn" onclick="saveNotes(${idx})">Save</button>
-            <button class="notes-cancel-btn" onclick="cancelNotes(${idx})">Cancel</button>
-          </div>
-        </div>`;
-    } else {
-      const bullets = parseNotes(row.notes);
-      const displayHTML = bullets.length > 0
-        ? bullets.map(b => `<div class="notes-bullet"><div class="notes-bullet-dot"></div><span>${escHtml(b)}</span></div>`).join('')
-        : `<span class="notes-placeholder">No notes</span>`;
-      notesHTML = `<div class="notes-display readonly">${displayHTML}</div>`;
+  const md = getCurMonthData();
+  for (let w = 0; w < 5; w++) {
+    const hasData = md.weeks[w] && md.weeks[w].some(r => r.rep || r.commitAED);
+    const r = ranges[w];
+    const tab = document.createElement('div');
+    tab.className = 'week-tab' + (w === curWeek ? ' active' : '');
+    tab.innerHTML = `Week ${w+1} &nbsp;<span style="font-weight:400;font-size:10px;">${fmtDate(r.from)} - ${fmtDate(r.to)}</span>`;
+    if (hasData && w !== curWeek) {
+      const dot = document.createElement('div'); dot.className = 'wdot'; tab.appendChild(dot);
     }
-
-    const stageOpts = STAGES.map(s =>
-      `<option value="${s}" ${s === row.stage ? 'selected' : ''}>${s}</option>`
-    ).join('');
-
-    const deleteBtn = isAdmin() ? `<td style="padding:6px 8px;">
-      <button onclick="deleteRep(${idx})" style="background:transparent;border:1px solid rgba(239,68,68,0.3);border-radius:5px;padding:4px 8px;color:var(--red);font-size:10px;cursor:pointer;font-family:Manrope,sans-serif;font-weight:700;transition:all 0.15s;"
-      onmouseover="this.style.background='rgba(239,68,68,0.1)'" onmouseout="this.style.background='transparent'">Del</button></td>` : '';
-
-    body.innerHTML += `
-      <tr>
-        <td class="rep-name-cell">${escHtml(row.rep)}</td>
-        <td>
-          <input type="number" class="cell-input ${readOnly ? 'readonly' : ''}"
-            value="${row.target}"
-            ${readOnly ? 'readonly tabindex="-1"' : `oninput="updateFieldSilent(${idx},'target',this.value)" onblur="commitField(${idx},'target',this.value)"`}
-            style="text-align:right;"/>
-        </td>
-        <td>
-          <input type="number" class="cell-input ${readOnly ? 'readonly' : ''}"
-            value="${row.pipeline}"
-            ${readOnly ? 'readonly tabindex="-1"' : `oninput="updateFieldSilent(${idx},'pipeline',this.value)" onblur="commitField(${idx},'pipeline',this.value)"`}
-            style="text-align:right;"/>
-        </td>
-        <td>
-          <input type="number" class="cell-input ${readOnly ? 'readonly' : ''}"
-            value="${row.commit}"
-            ${readOnly ? 'readonly tabindex="-1"' : `oninput="updateFieldSilent(${idx},'commit',this.value)" onblur="commitField(${idx},'commit',this.value)"`}
-            style="text-align:right;"/>
-        </td>
-        <td class="computed-cell" ${attCls}>${att}%</td>
-        <td class="computed-cell" ${gapCls}>${gap < 0 ? '+' : ''}${fmt(Math.abs(gap))}</td>
-        <td>
-          <select class="stage-select ${readOnly ? 'readonly' : ''}"
-            ${readOnly ? 'disabled' : `onchange="updateField(${idx},'stage',this.value)"`}>
-            ${stageOpts}
-          </select>
-        </td>
-        <td>${notesHTML}</td>
-        ${deleteBtn}
-      </tr>`;
-  });
-
-  // Totals
-  const totTarget   = rows.reduce((s,r) => s + (+r.target   || 0), 0);
-  const totPipeline = rows.reduce((s,r) => s + (+r.pipeline || 0), 0);
-  const totCommit   = rows.reduce((s,r) => s + (+r.commit   || 0), 0);
-  const fmt = v => Number(v).toLocaleString();
-
-  foot.innerHTML = `
-    <tr class="totals-row">
-      <td>Totals</td>
-      <td style="text-align:right;">${CURRENCY} ${fmt(totTarget)}</td>
-      <td style="text-align:right;">${CURRENCY} ${fmt(totPipeline)}</td>
-      <td style="text-align:right;">${CURRENCY} ${fmt(totCommit)}</td>
-      <td></td><td></td><td></td><td></td>
-      ${isAdmin() ? '<td></td>' : ''}
-    </tr>`;
+    tab.addEventListener('click', () => { curWeek = w; renderAll(); });
+    tabs.appendChild(tab);
+  }
 }
 
-// ═══════════════════════════════════════════════════
-// FIELD UPDATES
-// ═══════════════════════════════════════════════════
-function updateFieldSilent(idx, field, val) {
-  const rows = getRows(curYear, curMonth, curWeek);
-  rows[idx][field] = val; // store raw, no re-render
-}
-
-function commitField(idx, field, val) {
-  const rows = getRows(curYear, curMonth, curWeek);
-  const num = parseInt(val.toString().replace(/[^0-9]/g, ''), 10);
-  rows[idx][field] = isNaN(num) ? 0 : num;
-  saveState();
-  renderKPIs();
-  renderSummaryBars();
-  renderTable();
-}
-
-function updateField(idx, field, val) {
-  const rows = getRows(curYear, curMonth, curWeek);
-  rows[idx][field] = val;
-  saveState();
-  renderAll();
-}
-
-// ═══════════════════════════════════════════════════
-// NOTES
-// ═══════════════════════════════════════════════════
-function parseNotes(notes) {
-  if (!notes || !notes.trim()) return [];
-  return notes.split('\n')
-    .map(l => l.replace(/^[-*•]\s*/, '').trim())
-    .filter(l => l.length > 0);
-}
-
-function escHtml(str) {
-  if (!str) return '';
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-function openNotesEditor(idx) {
-  document.getElementById('notes-display-' + idx).style.display = 'none';
-  document.getElementById('notes-editor-' + idx).classList.add('active');
-  document.getElementById('notes-textarea-' + idx).focus();
-}
-
-function saveNotes(idx) {
-  const val = document.getElementById('notes-textarea-' + idx).value;
-  updateField(idx, 'notes', val);
-}
-
-function cancelNotes(idx) {
-  document.getElementById('notes-display-' + idx).style.display = '';
-  document.getElementById('notes-editor-' + idx).classList.remove('active');
-}
-
-// ═══════════════════════════════════════════════════
-// REPS
-// ═══════════════════════════════════════════════════
-function addRep() {
-  if (!isAdmin()) return;
-  const name = prompt('Enter rep name:');
-  if (!name || !name.trim()) return;
-  const rows = getRows(curYear, curMonth, curWeek);
-  rows.push({ rep: name.trim(), target:0, pipeline:0, commit:0, stage:'Prospecting', notes:'' });
-  saveState();
-  renderAll();
-}
-
-function deleteRep(idx) {
-  if (!isAdmin()) return;
-  const rows = getRows(curYear, curMonth, curWeek);
-  if (!confirm('Remove ' + rows[idx].rep + '?')) return;
-  rows.splice(idx, 1);
-  saveState();
-  renderAll();
-}
-
-// ═══════════════════════════════════════════════════
-// MONTH NAVIGATION
-// ═══════════════════════════════════════════════════
-function shiftMonth(delta) {
-  curMonth += delta;
-  if (curMonth < 0)  { curMonth = 11; curYear--; }
-  if (curMonth > 11) { curMonth = 0;  curYear++; }
-  curWeek = 0;
-  calYear = curYear;
-  saveState();
-  renderAll();
-}
-
-// ═══════════════════════════════════════════════════
-// CALENDAR MODAL
-// ═══════════════════════════════════════════════════
-function openCalendar() {
-  calYear = curYear;
-  renderCalendar();
-  document.getElementById('cal-modal').classList.add('open');
-}
-
-function closeCalendar() {
-  document.getElementById('cal-modal').classList.remove('open');
-}
-
-function closeCalendarOnOverlay(e) {
-  if (e.target === document.getElementById('cal-modal')) closeCalendar();
-}
-
-function shiftCalYear(delta) {
-  calYear += delta;
-  renderCalendar();
-}
-
-function renderCalendar() {
-  document.getElementById('cal-year-label').textContent = calYear;
-  const container = document.getElementById('cal-months');
+function renderSummaryBar() {
+  const container = document.getElementById('summaryWeeks');
   container.innerHTML = '';
-  MONTHS.forEach((m, i) => {
-    const isActive = calYear === curYear && i === curMonth;
-    const hasData = monthHasData(calYear, i);
-    const btn = document.createElement('button');
-    btn.className = 'cal-month-btn' + (isActive ? ' active' : '');
-    btn.innerHTML = m + (hasData ? '<span class="has-data"></span>' : '');
-    btn.onclick = () => { curYear = calYear; curMonth = i; curWeek = 0; saveState(); renderAll(); closeCalendar(); };
-    container.appendChild(btn);
+  const md = getCurMonthData();
+  const totals = md.weeks.map(w => {
+    if (!w || !w.length) return 0;
+    return w.reduce((s,r) => s + (parseFloat(r.commitAED)||0), 0);
+  });
+  const max = Math.max(...totals, 1);
+  const ranges = getWeekRanges(curYear, curMonth);
+  totals.forEach((val, wi) => {
+    const pct = Math.round((val / max) * 72);
+    const div = document.createElement('div');
+    div.className = 'summary-week';
+    div.innerHTML = `
+      <div class="summary-week-val">${val ? 'AED '+fmtNum(val) : ''}</div>
+      <div class="summary-bar-inner ${wi === curWeek ? 'active-week' : ''}" style="height:${Math.max(pct,4)}px;"></div>
+      <div class="summary-week-label">W${wi+1}</div>`;
+    div.style.cursor = 'pointer';
+    div.addEventListener('click', () => { curWeek = wi; renderAll(); });
+    container.appendChild(div);
   });
 }
 
-// ═══════════════════════════════════════════════════
-// EXPORT
-// ═══════════════════════════════════════════════════
-function exportWeekCSV() {
-  const rows = getRows(curYear, curMonth, curWeek);
-  const ranges = getWeekRanges(curYear, curMonth);
-  const weekLabel = ranges[curWeek] ? ranges[curWeek].label + ' (' + ranges[curWeek].range + ')' : 'W'+(curWeek+1);
-  let csv = `Sales Tracker - ${MONTHS[curMonth]} ${curYear} - ${weekLabel}\n`;
-  csv += `Rep,Target (${CURRENCY}),Pipeline (${CURRENCY}),Commit (${CURRENCY}),Attainment,Gap,Stage,Notes\n`;
-  rows.forEach(r => {
-    const att = r.target > 0 ? Math.round((r.commit / r.target) * 100) : 0;
-    const gap = r.target - r.commit;
-    const notesFlat = parseNotes(r.notes).join(' | ');
-    csv += `"${r.rep}",${r.target},${r.pipeline},${r.commit},${att}%,${gap},"${r.stage}","${notesFlat}"\n`;
-  });
-  downloadCSV(csv, `sales-${curYear}-${MONTHS[curMonth]}-${weekLabel}.csv`);
+function fmtNum(n) {
+  if (!n && n!==0) return '';
+  return Number(n).toLocaleString('en-AE', {minimumFractionDigits:0, maximumFractionDigits:0});
 }
 
-function exportMonthCSV() {
-  if (!isAdmin()) return;
+/* ══════════════════════════════════════
+   RENDER TABLE
+══════════════════════════════════════ */
+function renderTable() {
+  const isAdmin = currentRole === 'admin';
   const ranges = getWeekRanges(curYear, curMonth);
-  let csv = `Sales Tracker - ${MONTHS[curMonth]} ${curYear} - Full Month\n`;
-  ranges.forEach((r, w) => {
-    const rows = getRows(curYear, curMonth, w);
-    csv += `\n${r.label} (${r.range})\n`;
-    csv += `Rep,Target (${CURRENCY}),Pipeline (${CURRENCY}),Commit (${CURRENCY}),Attainment,Gap,Stage,Notes\n`;
-    rows.forEach(row => {
-      const att = row.target > 0 ? Math.round((row.commit / row.target) * 100) : 0;
-      const gap = row.target - row.commit;
-      const notesFlat = parseNotes(row.notes).join(' | ');
-      csv += `"${row.rep}",${row.target},${row.pipeline},${row.commit},${att}%,${gap},"${row.stage}","${notesFlat}"\n`;
+  const r = ranges[curWeek];
+
+  document.getElementById('tableTitle').textContent = `Week ${curWeek+1} — ${MONTHS[curMonth]} ${curYear}`;
+  document.getElementById('tableSubtitle').textContent = `${fmtDate(r.from)} to ${fmtDate(r.to)}`;
+
+  // Actions
+  const actDiv = document.getElementById('tableActions');
+  actDiv.innerHTML = '';
+  if (isAdmin) {
+    const addBtn = document.createElement('button');
+    addBtn.className = 'btn btn-primary'; addBtn.textContent = '+ Add Rep';
+    addBtn.onclick = addRow; actDiv.appendChild(addBtn);
+  }
+  const expBtn = document.createElement('button');
+  expBtn.className = 'btn btn-ghost'; expBtn.textContent = 'Export CSV';
+  expBtn.onclick = exportCSV; actDiv.appendChild(expBtn);
+
+  // HEAD
+  const thead = document.getElementById('mainThead');
+  thead.innerHTML = '';
+  const cols = ['Sales Rep','Stage','Commit (AED)','No. of Devices','Confidence %',
+                 'Upside Value (AED)','Upside Devices','Notes'];
+  if (isAdmin) cols.push('');
+  const tr = document.createElement('tr');
+  cols.forEach(c => {
+    const th = document.createElement('th'); th.textContent = c; tr.appendChild(th);
+  });
+  thead.appendChild(tr);
+
+  // BODY
+  const tbody = document.getElementById('mainTbody');
+  tbody.innerHTML = '';
+
+  const rows = getCurWeekRows();
+  if (!rows.length && isAdmin) { addRow(); return; }
+
+  rows.forEach((row, ri) => renderRow(row, ri, tbody, isAdmin));
+
+  // TOTALS
+  renderTotalsRow(rows, tbody, isAdmin);
+}
+
+function renderRow(row, ri, tbody, isAdmin) {
+  const tr = document.createElement('tr');
+  tr.dataset.ri = ri;
+
+  // Sales Rep
+  tr.appendChild(makeCell(ri, 'rep', 'text', 'rep-name-input', row.rep, isAdmin));
+
+  // Stage
+  const stageTd = document.createElement('td');
+  if (isAdmin) {
+    const sel = document.createElement('select');
+    sel.className = 'cell-input';
+    STAGES.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s; opt.textContent = s;
+      if (s === row.stage) opt.selected = true;
+      sel.appendChild(opt);
     });
-  });
-  downloadCSV(csv, `sales-${curYear}-${MONTHS[curMonth]}-full-month.csv`);
-}
+    sel.addEventListener('change', e => { updateField(ri, 'stage', e.target.value); });
+    stageTd.appendChild(sel);
+  } else {
+    const sp = document.createElement('span');
+    sp.className = 'stage-badge'; sp.textContent = row.stage || '-';
+    stageTd.appendChild(sp);
+  }
+  tr.appendChild(stageTd);
 
-function downloadCSV(content, filename) {
-  const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href = url; a.download = filename; a.click();
-  URL.revokeObjectURL(url);
-}
+  // Commit AED
+  tr.appendChild(makeCell(ri, 'commitAED', 'number', 'num-input', row.commitAED, isAdmin));
+  // Devices
+  tr.appendChild(makeCell(ri, 'devices', 'number', 'num-input', row.devices, isAdmin));
+  // Confidence %
+  const confTd = document.createElement('td');
+  if (isAdmin) {
+    const sel = document.createElement('select');
+    sel.className = 'cell-input';
+    CONF_LEVELS.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c; opt.textContent = c;
+      if (c === row.confidence) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    sel.addEventListener('change', e => { updateField(ri, 'confidence', e.target.value); renderKPIs(); });
+    confTd.appendChild(sel);
+  } else {
+    const lvl = row.confidence || 'High';
+    const cls = lvl === 'High' ? 'conf-high' : lvl === 'Medium' ? 'conf-mid' : 'conf-low';
+    confTd.innerHTML = `<span class="conf-badge ${cls}">${lvl}</span>`;
+  }
+  tr.appendChild(confTd);
 
-// ═══════════════════════════════════════════════════
-// BOOT
-// ═══════════════════════════════════════════════════
-(function init() {
-  const savedUser = sessionStorage.getItem('sp_user');
-  const savedRole = sessionStorage.getItem('sp_role');
-  if (savedUser && savedRole) {
-    currentUser = savedUser;
-    currentRole = savedRole;
-    launchApp();
+  // Upside AED
+  tr.appendChild(makeCell(ri, 'upsideAED', 'number', 'num-input', row.upsideAED, isAdmin));
+  // Upside Devices
+  tr.appendChild(makeCell(ri, 'upsideDevices', 'number', 'num-input', row.upsideDevices, isAdmin));
+
+  // Notes
+  const notesTd = document.createElement('td');
+  notesTd.className = 'notes-cell';
+  renderNotesCell(notesTd, ri, row.notes, isAdmin);
+  tr.appendChild(notesTd);
+
+  // Delete
+  if (isAdmin) {
+    const delTd = document.createElement('td');
+    const btn = document.createElement('button');
+    btn.className = 'delete-row-btn'; btn.textContent = 'x';
+    btn.title = 'Remove this rep';
+    btn.onclick = () => deleteRow(ri);
+    delTd.appendChild(btn);
+    tr.appendChild(delTd);
   }
 
-  // Enter key on login
-  document.getElementById('login-password').addEventListener('keydown', e => {
-    if (e.key === 'Enter') doLogin();
+  tbody.appendChild(tr);
+}
+
+function makeCell(ri, field, type, extraClass, value, isAdmin) {
+  const td = document.createElement('td');
+  const inp = document.createElement('input');
+  inp.type = type; inp.className = 'cell-input ' + extraClass;
+  if (value !== '' && value !== null && value !== undefined) inp.value = value;
+  if (type === 'number') { inp.min = '0'; inp.step = 'any'; }
+  if (!isAdmin) { inp.readOnly = true; inp.className += ' readonly-field'; }
+  else {
+    inp.addEventListener('input', e => {
+      updateField(ri, field, e.target.value);
+    });
+  }
+  td.appendChild(inp);
+  return td;
+}
+
+function renderNotesCell(td, ri, notesVal, isAdmin) {
+  td.innerHTML = '';
+  const lines = (notesVal || '').split('\n').map(l => l.replace(/^-\s*/,'')).filter(l => l.trim());
+
+  if (!isAdmin) {
+    // Read-only display
+    const disp = document.createElement('div');
+    disp.className = 'notes-display readonly-field';
+    if (lines.length === 0) {
+      disp.innerHTML = '<span class="notes-placeholder">No notes</span>';
+    } else {
+      const ul = document.createElement('ul'); ul.className = 'notes-bullet-list';
+      lines.forEach(l => { const li = document.createElement('li'); li.textContent = l; ul.appendChild(li); });
+      disp.appendChild(ul);
+    }
+    td.appendChild(disp);
+    return;
+  }
+
+  // Admin: display mode
+  const disp = document.createElement('div');
+  disp.className = 'notes-display';
+  if (lines.length === 0) {
+    disp.innerHTML = '<span class="notes-placeholder">Click to add notes...</span>';
+  } else {
+    const ul = document.createElement('ul'); ul.className = 'notes-bullet-list';
+    lines.forEach(l => { const li = document.createElement('li'); li.textContent = l; ul.appendChild(li); });
+    disp.appendChild(ul);
+  }
+  disp.addEventListener('click', () => openNotesEditor(td, ri, notesVal || ''));
+  td.appendChild(disp);
+}
+
+function openNotesEditor(td, ri, currentVal) {
+  td.innerHTML = '';
+  const wrap = document.createElement('div'); wrap.className = 'notes-editor-wrap';
+  const ta = document.createElement('textarea'); ta.className = 'notes-textarea';
+  ta.placeholder = 'One point per line...';
+  ta.value = currentVal;
+  const btnRow = document.createElement('div'); btnRow.className = 'notes-btn-row';
+  const saveBtn   = document.createElement('button'); saveBtn.className = 'notes-save-btn';   saveBtn.textContent = 'Save';
+  const cancelBtn = document.createElement('button'); cancelBtn.className = 'notes-cancel-btn'; cancelBtn.textContent = 'Cancel';
+
+  saveBtn.onclick = () => {
+    const val = ta.value;
+    updateField(ri, 'notes', val);
+    const rows = getCurWeekRows();
+    renderNotesCell(td, ri, val, true);
+  };
+  cancelBtn.onclick = () => {
+    const rows = getCurWeekRows();
+    renderNotesCell(td, ri, rows[ri] ? rows[ri].notes : '', true);
+  };
+
+  btnRow.appendChild(saveBtn); btnRow.appendChild(cancelBtn);
+  wrap.appendChild(ta); wrap.appendChild(btnRow);
+  td.appendChild(wrap);
+  ta.focus();
+}
+
+function renderTotalsRow(rows, tbody, isAdmin) {
+  const totCommit  = rows.reduce((s,r) => s + (parseFloat(r.commitAED)||0), 0);
+  const totDevices = rows.reduce((s,r) => s + (parseFloat(r.devices)||0), 0);
+  const totUp      = rows.reduce((s,r) => s + (parseFloat(r.upsideAED)||0), 0);
+  const totUpDev   = rows.reduce((s,r) => s + (parseFloat(r.upsideDevices)||0), 0);
+
+  const tr = document.createElement('tr'); tr.className = 'totals-row';
+  const cells = [
+    'TOTALS', '', fmtNum(totCommit), fmtNum(totDevices), '', fmtNum(totUp), fmtNum(totUpDev), ''
+  ];
+  if (isAdmin) cells.push('');
+  cells.forEach((c,i) => {
+    const td = document.createElement('td'); td.textContent = c;
+    if (i === 2 || i === 5) td.title = 'AED';
+    tr.appendChild(td);
   });
-  document.getElementById('login-username').addEventListener('keydown', e => {
-    if (e.key === 'Enter') doLogin();
+  tbody.appendChild(tr);
+}
+
+/* ══════════════════════════════════════
+   KPIs
+══════════════════════════════════════ */
+function renderKPIs() {
+  const rows = getCurWeekRows();
+  const totCommit  = rows.reduce((s,r) => s + (parseFloat(r.commitAED)||0), 0);
+  const totDevices = rows.reduce((s,r) => s + (parseFloat(r.devices)||0), 0);
+  const totUp      = rows.reduce((s,r) => s + (parseFloat(r.upsideAED)||0), 0);
+  const totUpDev   = rows.reduce((s,r) => s + (parseFloat(r.upsideDevices)||0), 0);
+  const active     = rows.filter(r => r.rep && r.rep.trim()).length;
+
+  const confMap = { High: 100, Medium: 50, Low: 20 };
+  const activeWithConf = rows.filter(r => r.rep);
+  const avgConf = activeWithConf.length
+    ? Math.round(activeWithConf.reduce((s,r) => s + (confMap[r.confidence]||50), 0) / activeWithConf.length)
+    : 0;
+
+  document.getElementById('kpiTotalAED').textContent = 'AED ' + fmtNum(totCommit);
+  document.getElementById('kpiDevices').textContent   = fmtNum(totDevices);
+  document.getElementById('kpiConf').textContent      = avgConf + '%';
+  document.getElementById('kpiUpAED').textContent     = 'AED ' + fmtNum(totUp);
+  document.getElementById('kpiUpDev').textContent     = fmtNum(totUpDev);
+  document.getElementById('kpiReps').textContent      = active;
+}
+
+/* ══════════════════════════════════════
+   DATA MUTATIONS
+══════════════════════════════════════ */
+function updateField(ri, field, value) {
+  const rows = getCurWeekRows();
+  if (!rows[ri]) rows[ri] = defaultRow();
+  rows[ri][field] = value;
+  saveAll();
+  renderKPIs();
+  renderSummaryBar();
+  renderMonthDots();
+}
+
+function addRow() {
+  const rows = getCurWeekRows();
+  rows.push(defaultRow());
+  saveAll();
+  renderTable();
+  renderKPIs();
+}
+
+function deleteRow(ri) {
+  const rows = getCurWeekRows();
+  rows.splice(ri, 1);
+  saveAll();
+  renderTable();
+  renderKPIs();
+  renderSummaryBar();
+  renderMonthDots();
+}
+
+/* ══════════════════════════════════════
+   EXPORT
+══════════════════════════════════════ */
+function exportCSV() {
+  const rows = getCurWeekRows();
+  const header = ['Sales Rep','Stage','Commit AED','No. of Devices','Confidence','Upside AED','Upside Devices','Notes'];
+  const lines  = [header.join(',')];
+  rows.forEach(r => {
+    lines.push([
+      `"${r.rep||''}"`, `"${r.stage||''}"`,
+      r.commitAED||0, r.devices||0, `"${r.confidence||''}"`,
+      r.upsideAED||0, r.upsideDevices||0,
+      `"${(r.notes||'').replace(/"/g,'""')}"`
+    ].join(','));
   });
-})();
+  const blob = new Blob([lines.join('\n')], {type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `OXEFIT_${MONTHS[curMonth]}${curYear}_W${curWeek+1}.csv`;
+  a.click();
+}
+
+/* ══════════════════════════════════════
+   INIT
+══════════════════════════════════════ */
+loadAll();
+
+// Restore session
+const savedRole = sessionStorage.getItem('oxefit_role');
+const savedUser = sessionStorage.getItem('oxefit_user');
+if (savedRole && savedUser) {
+  currentRole = savedRole; currentUser = savedUser;
+  launchApp();
+}
 </script>
 </body>
 </html>
