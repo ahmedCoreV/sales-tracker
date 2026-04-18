@@ -2,1190 +2,1906 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Sales Commitment Tracker Pro</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CoreTrack — Sales Commitment Tracker</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
   :root {
-    --bg: #0a0c10;
+    --bg: #0A0C10;
     --surface: #111318;
-    --surface2: #181c24;
-    --surface3: #1d2230;
-    --border: #1e2330;
-    --border2: #252c3a;
-    --accent: #00e5a0;
-    --accent2: #0099ff;
-    --accent3: #ff6b35;
-    --warn: #f5c842;
-    --text: #e8ecf4;
-    --text2: #8892a4;
-    --text3: #4a5568;
-    --total-col: #0d0f1a;
-    --row-hover: rgba(255,255,255,0.013);
+    --surface2: #181C24;
+    --surface3: #1E2330;
+    --border: #1E2330;
+    --border2: #2A3040;
+    --accent: #00E5A0;
+    --accent2: #0099FF;
+    --accent3: #FF6B35;
+    --warn: #F5C842;
+    --text: #E8ECF4;
+    --text2: #8892A4;
+    --text3: #4A5568;
+    --commit-bg: #0A1628;
+    --upside-bg: #0A1A12;
+    --danger: #FF4D6A;
+    --admin-color: #FF6B35;
+    --viewer-color: #0099FF;
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     min-height: 100vh;
     overflow-x: hidden;
   }
 
-  /* ---- HEADER ---- */
-  .header {
+  /* ===================== LOGIN SCREEN ===================== */
+  #login-screen {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .login-bg-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 48px 48px;
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  .login-glow {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,229,160,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .login-card {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    padding: 48px 40px;
+    width: 440px;
+    max-width: 95vw;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,229,160,0.08);
+  }
+
+  .login-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .login-logo-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .login-logo-icon svg { width: 22px; height: 22px; }
+
+  .login-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.5px;
+  }
+
+  .login-subtitle {
+    color: var(--text2);
+    font-size: 13px;
+    margin-bottom: 36px;
+    padding-left: 52px;
+  }
+
+  .login-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text2);
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .login-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    margin-bottom: 24px;
+  }
+
+  .login-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0,229,160,0.1);
+  }
+
+  .role-selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .role-card {
+    border: 2px solid var(--border2);
+    border-radius: 12px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--surface2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .role-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .role-card.admin-card::before {
+    background: linear-gradient(135deg, rgba(255,107,53,0.08), transparent);
+  }
+
+  .role-card.viewer-card::before {
+    background: linear-gradient(135deg, rgba(0,153,255,0.08), transparent);
+  }
+
+  .role-card:hover { transform: translateY(-2px); }
+
+  .role-card.selected.admin-card {
+    border-color: var(--admin-color);
+    box-shadow: 0 0 0 1px var(--admin-color), 0 8px 24px rgba(255,107,53,0.2);
+  }
+
+  .role-card.selected.viewer-card {
+    border-color: var(--viewer-color);
+    box-shadow: 0 0 0 1px var(--viewer-color), 0 8px 24px rgba(0,153,255,0.2);
+  }
+
+  .role-card.selected::before { opacity: 1; }
+
+  .role-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+
+  .admin-card .role-icon { background: rgba(255,107,53,0.15); }
+  .viewer-card .role-icon { background: rgba(0,153,255,0.15); }
+
+  .role-name {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+
+  .admin-card .role-name { color: var(--admin-color); }
+  .viewer-card .role-name { color: var(--viewer-color); }
+
+  .role-desc {
+    font-size: 11px;
+    color: var(--text2);
+    line-height: 1.4;
+  }
+
+  .role-check {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .admin-card .role-check { background: var(--admin-color); }
+  .viewer-card .role-check { background: var(--viewer-color); }
+  .role-card.selected .role-check { opacity: 1; }
+
+  .login-btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(135deg, var(--accent), #00b87a);
+    color: #000;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .login-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(0,229,160,0.3);
+  }
+
+  .login-btn:active { transform: translateY(0); }
+
+  .login-error {
+    background: rgba(255,77,106,0.1);
+    border: 1px solid rgba(255,77,106,0.3);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: var(--danger);
+    margin-bottom: 16px;
+    display: none;
+  }
+
+  /* ===================== ROLE BADGE ===================== */
+  .role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .role-badge.admin {
+    background: rgba(255,107,53,0.15);
+    border: 1px solid rgba(255,107,53,0.4);
+    color: var(--admin-color);
+  }
+
+  .role-badge.viewer {
+    background: rgba(0,153,255,0.15);
+    border: 1px solid rgba(0,153,255,0.4);
+    color: var(--viewer-color);
+  }
+
+  .role-badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* ===================== VIEW-ONLY BANNER ===================== */
+  #viewer-banner {
+    display: none;
+    background: linear-gradient(90deg, rgba(0,153,255,0.08), rgba(0,153,255,0.04));
+    border-bottom: 1px solid rgba(0,153,255,0.2);
+    padding: 8px 24px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--viewer-color);
+    letter-spacing: 0.5px;
+  }
+
+  #viewer-banner strong { font-weight: 700; }
+
+  /* ===================== MAIN APP ===================== */
+  #app { display: none; }
+
+  /* ===================== TOP BAR ===================== */
+  .topbar {
     background: var(--surface);
     border-bottom: 1px solid var(--border);
-    padding: 16px 32px;
+    padding: 0 24px;
+    height: 56px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     position: sticky;
     top: 0;
-    z-index: 200;
-    backdrop-filter: blur(12px);
+    z-index: 100;
   }
+
+  .topbar-left { display: flex; align-items: center; gap: 16px; }
 
   .logo {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 19px;
-    letter-spacing: -0.5px;
-    color: var(--text);
-  }
-  .logo span { color: var(--accent); }
-  .logo sub {
-    font-size: 9px;
-    font-family: 'DM Mono', monospace;
-    font-weight: 400;
-    color: var(--text3);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    vertical-align: super;
-    margin-left: 4px;
-  }
-
-  .header-right {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 10px;
   }
 
-  .header-week-badge {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--text2);
+  .logo-icon {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-icon svg { width: 18px; height: 18px; }
+
+  .logo-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.5px;
+  }
+
+  .topbar-sep {
+    width: 1px;
+    height: 24px;
+    background: var(--border2);
+  }
+
+  .topbar-right { display: flex; align-items: center; gap: 12px; }
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 12px;
     background: var(--surface2);
     border: 1px solid var(--border2);
-    border-radius: 4px;
-    padding: 5px 12px;
-    letter-spacing: 0.5px;
-  }
-  .header-week-badge strong {
-    color: var(--accent);
-    font-weight: 500;
+    border-radius: 24px;
   }
 
-  .header-meta {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    color: var(--text3);
-    text-align: right;
-    line-height: 1.6;
-  }
-  .header-meta strong {
-    display: block;
-    color: var(--text2);
-    font-size: 12px;
-  }
-
-  /* ---- SAVE INDICATOR ---- */
-  .save-dot {
-    width: 7px; height: 7px;
+  .user-avatar {
+    width: 26px;
+    height: 26px;
     border-radius: 50%;
-    background: var(--text3);
-    transition: background 0.3s, box-shadow 0.3s;
-  }
-  .save-dot.saved {
-    background: var(--accent);
-    box-shadow: 0 0 6px rgba(0,229,160,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
   }
 
-  /* ---- KPI STRIP ---- */
+  .user-avatar.admin { background: rgba(255,107,53,0.2); color: var(--admin-color); }
+  .user-avatar.viewer { background: rgba(0,153,255,0.2); color: var(--viewer-color); }
+
+  .user-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .logout-btn {
+    background: transparent;
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 6px 12px;
+    color: var(--text2);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .logout-btn:hover {
+    border-color: var(--danger);
+    color: var(--danger);
+  }
+
+  /* ===================== MONTH NAV ===================== */
+  .month-nav-bar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 52px;
+  }
+
+  .month-nav-left { display: flex; align-items: center; gap: 12px; }
+
+  .month-arrow {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--border2);
+    background: var(--surface2);
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+    user-select: none;
+  }
+
+  .month-arrow:hover { border-color: var(--accent); color: var(--accent); }
+  .month-arrow.view-locked { cursor: default; opacity: 0.4; }
+  .month-arrow.view-locked:hover { border-color: var(--border2); color: var(--text2); }
+
+  .month-display {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    cursor: pointer;
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+    letter-spacing: -0.5px;
+  }
+
+  .month-display:hover { border-color: var(--border2); background: var(--surface2); }
+  .month-display.view-locked { cursor: default; pointer-events: none; }
+
+  /* ===================== WEEK TABS ===================== */
+  .week-tabs {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+
+  .week-tab {
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text2);
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.18s;
+    position: relative;
+    white-space: nowrap;
+  }
+
+  .week-tab:hover { background: var(--surface2); color: var(--text); }
+  .week-tab.active {
+    background: var(--surface2);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .week-tab .dot {
+    width: 5px;
+    height: 5px;
+    background: var(--accent3);
+    border-radius: 50%;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+  }
+
+  /* ===================== MONTH CALENDAR MODAL ===================== */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 500;
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 120px;
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .month-modal {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 16px;
+    padding: 24px;
+    width: 340px;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.7);
+  }
+
+  .modal-year-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .modal-year {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .modal-year-btn {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--border2);
+    background: var(--surface2);
+    color: var(--text2);
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .modal-year-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .month-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .month-cell {
+    padding: 10px 6px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    transition: all 0.18s;
+    position: relative;
+  }
+
+  .month-cell:hover { border-color: var(--accent); color: var(--text); background: var(--surface2); }
+  .month-cell.current-month { color: var(--text); background: var(--surface2); }
+  .month-cell.selected-month { border-color: var(--accent); background: rgba(0,229,160,0.08); color: var(--accent); }
+  .month-cell .m-dot { width: 5px; height: 5px; background: var(--accent3); border-radius: 50%; position: absolute; top: 4px; right: 4px; }
+
+  /* ===================== KPI STRIP ===================== */
   .kpi-strip {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 1px;
     background: var(--border);
     border-bottom: 1px solid var(--border);
   }
 
   .kpi-card {
-    background: var(--surface);
-    padding: 20px 24px 16px;
+    background: var(--surface2);
+    padding: 16px 20px;
     display: flex;
     flex-direction: column;
-    gap: 3px;
-    position: relative;
-    overflow: hidden;
+    gap: 4px;
   }
-  .kpi-card::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 2px;
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-  .kpi-card:hover::after { opacity: 1; }
-  .kpi-card.blue::after  { background: var(--accent2); }
-  .kpi-card.green::after { background: var(--accent); }
-  .kpi-card.yellow::after{ background: var(--warn); }
-  .kpi-card.orange::after{ background: var(--accent3); }
-  .kpi-card.white::after { background: var(--text2); }
 
   .kpi-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    letter-spacing: 2px;
     color: var(--text3);
   }
+
   .kpi-value {
-    font-family: 'Syne', sans-serif;
-    font-size: 28px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
     font-weight: 700;
-    line-height: 1.1;
-    transition: color 0.3s;
-  }
-  .kpi-value.green  { color: var(--accent); }
-  .kpi-value.blue   { color: var(--accent2); }
-  .kpi-value.orange { color: var(--accent3); }
-  .kpi-value.yellow { color: var(--warn); }
-
-  .kpi-sub {
-    font-size: 10px;
-    color: var(--text2);
-    font-family: 'DM Mono', monospace;
-    margin-top: 2px;
   }
 
-  /* mini sparkline */
-  .kpi-sparkline {
-    display: flex;
-    align-items: flex-end;
-    gap: 2px;
-    height: 20px;
-    margin-top: 8px;
-  }
-  .spark-bar {
-    flex: 1;
-    border-radius: 1px;
-    min-height: 2px;
-    opacity: 0.5;
-    transition: opacity 0.2s;
-  }
-  .spark-bar.active { opacity: 1; }
+  .kpi-sub { font-size: 11px; color: var(--text2); }
 
-  /* confidence ring */
-  .conf-ring-wrap {
-    position: absolute;
-    top: 16px; right: 16px;
-  }
-  .conf-ring {
-    transform: rotate(-90deg);
-  }
-  .conf-ring-bg { fill: none; stroke: var(--border2); stroke-width: 3; }
-  .conf-ring-fill {
-    fill: none;
-    stroke: var(--accent3);
-    stroke-width: 3;
-    stroke-linecap: round;
-    transition: stroke-dashoffset 0.5s ease;
-  }
-
-  /* ---- WEEK NAV ---- */
-  .week-nav {
-    display: flex;
-    align-items: center;
-    gap: 0;
-    padding: 0 32px;
+  /* ===================== MONTH SUMMARY BAR ===================== */
+  #month-summary {
     background: var(--surface2);
     border-bottom: 1px solid var(--border);
-    overflow-x: auto;
+    padding: 12px 24px;
   }
-  .week-nav-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
+
+  .summary-title {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    letter-spacing: 2.5px;
     color: var(--text3);
-    padding-right: 20px;
-    white-space: nowrap;
-    border-right: 1px solid var(--border);
-    margin-right: 12px;
-    padding-top: 14px;
-    padding-bottom: 14px;
+    margin-bottom: 8px;
   }
 
-  .week-btn {
-    background: none;
-    border: none;
-    color: var(--text3);
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    padding: 14px 18px;
-    cursor: pointer;
-    white-space: nowrap;
-    border-bottom: 2px solid transparent;
-    transition: all 0.15s;
-    position: relative;
-    letter-spacing: 0.3px;
-  }
-  .week-btn:hover { color: var(--text2); }
-  .week-btn.active {
-    color: var(--accent);
-    border-bottom-color: var(--accent);
-    background: rgba(0,229,160,0.04);
-  }
-
-  .week-dot {
-    width: 4px; height: 4px;
-    border-radius: 50%;
-    background: var(--accent3);
-    display: inline-block;
-    margin-right: 5px;
-    vertical-align: middle;
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
-  .week-btn.has-data .week-dot { opacity: 1; }
-
-  .week-copy-btn {
-    margin-left: auto;
-    background: none;
-    border: 1px solid var(--border2);
-    color: var(--text3);
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    padding: 6px 14px;
-    border-radius: 3px;
-    cursor: pointer;
-    transition: all 0.15s;
-    white-space: nowrap;
-    letter-spacing: 0.3px;
-  }
-  .week-copy-btn:hover {
-    color: var(--accent2);
-    border-color: rgba(0,153,255,0.4);
-    background: rgba(0,153,255,0.05);
-  }
-
-  /* ---- MAIN ---- */
-  .main { padding: 22px 32px; }
-
-  .section-header {
+  .summary-bars {
     display: flex;
+    gap: 8px;
+    align-items: flex-end;
+    height: 40px;
+  }
+
+  .summary-week {
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 14px;
+    gap: 4px;
+    flex: 1;
   }
-  .section-title {
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 14px;
-    color: var(--text3);
-    letter-spacing: 0.5px;
-  }
-  .section-title span { color: var(--accent); }
 
-  .btn-group { display: flex; gap: 8px; }
-
-  .action-btn {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    padding: 7px 14px;
+  .summary-bar-wrap {
+    width: 100%;
+    height: 28px;
+    background: var(--surface3);
     border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.15s;
-    letter-spacing: 0.5px;
-    border: 1px solid;
-  }
-  .btn-add {
-    background: rgba(0,229,160,0.08);
-    border-color: rgba(0,229,160,0.2);
-    color: var(--accent);
-  }
-  .btn-add:hover {
-    background: rgba(0,229,160,0.15);
-    border-color: var(--accent);
-  }
-  .btn-clear {
-    background: rgba(255,107,53,0.06);
-    border-color: rgba(255,107,53,0.2);
-    color: var(--accent3);
-  }
-  .btn-clear:hover {
-    background: rgba(255,107,53,0.12);
-    border-color: var(--accent3);
-  }
-  .btn-export {
-    background: rgba(0,153,255,0.07);
-    border-color: rgba(0,153,255,0.2);
-    color: var(--accent2);
-  }
-  .btn-export:hover {
-    background: rgba(0,153,255,0.14);
-    border-color: var(--accent2);
+    overflow: hidden;
+    position: relative;
   }
 
-  /* ---- TABLE ---- */
-  .table-wrapper {
+  .summary-bar-fill {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, var(--accent2), rgba(0,153,255,0.4));
+    border-radius: 4px;
+    transition: height 0.4s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .summary-bar-fill.active-week {
+    background: linear-gradient(to top, var(--accent), rgba(0,229,160,0.4));
+  }
+
+  .summary-week-label {
+    font-size: 9px;
+    color: var(--text3);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  /* ===================== TABLE ===================== */
+  .table-wrap {
     overflow-x: auto;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    position: relative;
+    padding: 20px 24px;
   }
 
   table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 1080px;
+    table-layout: fixed;
   }
 
-  thead tr.group-header th {
-    padding: 9px 14px;
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
+  colgroup col:nth-child(1) { width: 140px; }
+  colgroup col:nth-child(2) { width: 130px; }
+  colgroup col:nth-child(3) { width: 80px; }
+  colgroup col:nth-child(4) { width: 110px; }
+  colgroup col:nth-child(5) { width: 130px; }
+  colgroup col:nth-child(6) { width: 80px; }
+  colgroup col:nth-child(7) { width: 120px; }
+  colgroup col:nth-child(8) { width: 130px; }
+  colgroup col:nth-child(9) { width: 200px; }
+
+  thead tr { background: var(--surface2); }
+
+  th {
+    padding: 10px 12px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    letter-spacing: 2.5px;
-    text-align: center;
+    text-align: left;
+    white-space: nowrap;
     border-bottom: 1px solid var(--border);
   }
-  th.commit-group {
-    background: rgba(0,153,255,0.06);
-    color: var(--accent2);
-    border-left: 2px solid rgba(0,153,255,0.25);
-    border-right: 2px solid rgba(0,153,255,0.25);
-  }
-  th.upside-group {
-    background: rgba(0,229,160,0.06);
-    color: var(--accent);
-    border-left: 2px solid rgba(0,229,160,0.25);
-    border-right: 2px solid rgba(0,229,160,0.25);
-  }
-  th.meta-group {
-    background: rgba(245,200,66,0.04);
-    color: var(--warn);
-    border-left: 2px solid rgba(245,200,66,0.18);
-  }
-  th.name-group {
-    background: var(--surface2);
-    color: var(--text3);
-    text-align: left;
-    width: 160px;
-  }
 
-  thead tr.col-header th {
-    padding: 9px 12px;
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--text3);
-    text-align: left;
-    border-bottom: 2px solid var(--border2);
-    white-space: nowrap;
-    background: var(--surface);
-  }
-  th.c-sub { background: rgba(0,153,255,0.03); border-left: 2px solid rgba(0,153,255,0.12); }
-  th.c-sub-last { border-right: 2px solid rgba(0,153,255,0.12); }
-  th.u-sub { background: rgba(0,229,160,0.025); border-left: 2px solid rgba(0,229,160,0.08); }
-  th.u-sub-last { border-right: 2px solid rgba(0,229,160,0.08); }
-  th.m-sub { background: rgba(245,200,66,0.015); border-left: 2px solid rgba(245,200,66,0.08); }
+  .th-commit { color: var(--accent2); }
+  .th-upside { color: var(--accent); }
+  .th-meta { color: var(--warn); }
+  .th-notes { color: var(--text2); }
 
   tbody tr {
     border-bottom: 1px solid var(--border);
-    transition: background 0.1s, opacity 0.25s, transform 0.25s;
-  }
-  tbody tr:hover { background: var(--row-hover); }
-  tbody tr.entering { opacity: 0; transform: translateY(-6px); }
-  tbody tr.total-row {
-    background: var(--total-col);
-    border-top: 2px solid var(--border2);
+    transition: background 0.15s;
   }
 
-  td { padding: 0; vertical-align: middle; }
+  tbody tr:hover { background: rgba(255,255,255,0.015); }
 
-  /* name cell */
-  .cell-name {
-    padding: 0 14px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 150px;
+  td {
+    padding: 0;
+    vertical-align: middle;
   }
-  .rep-avatar {
-    width: 28px; height: 28px;
+
+  .td-name {
+    padding: 10px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .td-name span {
+    display: block;
+    font-size: 10px;
+    color: var(--text3);
+    font-weight: 400;
+    margin-top: 1px;
+  }
+
+  /* INPUT CELLS */
+  .input-cell {
+    padding: 4px 6px;
+  }
+
+  .cell-input {
+    width: 100%;
+    background: transparent;
+    border: 1px solid transparent;
     border-radius: 6px;
+    padding: 7px 10px;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    outline: none;
+    transition: all 0.15s;
+    -webkit-appearance: none;
+    -moz-appearance: textfield;
+    text-align: right;
+  }
+
+  .cell-input::-webkit-inner-spin-button,
+  .cell-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+  .cell-input:focus {
+    border-color: var(--border2);
+    background: var(--surface3);
+  }
+
+  /* VIEW-ONLY: disable all editable elements */
+  body.view-only .cell-input {
+    pointer-events: none;
+    user-select: text;
+    color: var(--text2);
+    cursor: default;
+  }
+
+  body.view-only .stage-select {
+    pointer-events: none;
+    cursor: default;
+    opacity: 0.7;
+  }
+
+  body.view-only .notes-cell {
+    pointer-events: none;
+    cursor: default;
+  }
+
+  body.view-only .add-row-btn { display: none; }
+  body.view-only .delete-row-btn { display: none; }
+  body.view-only .export-btn.admin-only { display: none; }
+  body.view-only #viewer-banner { display: block; }
+  body.view-only .month-arrow { pointer-events: auto; }
+
+  /* VIEW-ONLY highlight */
+  body.view-only .cell-input:focus {
+    border-color: transparent;
+    background: transparent;
+  }
+
+  .commit-cell { background: rgba(0,153,255,0.03); }
+  .upside-cell { background: rgba(0,229,160,0.03); }
+
+  .commit-val {
+    color: var(--accent2);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .upside-val {
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .confidence-val {
+    color: var(--warn);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .wtnd-val {
+    color: var(--warn);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 10px 12px;
+    text-align: right;
+  }
+
+  /* ===================== STAGE SELECT ===================== */
+  .stage-wrap { padding: 4px 6px; }
+
+  .stage-select {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    padding: 7px 10px;
+    color: var(--text2);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .stage-select:focus { border-color: var(--accent2); }
+
+  /* ===================== NOTES CELL ===================== */
+  .notes-cell {
+    padding: 4px 6px;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .notes-display {
+    padding: 7px 10px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    min-height: 36px;
+    transition: border-color 0.15s;
+  }
+
+  .notes-cell:hover .notes-display {
+    border-color: var(--border2);
+    background: var(--surface3);
+  }
+
+  .notes-bullet-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .notes-bullet-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.5;
+  }
+
+  .notes-bullet-list li::before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent3);
+    flex-shrink: 0;
+    margin-top: 6px;
+  }
+
+  .notes-placeholder {
+    font-size: 12px;
+    color: var(--text3);
+    font-style: italic;
+  }
+
+  .notes-editor-wrap {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    padding: 4px 0;
+  }
+
+  .notes-textarea {
+    width: 100%;
+    background: var(--surface3);
+    border: 1px solid var(--accent2);
+    border-radius: 6px;
+    padding: 8px 10px;
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px;
+    line-height: 1.6;
+    resize: vertical;
+    min-height: 72px;
+    outline: none;
+  }
+
+  .notes-actions {
+    display: flex;
+    gap: 6px;
+  }
+
+  .notes-save-btn {
+    padding: 4px 12px;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+
+  .notes-save-btn:hover { opacity: 0.85; }
+
+  .notes-cancel-btn {
+    padding: 4px 10px;
+    background: transparent;
+    color: var(--text2);
+    border: 1px solid var(--border2);
+    border-radius: 5px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .notes-cancel-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+  /* ===================== DELETE ROW BTN ===================== */
+  .delete-row-btn {
+    width: 22px;
+    height: 22px;
+    border-radius: 5px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text3);
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Syne', sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    flex-shrink: 0;
-    letter-spacing: 0;
-  }
-  .rep-info { display: flex; flex-direction: column; gap: 1px; }
-  .rep-name-text {
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 500;
+    transition: all 0.15s;
     font-size: 13px;
-    color: var(--text);
-    cursor: pointer;
-    border-radius: 2px;
-    padding: 1px 3px;
-    transition: background 0.1s;
-    outline: none;
-  }
-  .rep-name-text:hover { background: rgba(255,255,255,0.06); }
-  .rep-name-text:focus {
-    background: rgba(0,229,160,0.08);
-    color: var(--accent);
-  }
-  .rep-role-badge {
-    font-size: 9px;
-    color: var(--text3);
-    font-family: 'DM Mono', monospace;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
+    margin: auto;
   }
 
-  .total-label {
-    padding: 0 14px;
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 12px;
-    letter-spacing: 1px;
-    color: var(--accent);
-    text-transform: uppercase;
-    height: 54px;
-    display: flex;
-    align-items: center;
+  .delete-row-btn:hover {
+    border-color: var(--danger);
+    color: var(--danger);
+    background: rgba(255,77,106,0.08);
   }
 
-  /* editable cells */
-  .editable {
-    width: 100%;
-    height: 50px;
-    background: none;
-    border: none;
-    outline: none;
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    padding: 0 12px;
-    text-align: right;
-    cursor: text;
-    transition: background 0.1s;
-  }
-  .editable:focus { background: rgba(255,255,255,0.035); }
-  .editable::placeholder { color: var(--text3); font-size: 11px; }
+  /* ===================== TOTALS ROW ===================== */
+  .totals-row { background: var(--surface2) !important; }
+  .totals-row td { border-top: 2px solid var(--border2) !important; }
 
-  td.c-cell { background: rgba(0,153,255,0.018); border-left: 1px solid rgba(0,153,255,0.08); }
-  td.c-cell-last { background: rgba(0,153,255,0.018); border-right: 1px solid rgba(0,153,255,0.08); }
-  td.u-cell { background: rgba(0,229,160,0.015); border-left: 1px solid rgba(0,229,160,0.06); }
-  td.u-cell-last { background: rgba(0,229,160,0.015); border-right: 1px solid rgba(0,229,160,0.06); }
-  td.m-cell { background: rgba(245,200,66,0.012); border-left: 1px solid rgba(245,200,66,0.06); }
-
-  /* confidence */
-  .conf-inner {
-    padding: 0 10px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .conf-input {
-    width: 36px;
-    background: none;
-    border: none;
-    outline: none;
-    color: var(--warn);
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    text-align: right;
-  }
-  .conf-input:focus { background: rgba(255,255,255,0.04); border-radius: 2px; }
-  .pct { font-size: 9px; color: var(--text3); font-family: 'DM Mono', monospace; }
-  .bar-bg {
-    flex: 1;
-    height: 3px;
-    background: var(--border2);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-  .bar-fill {
-    height: 100%;
-    border-radius: 2px;
-    transition: width 0.35s ease, background 0.35s;
-  }
-
-  /* stage */
-  .stage-sel {
-    background: none;
-    border: none;
-    color: var(--text2);
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    padding: 0 10px;
-    height: 50px;
-    width: 100%;
-    cursor: pointer;
-    outline: none;
-    appearance: none;
-    -webkit-appearance: none;
-  }
-  .stage-sel:focus { background: rgba(255,255,255,0.025); }
-  .stage-sel option { background: #181c24; }
-
-  /* forecast */
-  .fcast-val {
-    padding: 0 12px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    color: var(--accent);
-    font-weight: 500;
-  }
-  .fcast-val.zero { color: var(--text3); }
-
-  /* notes */
-  .notes-inp {
-    width: 100%;
-    height: 50px;
-    background: none;
-    border: none;
-    outline: none;
-    color: var(--text2);
-    font-family: 'DM Sans', sans-serif;
+  .totals-label {
+    padding: 10px 12px;
     font-size: 11px;
-    padding: 0 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent);
   }
-  .notes-inp::placeholder { color: var(--text3); font-size: 10px; }
-  .notes-inp:focus { background: rgba(255,255,255,0.02); }
 
-  /* total row */
-  .tot-val {
-    padding: 0 12px;
-    height: 54px;
+  .totals-val {
+    padding: 10px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: right;
+  }
+
+  /* ===================== ADD ROW ===================== */
+  .add-row-btn {
+    margin: 12px 24px 24px;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    font-family: 'DM Mono', monospace;
+    gap: 8px;
+    padding: 10px 16px;
+    background: transparent;
+    border: 1px dashed var(--border2);
+    border-radius: 8px;
+    color: var(--text2);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: calc(100% - 48px);
+  }
+
+  .add-row-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(0,229,160,0.04);
+  }
+
+  .add-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: all 0.2s;
+  }
+
+  .add-row-btn:hover .add-icon {
+    background: rgba(0,229,160,0.1);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ===================== FOOTER / ACTIONS ===================== */
+  .footer-bar {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    bottom: 0;
+  }
+
+  .footer-left { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text2); }
+
+  .footer-right { display: flex; gap: 10px; }
+
+  .export-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 13px;
     font-weight: 600;
-  }
-  .tot-val.blue   { color: var(--accent2); }
-  .tot-val.green  { color: var(--accent); }
-  .tot-val.yellow { color: var(--warn); }
-  .tot-val.orange { color: var(--accent3); }
-
-  /* del btn */
-  .del-btn {
-    background: none;
-    border: none;
-    color: transparent;
-    font-size: 14px;
     cursor: pointer;
-    padding: 0 10px;
-    height: 50px;
-    transition: color 0.15s;
-    font-family: 'DM Mono', monospace;
-  }
-  tr:hover .del-btn { color: var(--border2); }
-  .del-btn:hover { color: var(--accent3) !important; }
-
-  /* ---- LEGEND ---- */
-  .legend {
-    display: flex;
-    gap: 20px;
-    margin-top: 12px;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    color: var(--text3);
-    letter-spacing: 0.5px;
-  }
-  .legend-dot {
-    width: 7px; height: 7px;
-    border-radius: 2px;
-  }
-  .legend-formula {
-    margin-left: auto;
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    color: var(--text3);
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    padding: 4px 10px;
-    border-radius: 3px;
-  }
-  .legend-formula strong { color: var(--warn); }
-
-  /* ---- FOOTER ---- */
-  .footer {
-    margin-top: 32px;
-    padding: 16px 32px;
-    border-top: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
-  }
-  .footer-left { display: flex; align-items: center; gap: 14px; }
-  .footer-note {
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    color: var(--text3);
-    letter-spacing: 0.5px;
+    border: 1px solid;
+    transition: all 0.2s;
   }
 
-  /* scrollbar */
-  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  .export-btn.week {
+    border-color: var(--border2);
+    background: transparent;
+    color: var(--text2);
+  }
+
+  .export-btn.week:hover { border-color: var(--accent2); color: var(--accent2); }
+
+  .export-btn.month {
+    border-color: var(--border2);
+    background: transparent;
+    color: var(--text2);
+  }
+
+  .export-btn.month:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ===================== TOOLTIP ===================== */
+  .view-only-tooltip {
+    display: none;
+    position: fixed;
+    bottom: 80px;
+    right: 24px;
+    background: rgba(0,153,255,0.12);
+    border: 1px solid rgba(0,153,255,0.3);
+    color: var(--viewer-color);
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 12px;
+    z-index: 200;
+    backdrop-filter: blur(8px);
+    max-width: 260px;
+    line-height: 1.5;
+  }
+
+  body.view-only .view-only-tooltip { display: block; }
+
+  /* ===================== PERMISSION SHIELD ===================== */
+  .perm-shield {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    color: var(--viewer-color);
+    background: rgba(0,153,255,0.08);
+    border: 1px solid rgba(0,153,255,0.2);
+    padding: 2px 8px;
+    border-radius: 12px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  body:not(.view-only) .perm-shield { display: none; }
+
+  /* ===================== SCROLLBAR ===================== */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
-
-  /* print */
-  @media print {
-    .header { position: static; }
-    .week-nav, .btn-group, .del-btn, .footer { display: none; }
-    body { background: #fff; color: #000; }
-    .kpi-card { background: #f5f5f5; }
-  }
-
-  @media (max-width: 768px) {
-    .header { padding: 12px 16px; }
-    .kpi-strip { grid-template-columns: repeat(2, 1fr); }
-    .main { padding: 14px 16px; }
-    .week-nav { padding: 0 12px; }
-    .footer { padding: 14px 16px; flex-direction: column; gap: 10px; }
-    .legend-formula { margin-left: 0; }
-  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text3); }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
-<header class="header">
-  <div class="logo">Core<span>Track</span><sub>PRO</sub></div>
-  <div class="header-right">
-    <div class="save-dot" id="saveDot" title="Auto-saved"></div>
-    <div class="header-week-badge">Current: <strong id="hdrWeekBadge">Week 1</strong></div>
-    <div class="header-meta">
-      <strong>April 2026</strong>
-      <span id="hdrDate">Updated: Apr 16, 2026</span>
+<!-- ===================== LOGIN SCREEN ===================== -->
+<div id="login-screen">
+  <div class="login-bg-grid"></div>
+  <div class="login-glow"></div>
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </svg>
+      </div>
+      <div class="login-title">CoreTrack</div>
     </div>
-  </div>
-</header>
+    <div class="login-subtitle">Sales Commitment Tracker</div>
 
-<!-- KPI STRIP -->
-<div class="kpi-strip">
-  <div class="kpi-card blue">
-    <div class="kpi-label">Total Commitment</div>
-    <div class="kpi-value blue" id="kpiCommitVal">$0</div>
-    <div class="kpi-sub" id="kpiCommitDev">0 devices</div>
-    <div class="kpi-sparkline" id="sparkCommit"></div>
-  </div>
-  <div class="kpi-card green">
-    <div class="kpi-label">Total Upside</div>
-    <div class="kpi-value green" id="kpiUpsideVal">$0</div>
-    <div class="kpi-sub" id="kpiUpsideDev">0 devices</div>
-    <div class="kpi-sparkline" id="sparkUpside"></div>
-  </div>
-  <div class="kpi-card yellow">
-    <div class="kpi-label">Weighted Forecast</div>
-    <div class="kpi-value yellow" id="kpiForecast">$0</div>
-    <div class="kpi-sub">confidence-adjusted</div>
-    <div class="kpi-sparkline" id="sparkForecast"></div>
-  </div>
-  <div class="kpi-card orange">
-    <div class="kpi-label">Avg. Confidence</div>
-    <div class="kpi-value orange" id="kpiAvgConf">0%</div>
-    <div class="kpi-sub" id="kpiRepsCount">0 reps active</div>
-    <div class="conf-ring-wrap">
-      <svg class="conf-ring" width="36" height="36" viewBox="0 0 36 36">
-        <circle class="conf-ring-bg" cx="18" cy="18" r="14"/>
-        <circle class="conf-ring-fill" id="confRingFill" cx="18" cy="18" r="14"
-          stroke-dasharray="87.96" stroke-dashoffset="87.96"/>
-      </svg>
+    <label class="login-label">Your Name</label>
+    <input class="login-input" id="login-name" type="text" placeholder="Enter your name" autocomplete="off"/>
+
+    <label class="login-label">Select Access Level</label>
+    <div class="role-selector">
+      <div class="role-card admin-card selected" onclick="selectRole('admin')">
+        <div class="role-check">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <polyline points="1,5 4,8 9,2" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="role-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF6B35" stroke-width="2" stroke-linecap="round">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          </svg>
+        </div>
+        <div class="role-name">Admin</div>
+        <div class="role-desc">Full edit access. Add rows, update data, export reports.</div>
+      </div>
+      <div class="role-card viewer-card" onclick="selectRole('viewer')">
+        <div class="role-check">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <polyline points="1,5 4,8 9,2" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="role-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0099FF" stroke-width="2" stroke-linecap="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </div>
+        <div class="role-name">View Only</div>
+        <div class="role-desc">Read-only access. Browse all data, no modifications.</div>
+      </div>
     </div>
-  </div>
-  <div class="kpi-card white">
-    <div class="kpi-label">Total Pipeline</div>
-    <div class="kpi-value" id="kpiPipeline">$0</div>
-    <div class="kpi-sub" id="kpiPipelineDev">commit + upside</div>
-    <div class="kpi-sparkline" id="sparkPipeline"></div>
+
+    <div class="login-error" id="login-error">Please enter your name before continuing.</div>
+    <button class="login-btn" onclick="doLogin()">Enter Tracker</button>
   </div>
 </div>
 
-<!-- WEEK NAV -->
-<nav class="week-nav">
-  <div class="week-nav-label">Weeks</div>
-  <button class="week-btn active" data-week="1" onclick="switchWeek(1)"><span class="week-dot"></span>Wk 1 &nbsp;Apr 1-5</button>
-  <button class="week-btn" data-week="2" onclick="switchWeek(2)"><span class="week-dot"></span>Wk 2 &nbsp;Apr 7-11</button>
-  <button class="week-btn" data-week="3" onclick="switchWeek(3)"><span class="week-dot"></span>Wk 3 &nbsp;Apr 14-18</button>
-  <button class="week-btn" data-week="4" onclick="switchWeek(4)"><span class="week-dot"></span>Wk 4 &nbsp;Apr 22-25</button>
-  <button class="week-btn" data-week="5" onclick="switchWeek(5)"><span class="week-dot"></span>Wk 5 &nbsp;Apr 28-30</button>
-  <button class="week-copy-btn" onclick="copyToNextWeek()">Copy to Next Week &rarr;</button>
-</nav>
+<!-- ===================== MAIN APP ===================== -->
+<div id="app">
 
-<!-- MAIN -->
-<div class="main">
-  <div class="section-header">
-    <div class="section-title">Team Commitment &mdash; <span id="weekTitleLabel">Week 1 / Apr 1-5</span></div>
-    <div class="btn-group">
-      <button class="action-btn btn-add" onclick="addRow()">+ Add Rep</button>
-      <button class="action-btn btn-clear" onclick="clearWeek()">Clear Week</button>
-      <button class="action-btn btn-export" onclick="exportCSV()">Export CSV</button>
+  <!-- View-only banner -->
+  <div id="viewer-banner">
+    <strong>VIEW ONLY MODE</strong> — You are browsing as a read-only user. No changes can be made.
+    <span class="perm-shield">
+      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      READ ONLY
+    </span>
+  </div>
+
+  <!-- Top Bar -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+        </div>
+        <div class="logo-text">CoreTrack</div>
+      </div>
+      <div class="topbar-sep"></div>
+      <div id="current-role-badge"></div>
+    </div>
+    <div class="topbar-right">
+      <div class="user-info" id="user-info-bar">
+        <div class="user-avatar" id="user-avatar-badge">AT</div>
+        <div class="user-name" id="user-name-display">Admin</div>
+      </div>
+      <button class="logout-btn" onclick="doLogout()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        Sign Out
+      </button>
     </div>
   </div>
 
-  <div class="table-wrapper">
-    <table id="commitTable">
+  <!-- Month Navigation Bar -->
+  <div class="month-nav-bar">
+    <div class="month-nav-left">
+      <div class="month-arrow" id="prev-month-btn" onclick="changeMonth(-1)">&lt;</div>
+      <div class="month-display" id="month-display" onclick="openMonthModal()">April 2026</div>
+      <div class="month-arrow" id="next-month-btn" onclick="changeMonth(1)">&gt;</div>
+    </div>
+    <div class="week-tabs" id="week-tabs"></div>
+  </div>
+
+  <!-- Month Calendar Modal -->
+  <div class="modal-overlay" id="month-modal">
+    <div class="month-modal">
+      <div class="modal-year-nav">
+        <button class="modal-year-btn" onclick="changeModalYear(-1)">&lt;</button>
+        <div class="modal-year" id="modal-year-display">2026</div>
+        <button class="modal-year-btn" onclick="changeModalYear(1)">&gt;</button>
+      </div>
+      <div class="month-grid" id="month-grid"></div>
+    </div>
+  </div>
+
+  <!-- KPI Strip -->
+  <div class="kpi-strip">
+    <div class="kpi-card">
+      <div class="kpi-label">Total Commitment</div>
+      <div class="kpi-value commit-val" id="kpi-commit">$0</div>
+      <div class="kpi-sub" id="kpi-commit-dev">0 devices</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Total Upside</div>
+      <div class="kpi-value upside-val" id="kpi-upside">$0</div>
+      <div class="kpi-sub" id="kpi-upside-dev">0 devices</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Avg Confidence</div>
+      <div class="kpi-value confidence-val" id="kpi-confidence">0%</div>
+      <div class="kpi-sub" id="kpi-conf-sub">across all reps</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">WTND Forecast</div>
+      <div class="kpi-value" style="color:var(--warn)" id="kpi-wtnd">$0</div>
+      <div class="kpi-sub" id="kpi-pipeline-sub">weighted pipeline</div>
+    </div>
+  </div>
+
+  <!-- Month Summary Bar -->
+  <div id="month-summary">
+    <div class="summary-title">Month Overview — Commit by Week</div>
+    <div class="summary-bars" id="summary-bars"></div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrap">
+    <table id="tracker-table">
       <colgroup>
-        <col style="width:160px" />
-        <col /><col /><col style="width:160px" />
-        <col /><col />
-        <col style="width:130px"/><col style="width:120px"/><col style="min-width:160px"/><col style="width:36px"/>
+        <col/><col/><col/><col/><col/><col/><col/><col/><col/>
       </colgroup>
       <thead>
-        <tr class="group-header">
-          <th class="name-group"></th>
-          <th class="commit-group" colspan="3">COMMITMENT</th>
-          <th class="upside-group" colspan="2">UPSIDE</th>
-          <th class="meta-group" colspan="4">PIPELINE INTEL</th>
-        </tr>
-        <tr class="col-header">
-          <th>REP / ROLE</th>
-          <th class="c-sub">VALUE ($)</th>
-          <th class="c-sub">DEVICES</th>
-          <th class="c-sub c-sub-last">CONFIDENCE %</th>
-          <th class="u-sub">VALUE ($)</th>
-          <th class="u-sub u-sub-last">DEVICES</th>
-          <th class="m-sub">STAGE</th>
-          <th class="m-sub">WTD FORECAST</th>
-          <th class="m-sub">NOTES / BLOCKER</th>
-          <th class="m-sub"></th>
+        <tr>
+          <th class="th-meta">Rep Name</th>
+          <th class="th-commit">Commit ($)</th>
+          <th class="th-commit">Dev</th>
+          <th class="th-commit">Confidence %</th>
+          <th class="th-upside">Upside ($)</th>
+          <th class="th-upside">Dev</th>
+          <th class="th-meta">Stage</th>
+          <th class="th-meta">WTND Forecast</th>
+          <th class="th-notes">Notes
+            <span class="perm-shield">
+              <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              READ ONLY
+            </span>
+          </th>
         </tr>
       </thead>
-      <tbody id="tableBody"></tbody>
+      <tbody id="table-body"></tbody>
     </table>
   </div>
 
-  <div class="legend">
-    <div class="legend-item"><div class="legend-dot" style="background:rgba(0,153,255,0.55)"></div>Commitment</div>
-    <div class="legend-item"><div class="legend-dot" style="background:rgba(0,229,160,0.55)"></div>Upside</div>
-    <div class="legend-item"><div class="legend-dot" style="background:rgba(245,200,66,0.55)"></div>Intel / Forecast</div>
-    <div class="legend-item" style="color:var(--text3);font-family:'DM Mono',monospace;font-size:9px;">Click rep name to rename</div>
-    <div class="legend-formula"><strong>WTD Forecast</strong> = Commit Value x Confidence %</div>
-  </div>
-</div>
+  <!-- Add Row Button (admin only) -->
+  <button class="add-row-btn" onclick="addRow()" id="add-row-btn">
+    <div class="add-icon">+</div>
+    Add Rep
+  </button>
 
-<!-- FOOTER -->
-<div class="footer">
-  <div class="footer-left">
-    <div class="save-dot saved" style="width:6px;height:6px;"></div>
-    <div class="footer-note">Data saved to browser &bull; Session-persistent &bull; Export CSV to share</div>
+  <!-- Footer -->
+  <div class="footer-bar">
+    <div class="footer-left">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+      </svg>
+      <span id="footer-timestamp">Last updated: —</span>
+    </div>
+    <div class="footer-right">
+      <button class="export-btn week" onclick="exportCSV(false)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Export Week CSV
+      </button>
+      <button class="export-btn month admin-only" onclick="exportCSV(true)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Export Month CSV
+      </button>
+    </div>
   </div>
-  <div class="footer-note" id="footerTimestamp"></div>
+
+  <!-- View-only tooltip -->
+  <div class="view-only-tooltip">
+    <strong>View Only Mode</strong><br/>
+    You can browse all data but cannot make edits. Contact an Admin for access changes.
+  </div>
+
 </div>
 
 <script>
-// ===================================================
-// CONFIG
-// ===================================================
-const WEEKS = {
-  1: { label: "Week 1", dates: "Apr 1-5"   },
-  2: { label: "Week 2", dates: "Apr 7-11"  },
-  3: { label: "Week 3", dates: "Apr 14-18" },
-  4: { label: "Week 4", dates: "Apr 22-25" },
-  5: { label: "Week 5", dates: "Apr 28-30" },
-};
-
-const STAGES = ["","Prospecting","Discovery","Demo","Proposal","Negotiation","Verbal","Closed Won","Closed Lost","On Hold"];
-
-const AVATAR_COLORS = [
-  ["#001a3d","#0099ff"],["#001a0f","#00e5a0"],["#2a0f00","#ff6b35"],
-  ["#221a00","#f5c842"],["#1a0020","#c084fc"],["#001a1a","#06b6d4"],
-];
-
-const SEED = [
-  { name:"Connor", role:"AE",  commitVal:140000, commitDev:3, conf:70, upsideVal:60000, upsideDev:2, stage:"Proposal",     notes:"" },
-  { name:"Jawdat", role:"AE",  commitVal:180000, commitDev:4, conf:90, upsideVal:40000, upsideDev:1, stage:"Negotiation",  notes:"" },
-  { name:"Wafiq",  role:"AE",  commitVal:0,      commitDev:0, conf:0,  upsideVal:40000, upsideDev:1, stage:"Discovery",    notes:"Needs intro call" },
-  { name:"Fatima", role:"AE",  commitVal:160000, commitDev:3, conf:80, upsideVal:40000, upsideDev:1, stage:"Proposal",     notes:"" },
-  { name:"Marios", role:"SDR", commitVal:0,      commitDev:0, conf:0,  upsideVal:40000, upsideDev:1, stage:"Prospecting",  notes:"Pipeline building" },
-  { name:"Hasan",  role:"AE",  commitVal:0,      commitDev:0, conf:0,  upsideVal:40000, upsideDev:1, stage:"Discovery",    notes:"" },
-];
-
-// ===================================================
-// DATA STORE — localStorage backed
-// ===================================================
-const STORAGE_KEY = "coretrack_pro_v2";
-let weekData = {};
-
-function loadData() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      weekData = JSON.parse(raw);
-      return;
-    }
-  } catch(e) {}
-  // default
-  for (let w = 1; w <= 5; w++) {
-    weekData[w] = w === 1
-      ? JSON.parse(JSON.stringify(SEED))
-      : SEED.map(r => ({ ...r, commitVal:0,commitDev:0,conf:0,upsideVal:0,upsideDev:0,stage:"",notes:"" }));
-  }
-}
-
-function saveData() {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(weekData)); } catch(e){}
-  const dot = document.getElementById("saveDot");
-  if (dot) {
-    dot.classList.add("saved");
-    setTimeout(() => dot.classList.remove("saved"), 1200);
-  }
-  const ts = new Date();
-  const el = document.getElementById("footerTimestamp");
-  if (el) el.textContent = "Last saved " + ts.toLocaleTimeString('en-US', {hour:'2-digit',minute:'2-digit'});
-}
-
+// ====================================================
+// STATE
+// ====================================================
+let currentRole = 'admin';
+let currentUserName = '';
+let currentYear = 2026;
+let currentMonthIdx = 3; // April = index 3
 let currentWeek = 1;
+let modalYear = 2026;
 
-// ===================================================
-// HELPERS
-// ===================================================
-function fmt(n) {
-  if (!n || isNaN(n) || n === 0) return "$0";
-  return "$" + Number(n).toLocaleString('en-US', {maximumFractionDigits:0});
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const STAGES = ['','Prospecting','Discovery','Demo','Proposal','Negotiation','Verbal','Closed Won','Closed Lost','On Hold'];
+
+// Data store: { "2026-3": { 1: [...rows], 2: [...], 3: [...], 4: [...], 5: [...] } }
+let dataStore = {};
+
+function storeKey(year, monthIdx) { return `${year}-${monthIdx}`; }
+
+function getWeekData(year, monthIdx, week) {
+  const k = storeKey(year, monthIdx);
+  if (!dataStore[k]) dataStore[k] = {};
+  if (!dataStore[k][week]) {
+    dataStore[k][week] = defaultRows();
+  }
+  return dataStore[k][week];
 }
 
-function confColor(v) {
-  if (v >= 80) return "var(--accent)";
-  if (v >= 50) return "var(--warn)";
-  if (v > 0)   return "var(--accent3)";
-  return "var(--border2)";
-}
-
-function initials(name) {
-  return (name || "?").split(" ").map(p=>p[0]).join("").toUpperCase().slice(0,2);
-}
-
-function avatarColor(idx) {
-  return AVATAR_COLORS[idx % AVATAR_COLORS.length];
-}
-
-function weekTotal(w, key) {
-  return (weekData[w] || []).reduce((s,r) => s + (r[key]||0), 0);
-}
-
-function weekForecast(w) {
-  return (weekData[w] || []).reduce((s,r) => s + Math.round((r.commitVal||0)*((r.conf||0)/100)), 0);
-}
-
-// ===================================================
-// SPARKLINES
-// ===================================================
-function renderSparklines(activeWeek) {
-  const configs = [
-    { id:"sparkCommit",   fn: w => weekTotal(w,"commitVal"), color:"var(--accent2)" },
-    { id:"sparkUpside",   fn: w => weekTotal(w,"upsideVal"), color:"var(--accent)" },
-    { id:"sparkForecast", fn: w => weekForecast(w),           color:"var(--warn)" },
-    { id:"sparkPipeline", fn: w => weekTotal(w,"commitVal")+weekTotal(w,"upsideVal"), color:"var(--text2)" },
+function defaultRows() {
+  return [
+    { name:'Connor', commit:140000, commitDev:3, confidence:70, upside:60000, upsideDev:2, stage:'Proposal', notes:[] },
+    { name:'Jawdat', commit:180000, commitDev:4, confidence:90, upside:40000, upsideDev:1, stage:'Negotiation', notes:[] },
+    { name:'Wafiq',  commit:0,      commitDev:0, confidence:0,  upside:40000, upsideDev:1, stage:'Discovery',  notes:['Needs intro call','Follow up on Thursday'] },
+    { name:'Fatima', commit:160000, commitDev:3, confidence:80, upside:40000, upsideDev:1, stage:'Proposal',   notes:[] },
+    { name:'Marios', commit:0,      commitDev:0, confidence:0,  upside:40000, upsideDev:1, stage:'Prospecting',notes:['Pipeline building'] },
+    { name:'Hasan',  commit:0,      commitDev:0, confidence:0,  upside:40000, upsideDev:1, stage:'Discovery',  notes:[] },
   ];
-  configs.forEach(cfg => {
-    const el = document.getElementById(cfg.id);
-    if (!el) return;
-    const vals = [1,2,3,4,5].map(cfg.fn);
-    const mx = Math.max(...vals, 1);
-    el.innerHTML = vals.map((v,i) => {
-      const h = Math.max(2, Math.round((v/mx)*18));
-      const act = (i+1) === activeWeek ? " active" : "";
-      return `<div class="spark-bar${act}" style="height:${h}px;background:${cfg.color}"></div>`;
-    }).join("");
+}
+
+function saveToStorage() {
+  localStorage.setItem('coretrack_data_v2', JSON.stringify(dataStore));
+  localStorage.setItem('coretrack_month', JSON.stringify({ year: currentYear, monthIdx: currentMonthIdx }));
+  localStorage.setItem('coretrack_week', currentWeek);
+}
+
+function loadFromStorage() {
+  const d = localStorage.getItem('coretrack_data_v2');
+  if (d) dataStore = JSON.parse(d);
+  const m = localStorage.getItem('coretrack_month');
+  if (m) { const p = JSON.parse(m); currentYear = p.year; currentMonthIdx = p.monthIdx; }
+  const w = localStorage.getItem('coretrack_week');
+  if (w) currentWeek = parseInt(w);
+}
+
+// ====================================================
+// LOGIN
+// ====================================================
+function selectRole(role) {
+  currentRole = role;
+  document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+  document.querySelector(`.${role}-card`).classList.add('selected');
+}
+
+function doLogin() {
+  const nameInput = document.getElementById('login-name');
+  const err = document.getElementById('login-error');
+  const name = nameInput.value.trim();
+  if (!name) {
+    err.style.display = 'block';
+    nameInput.focus();
+    return;
+  }
+  err.style.display = 'none';
+  currentUserName = name;
+
+  // Apply role to body
+  if (currentRole === 'viewer') {
+    document.body.classList.add('view-only');
+  } else {
+    document.body.classList.remove('view-only');
+  }
+
+  // Update UI
+  const initials = name.split(' ').map(w => w[0].toUpperCase()).slice(0,2).join('');
+  document.getElementById('user-avatar-badge').textContent = initials;
+  document.getElementById('user-avatar-badge').className = `user-avatar ${currentRole}`;
+  document.getElementById('user-name-display').textContent = name;
+
+  const badge = document.getElementById('current-role-badge');
+  if (currentRole === 'admin') {
+    badge.innerHTML = `<div class="role-badge admin"><div class="role-badge-dot"></div>Admin</div>`;
+  } else {
+    badge.innerHTML = `<div class="role-badge viewer"><div class="role-badge-dot"></div>View Only</div>`;
+  }
+
+  // Hide login, show app
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+
+  loadFromStorage();
+  renderAll();
+}
+
+function doLogout() {
+  saveToStorage();
+  document.body.classList.remove('view-only');
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-name').value = '';
+  currentRole = 'admin';
+  document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+  document.querySelector('.admin-card').classList.add('selected');
+}
+
+// ====================================================
+// MONTH NAVIGATION
+// ====================================================
+function changeMonth(dir) {
+  currentMonthIdx += dir;
+  if (currentMonthIdx > 11) { currentMonthIdx = 0; currentYear++; }
+  if (currentMonthIdx < 0)  { currentMonthIdx = 11; currentYear--; }
+  currentWeek = 1;
+  saveToStorage();
+  renderAll();
+}
+
+function openMonthModal() {
+  if (currentRole === 'viewer') {
+    // viewers can still open the calendar to navigate
+  }
+  modalYear = currentYear;
+  renderMonthModal();
+  document.getElementById('month-modal').classList.add('open');
+}
+
+document.getElementById('month-modal').addEventListener('click', function(e) {
+  if (e.target === this) this.classList.remove('open');
+});
+
+function changeModalYear(dir) {
+  modalYear += dir;
+  renderMonthModal();
+}
+
+function renderMonthModal() {
+  document.getElementById('modal-year-display').textContent = modalYear;
+  const grid = document.getElementById('month-grid');
+  grid.innerHTML = '';
+  const now = new Date();
+  MONTHS.forEach((m, i) => {
+    const cell = document.createElement('div');
+    cell.className = 'month-cell';
+    if (i === now.getMonth() && modalYear === now.getFullYear()) cell.classList.add('current-month');
+    if (i === currentMonthIdx && modalYear === currentYear) cell.classList.add('selected-month');
+    // dot if has data
+    const k = storeKey(modalYear, i);
+    if (dataStore[k]) {
+      const dot = document.createElement('div');
+      dot.className = 'm-dot';
+      cell.appendChild(dot);
+    }
+    const label = document.createElement('span');
+    label.textContent = m.slice(0,3);
+    cell.appendChild(label);
+    cell.addEventListener('click', () => {
+      currentYear = modalYear;
+      currentMonthIdx = i;
+      currentWeek = 1;
+      document.getElementById('month-modal').classList.remove('open');
+      saveToStorage();
+      renderAll();
+    });
+    grid.appendChild(cell);
   });
 }
 
-// ===================================================
-// RENDER TABLE
-// ===================================================
-function renderTable(animate) {
-  const data = weekData[currentWeek];
-  const tbody = document.getElementById("tableBody");
-  tbody.innerHTML = "";
+// ====================================================
+// WEEK TABS
+// ====================================================
+function getWeekDates(year, monthIdx, week) {
+  const firstDay = new Date(year, monthIdx, 1);
+  const startOffset = (week - 1) * 7;
+  const start = new Date(firstDay.getTime() + startOffset * 86400000);
+  const end = new Date(start.getTime() + 6 * 86400000);
+  const fmt = d => `${d.getDate()} ${MONTHS[d.getMonth()].slice(0,3)}`;
+  if (start.getMonth() !== monthIdx) return `Week ${week}`;
+  return `${fmt(start)} - ${fmt(end)}`;
+}
 
-  data.forEach((rep, idx) => {
-    const tr = document.createElement("tr");
-    if (animate) tr.classList.add("entering");
-    tr.innerHTML = buildRow(rep, idx);
+function renderWeekTabs() {
+  const wrap = document.getElementById('week-tabs');
+  wrap.innerHTML = '';
+  const k = storeKey(currentYear, currentMonthIdx);
+  for (let w = 1; w <= 5; w++) {
+    const tab = document.createElement('div');
+    tab.className = 'week-tab' + (w === currentWeek ? ' active' : '');
+    tab.innerHTML = `W${w} <span style="font-size:10px;color:var(--text3);font-weight:400;">${getWeekDates(currentYear, currentMonthIdx, w)}</span>`;
+    // dot if has data
+    if (dataStore[k] && dataStore[k][w]) {
+      const anyData = dataStore[k][w].some(r => r.commit > 0 || r.upside > 0);
+      if (anyData) {
+        const dot = document.createElement('span');
+        dot.className = 'dot';
+        tab.appendChild(dot);
+      }
+    }
+    const wNum = w;
+    tab.addEventListener('click', () => {
+      currentWeek = wNum;
+      saveToStorage();
+      renderAll();
+    });
+    wrap.appendChild(tab);
+  }
+}
+
+// ====================================================
+// RENDER
+// ====================================================
+function renderAll() {
+  document.getElementById('month-display').textContent = `${MONTHS[currentMonthIdx]} ${currentYear}`;
+  renderWeekTabs();
+  renderTable();
+  renderKPIs();
+  renderSummaryBars();
+  updateTimestamp();
+}
+
+function renderTable() {
+  const rows = getWeekData(currentYear, currentMonthIdx, currentWeek);
+  const tbody = document.getElementById('table-body');
+  tbody.innerHTML = '';
+
+  rows.forEach((row, idx) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = buildRowHTML(row, idx);
     tbody.appendChild(tr);
-    if (animate) requestAnimationFrame(() => { tr.classList.remove("entering"); });
   });
 
-  const totalTr = document.createElement("tr");
-  totalTr.className = "total-row";
-  totalTr.innerHTML = buildTotalRow(data);
-  tbody.appendChild(totalTr);
-
-  updateKPIs(data);
-  updateWeekDots();
-  renderSparklines(currentWeek);
-}
-
-function buildRow(rep, idx) {
-  const conf = rep.conf || 0;
-  const fill = confColor(conf);
-  const forecast = Math.round((rep.commitVal||0) * (conf/100));
-  const [bg, fg] = avatarColor(idx);
-  const stageOpts = STAGES.map(s =>
-    `<option value="${s}" ${rep.stage===s?"selected":""}>${s||"-- select --"}</option>`
-  ).join("");
-
-  return `
-    <td>
-      <div class="cell-name">
-        <div class="rep-avatar" style="background:${bg};color:${fg}">${initials(rep.name)}</div>
-        <div class="rep-info">
-          <div class="rep-name-text" contenteditable="true"
-            onblur="updateName(${idx},this.textContent)"
-            onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${rep.name}</div>
-          <div class="rep-role-badge">${rep.role}</div>
-        </div>
-      </div>
-    </td>
-    <td class="c-cell">
-      <input class="editable" type="number" min="0" placeholder="0"
-        value="${rep.commitVal||""}"
-        oninput="updateField(${idx},'commitVal',+this.value)" />
-    </td>
-    <td class="c-cell">
-      <input class="editable" type="number" min="0" placeholder="0"
-        value="${rep.commitDev||""}"
-        oninput="updateField(${idx},'commitDev',+this.value)" />
-    </td>
-    <td class="c-cell c-cell-last">
-      <div class="conf-inner">
-        <input class="conf-input" type="number" min="0" max="100" placeholder="0"
-          value="${conf||""}"
-          oninput="updateField(${idx},'conf',+this.value)" />
-        <span class="pct">%</span>
-        <div class="bar-bg">
-          <div class="bar-fill" style="width:${conf}%;background:${fill}"></div>
-        </div>
-      </div>
-    </td>
-    <td class="u-cell">
-      <input class="editable" type="number" min="0" placeholder="0"
-        value="${rep.upsideVal||""}"
-        oninput="updateField(${idx},'upsideVal',+this.value)" />
-    </td>
-    <td class="u-cell u-cell-last">
-      <input class="editable" type="number" min="0" placeholder="0"
-        value="${rep.upsideDev||""}"
-        oninput="updateField(${idx},'upsideDev',+this.value)" />
-    </td>
-    <td class="m-cell">
-      <select class="stage-sel" onchange="updateField(${idx},'stage',this.value)">${stageOpts}</select>
-    </td>
-    <td class="m-cell">
-      <div class="fcast-val ${forecast===0?"zero":""}">${fmt(forecast)}</div>
-    </td>
-    <td class="m-cell">
-      <input class="notes-inp" type="text" placeholder="Note or blocker..."
-        value="${rep.notes||""}"
-        onchange="updateField(${idx},'notes',this.value)" />
-    </td>
-    <td>
-      <button class="del-btn" onclick="deleteRow(${idx})" title="Remove">x</button>
-    </td>
-  `;
-}
-
-function buildTotalRow(data) {
-  const cv = data.reduce((s,r)=>s+(r.commitVal||0),0);
-  const cd = data.reduce((s,r)=>s+(r.commitDev||0),0);
-  const uv = data.reduce((s,r)=>s+(r.upsideVal||0),0);
-  const ud = data.reduce((s,r)=>s+(r.upsideDev||0),0);
-  const tf = data.reduce((s,r)=>s+Math.round((r.commitVal||0)*((r.conf||0)/100)),0);
-  const active = data.filter(r=>r.conf>0);
-  const ac = active.length ? Math.round(active.reduce((s,r)=>s+(r.conf||0),0)/active.length) : 0;
-  return `
-    <td><div class="total-label">TOTALS</div></td>
-    <td class="c-cell"><div class="tot-val blue">${fmt(cv)}</div></td>
-    <td class="c-cell"><div class="tot-val blue">${cd} dev</div></td>
-    <td class="c-cell c-cell-last"><div class="tot-val yellow">${ac}% avg</div></td>
-    <td class="u-cell"><div class="tot-val green">${fmt(uv)}</div></td>
-    <td class="u-cell u-cell-last"><div class="tot-val green">${ud} dev</div></td>
-    <td class="m-cell"></td>
-    <td class="m-cell"><div class="tot-val yellow">${fmt(tf)}</div></td>
-    <td class="m-cell"></td>
+  // Totals row
+  const totals = calcTotals(rows);
+  const totalsRow = document.createElement('tr');
+  totalsRow.className = 'totals-row';
+  totalsRow.innerHTML = `
+    <td class="totals-label">TOTALS</td>
+    <td class="totals-val commit-val">${fmt$(totals.commit)}</td>
+    <td class="totals-val" style="color:var(--accent2);text-align:center">${totals.commitDev}</td>
+    <td class="totals-val confidence-val">${totals.avgConf}%</td>
+    <td class="totals-val upside-val">${fmt$(totals.upside)}</td>
+    <td class="totals-val" style="color:var(--accent);text-align:center">${totals.upsideDev}</td>
+    <td></td>
+    <td class="totals-val" style="color:var(--warn)">${fmt$(totals.wtnd)}</td>
     <td></td>
   `;
+  tbody.appendChild(totalsRow);
 }
 
-function updateKPIs(data) {
-  const cv = data.reduce((s,r)=>s+(r.commitVal||0),0);
-  const cd = data.reduce((s,r)=>s+(r.commitDev||0),0);
-  const uv = data.reduce((s,r)=>s+(r.upsideVal||0),0);
-  const ud = data.reduce((s,r)=>s+(r.upsideDev||0),0);
-  const tf = data.reduce((s,r)=>s+Math.round((r.commitVal||0)*((r.conf||0)/100)),0);
-  const active = data.filter(r=>r.conf>0);
-  const ac = active.length ? Math.round(active.reduce((s,r)=>s+(r.conf||0),0)/active.length) : 0;
+function buildRowHTML(row, idx) {
+  const isViewOnly = document.body.classList.contains('view-only');
+  const notesHTML = buildNotesHTML(row, idx, isViewOnly);
+  const stageOpts = STAGES.map(s => `<option value="${s}" ${s===row.stage?'selected':''}>${s||'-- Stage --'}</option>`).join('');
+  const wtnd = Math.round((row.commit || 0) * (row.confidence || 0) / 100);
 
-  document.getElementById("kpiCommitVal").textContent  = fmt(cv);
-  document.getElementById("kpiCommitDev").textContent  = cd + " devices";
-  document.getElementById("kpiUpsideVal").textContent  = fmt(uv);
-  document.getElementById("kpiUpsideDev").textContent  = ud + " devices";
-  document.getElementById("kpiForecast").textContent   = fmt(tf);
-  document.getElementById("kpiAvgConf").textContent    = ac + "%";
-  document.getElementById("kpiRepsCount").textContent  = active.length + " reps active";
-  document.getElementById("kpiPipeline").textContent   = fmt(cv+uv);
-  document.getElementById("kpiPipelineDev").textContent= (cd+ud) + " total devices";
-
-  // confidence ring: circumference = 2*pi*14 = 87.96
-  const circ = 87.96;
-  const offset = circ - (ac/100)*circ;
-  const ring = document.getElementById("confRingFill");
-  if (ring) ring.style.strokeDashoffset = offset;
+  return `
+    <td class="td-name">
+      ${isViewOnly
+        ? `<span>${row.name || '—'}</span>`
+        : `<input class="cell-input" style="text-align:left;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600"
+             value="${escHtml(row.name)}"
+             oninput="updateFieldSilent(${idx},'name',this.value)"
+             onblur="commitField(${idx},'name',this.value)"/>`
+      }
+    </td>
+    <td class="input-cell commit-cell">
+      <input class="cell-input commit-val" type="number" min="0" value="${row.commit}"
+        oninput="updateFieldSilent(${idx},'commit',this.value)"
+        onblur="commitField(${idx},'commit',this.value)"/>
+    </td>
+    <td class="input-cell commit-cell">
+      <input class="cell-input" type="number" min="0" style="color:var(--accent2);text-align:center" value="${row.commitDev}"
+        oninput="updateFieldSilent(${idx},'commitDev',this.value)"
+        onblur="commitField(${idx},'commitDev',this.value)"/>
+    </td>
+    <td class="input-cell commit-cell">
+      <input class="cell-input confidence-val" type="number" min="0" max="100" value="${row.confidence}"
+        oninput="updateFieldSilent(${idx},'confidence',this.value)"
+        onblur="commitField(${idx},'confidence',this.value)"/>
+    </td>
+    <td class="input-cell upside-cell">
+      <input class="cell-input upside-val" type="number" min="0" value="${row.upside}"
+        oninput="updateFieldSilent(${idx},'upside',this.value)"
+        onblur="commitField(${idx},'upside',this.value)"/>
+    </td>
+    <td class="input-cell upside-cell">
+      <input class="cell-input" type="number" min="0" style="color:var(--accent);text-align:center" value="${row.upsideDev}"
+        oninput="updateFieldSilent(${idx},'upsideDev',this.value)"
+        onblur="commitField(${idx},'upsideDev',this.value)"/>
+    </td>
+    <td class="stage-wrap">
+      <select class="stage-select" onchange="commitField(${idx},'stage',this.value)">${stageOpts}</select>
+    </td>
+    <td class="wtnd-val">${fmt$(wtnd)}</td>
+    <td class="notes-cell" id="notes-cell-${idx}">${notesHTML}</td>
+  `;
 }
 
-function updateWeekDots() {
-  for (let w=1;w<=5;w++) {
-    const hasData = (weekData[w]||[]).some(r=>r.commitVal>0||r.upsideVal>0);
-    const btn = document.querySelector(`.week-btn[data-week="${w}"]`);
-    if (btn) btn.classList.toggle("has-data", hasData);
+function buildNotesHTML(row, idx, isViewOnly) {
+  const bullets = (row.notes || []).filter(n => n.trim());
+  const displayHTML = bullets.length
+    ? `<ul class="notes-bullet-list">${bullets.map(b => `<li>${escHtml(b)}</li>`).join('')}</ul>`
+    : `<span class="notes-placeholder">${isViewOnly ? 'No notes' : 'Click to add notes...'}</span>`;
+
+  if (isViewOnly) {
+    return `<div class="notes-display">${displayHTML}</div>`;
+  }
+
+  return `
+    <div class="notes-display" onclick="openNotesEditor(${idx})">${displayHTML}</div>
+    <div class="notes-editor-wrap" id="notes-editor-${idx}">
+      <textarea class="notes-textarea" id="notes-ta-${idx}" placeholder="One point per line...">${bullets.join('\n')}</textarea>
+      <div class="notes-actions">
+        <button class="notes-save-btn" onclick="saveNotes(${idx})">Save</button>
+        <button class="notes-cancel-btn" onclick="cancelNotes(${idx})">Cancel</button>
+      </div>
+    </div>
+  `;
+}
+
+function openNotesEditor(idx) {
+  if (document.body.classList.contains('view-only')) return;
+  const cell = document.getElementById(`notes-cell-${idx}`);
+  const display = cell.querySelector('.notes-display');
+  const editor = document.getElementById(`notes-editor-${idx}`);
+  if (!editor) return;
+  display.style.display = 'none';
+  editor.style.display = 'flex';
+  document.getElementById(`notes-ta-${idx}`).focus();
+}
+
+function saveNotes(idx) {
+  const ta = document.getElementById(`notes-ta-${idx}`);
+  const lines = ta.value.split('\n').map(l => l.replace(/^[-*]\s*/, '').trim()).filter(l => l);
+  const rows = getWeekData(currentYear, currentMonthIdx, currentWeek);
+  rows[idx].notes = lines;
+  saveToStorage();
+  renderTable();
+  renderKPIs();
+}
+
+function cancelNotes(idx) {
+  const cell = document.getElementById(`notes-cell-${idx}`);
+  const display = cell.querySelector('.notes-display');
+  const editor = document.getElementById(`notes-editor-${idx}`);
+  if (!editor) return;
+  display.style.display = '';
+  editor.style.display = 'none';
+}
+
+// ====================================================
+// FIELD UPDATES
+// ====================================================
+function updateFieldSilent(idx, field, rawVal) {
+  const rows = getWeekData(currentYear, currentMonthIdx, currentWeek);
+  if (!rows[idx]) return;
+  if (field === 'name' || field === 'stage') {
+    rows[idx][field] = rawVal;
+  } else {
+    rows[idx][field] = rawVal; // keep as string while typing
   }
 }
 
-// ===================================================
-// INTERACTIONS
-// ===================================================
-function updateField(idx, field, value) {
-  weekData[currentWeek][idx][field] = value;
-  renderTable(false);
-  saveData();
+function commitField(idx, field, rawVal) {
+  const rows = getWeekData(currentYear, currentMonthIdx, currentWeek);
+  if (!rows[idx]) return;
+  if (field === 'name' || field === 'stage') {
+    rows[idx][field] = rawVal;
+  } else {
+    let num = parseFloat(String(rawVal).replace(/[^0-9.]/g,''));
+    if (isNaN(num) || num < 0) num = 0;
+    if (field === 'confidence' && num > 100) num = 100;
+    rows[idx][field] = num;
+  }
+  saveToStorage();
+  renderKPIs();
+  renderSummaryBars();
+  updateTimestamp();
+  // Only update wtnd cell for the changed row
+  const wtnd = Math.round((rows[idx].commit || 0) * (rows[idx].confidence || 0) / 100);
+  const tbody = document.getElementById('table-body');
+  const tr = tbody.rows[idx];
+  if (tr) {
+    const wtndCell = tr.cells[7];
+    if (wtndCell) wtndCell.textContent = fmt$(wtnd);
+  }
+  // Update totals row
+  const totals = calcTotals(rows);
+  const totalsRow = tbody.rows[rows.length];
+  if (totalsRow) {
+    totalsRow.cells[1].textContent = fmt$(totals.commit);
+    totalsRow.cells[2].textContent = totals.commitDev;
+    totalsRow.cells[3].textContent = totals.avgConf + '%';
+    totalsRow.cells[4].textContent = fmt$(totals.upside);
+    totalsRow.cells[5].textContent = totals.upsideDev;
+    totalsRow.cells[7].textContent = fmt$(totals.wtnd);
+  }
 }
 
-function updateName(idx, val) {
-  weekData[currentWeek][idx].name = val.trim() || "Rep";
-  saveData();
-  // re-render avatar only — avoids focus loss
-  renderTable(false);
-}
-
-function switchWeek(w) {
-  currentWeek = w;
-  document.querySelectorAll(".week-btn").forEach(b=>b.classList.remove("active"));
-  document.querySelector(`.week-btn[data-week="${w}"]`).classList.add("active");
-  document.getElementById("weekTitleLabel").textContent = WEEKS[w].label + " / " + WEEKS[w].dates;
-  document.getElementById("hdrWeekBadge").textContent = WEEKS[w].label;
-  renderTable(true);
-}
-
+// ====================================================
+// ADD / DELETE ROW
+// ====================================================
 function addRow() {
-  weekData[currentWeek].push({
-    name:"New Rep", role:"AE",
-    commitVal:0, commitDev:0, conf:0,
-    upsideVal:0, upsideDev:0, stage:"", notes:""
+  if (document.body.classList.contains('view-only')) return;
+  const rows = getWeekData(currentYear, currentMonthIdx, currentWeek);
+  rows.push({ name:'', commit:0, commitDev:0, confidence:0, upside:0, upsideDev:0, stage:'', notes:[] });
+  saveToStorage();
+  renderAll();
+}
+
+// ====================================================
+// KPIs
+// ====================================================
+function calcTotals(rows) {
+  let commit = 0, commitDev = 0, upside = 0, upsideDev = 0, wtnd = 0, confSum = 0, confCount = 0;
+  rows.forEach(r => {
+    commit += Number(r.commit) || 0;
+    commitDev += Number(r.commitDev) || 0;
+    upside += Number(r.upside) || 0;
+    upsideDev += Number(r.upsideDev) || 0;
+    const c = Number(r.confidence) || 0;
+    wtnd += Math.round((Number(r.commit)||0) * c / 100);
+    if (c > 0) { confSum += c; confCount++; }
   });
-  renderTable(true);
-  saveData();
-  // focus the new name
-  const nameCells = document.querySelectorAll(".rep-name-text");
-  if (nameCells.length) {
-    const last = nameCells[nameCells.length-1];
-    last.focus();
-    const range = document.createRange();
-    range.selectNodeContents(last);
-    window.getSelection().removeAllRanges();
-    window.getSelection().addRange(range);
+  return { commit, commitDev, upside, upsideDev, wtnd, avgConf: confCount ? Math.round(confSum/confCount) : 0 };
+}
+
+function renderKPIs() {
+  const rows = getWeekData(currentYear, currentMonthIdx, currentWeek);
+  const t = calcTotals(rows);
+  document.getElementById('kpi-commit').textContent = fmt$(t.commit);
+  document.getElementById('kpi-commit-dev').textContent = `${t.commitDev} devices`;
+  document.getElementById('kpi-upside').textContent = fmt$(t.upside);
+  document.getElementById('kpi-upside-dev').textContent = `${t.upsideDev} devices`;
+  document.getElementById('kpi-confidence').textContent = `${t.avgConf}%`;
+  document.getElementById('kpi-wtnd').textContent = fmt$(t.wtnd);
+}
+
+// ====================================================
+// SUMMARY BARS
+// ====================================================
+function renderSummaryBars() {
+  const wrap = document.getElementById('summary-bars');
+  wrap.innerHTML = '';
+  let maxCommit = 1;
+  const weekTotals = [];
+  for (let w = 1; w <= 5; w++) {
+    const rows = getWeekData(currentYear, currentMonthIdx, w);
+    const t = calcTotals(rows);
+    weekTotals.push(t.commit);
+    if (t.commit > maxCommit) maxCommit = t.commit;
   }
-}
-
-function deleteRow(idx) {
-  weekData[currentWeek].splice(idx,1);
-  renderTable(false);
-  saveData();
-}
-
-function clearWeek() {
-  if (!confirm("Clear all values for " + WEEKS[currentWeek].label + "?")) return;
-  weekData[currentWeek].forEach(r => {
-    r.commitVal=0; r.commitDev=0; r.conf=0;
-    r.upsideVal=0; r.upsideDev=0; r.stage=""; r.notes="";
+  weekTotals.forEach((val, i) => {
+    const w = i + 1;
+    const pct = Math.round((val / maxCommit) * 100);
+    const div = document.createElement('div');
+    div.className = 'summary-week';
+    div.innerHTML = `
+      <div class="summary-bar-wrap">
+        <div class="summary-bar-fill${w===currentWeek?' active-week':''}" style="height:${pct}%"></div>
+      </div>
+      <div class="summary-week-label">W${w}</div>
+    `;
+    wrap.appendChild(div);
   });
-  renderTable(false);
-  saveData();
 }
 
-function copyToNextWeek() {
-  if (currentWeek >= 5) { alert("Already on the last week."); return; }
-  const next = currentWeek + 1;
-  const msg = "Copy rep names and roles from " + WEEKS[currentWeek].label + " into " + WEEKS[next].label + "? (values will be zeroed)";
-  if (!confirm(msg)) return;
-  weekData[next] = weekData[currentWeek].map(r => ({
-    ...r, commitVal:0, commitDev:0, conf:0, upsideVal:0, upsideDev:0, stage:"", notes:""
-  }));
-  saveData();
-  switchWeek(next);
-}
-
-function exportCSV() {
-  const headers = ["Week","Rep","Role","Commit Value","Commit Devices","Confidence %","Upside Value","Upside Devices","Stage","Weighted Forecast","Notes"];
-  const rows = [headers.join(",")];
-  for (let w=1;w<=5;w++) {
-    (weekData[w]||[]).forEach(r => {
-      const f = Math.round((r.commitVal||0)*((r.conf||0)/100));
-      rows.push([
-        WEEKS[w].label, r.name, r.role,
-        r.commitVal||0, r.commitDev||0, r.conf||0,
-        r.upsideVal||0, r.upsideDev||0, r.stage, f,
-        `"${(r.notes||"").replace(/"/g,'""')}"`
-      ].join(","));
+// ====================================================
+// EXPORT CSV
+// ====================================================
+function exportCSV(allWeeks) {
+  let csv = '';
+  const months_to_export = allWeeks ? [currentMonthIdx] : null;
+  if (allWeeks) {
+    csv += `CoreTrack Export — ${MONTHS[currentMonthIdx]} ${currentYear}\n\n`;
+    for (let w = 1; w <= 5; w++) {
+      csv += `Week ${w} — ${getWeekDates(currentYear, currentMonthIdx, w)}\n`;
+      csv += 'Rep Name,Commit ($),Commit (Dev),Confidence %,Upside ($),Upside (Dev),Stage,WTND Forecast,Notes\n';
+      const rows = getWeekData(currentYear, currentMonthIdx, w);
+      rows.forEach(r => {
+        const wtnd = Math.round((r.commit||0)*(r.confidence||0)/100);
+        csv += `"${r.name}",${r.commit},${r.commitDev},${r.confidence}%,${r.upside},${r.upsideDev},"${r.stage}","${r.notes.join('; ')}"\n`;
+      });
+      csv += '\n';
+    }
+  } else {
+    csv += `CoreTrack Export — ${MONTHS[currentMonthIdx]} ${currentYear} — Week ${currentWeek}\n`;
+    csv += 'Rep Name,Commit ($),Commit (Dev),Confidence %,Upside ($),Upside (Dev),Stage,WTND Forecast,Notes\n';
+    const rows = getWeekData(currentYear, currentMonthIdx, currentWeek);
+    rows.forEach(r => {
+      const wtnd = Math.round((r.commit||0)*(r.confidence||0)/100);
+      csv += `"${r.name}",${r.commit},${r.commitDev},${r.confidence}%,${r.upside},${r.upsideDev},"${r.stage}",${wtnd},"${(r.notes||[]).join('; ')}"\n`;
     });
   }
-  const blob = new Blob([rows.join("\n")], {type:"text/csv"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "sales-commitment-tracker-pro.csv";
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = allWeeks ? `CoreTrack_${MONTHS[currentMonthIdx]}_${currentYear}.csv` : `CoreTrack_W${currentWeek}_${MONTHS[currentMonthIdx]}_${currentYear}.csv`;
   a.click();
+  URL.revokeObjectURL(url);
 }
 
-// ===================================================
-// INIT
-// ===================================================
-loadData();
-document.getElementById("hdrWeekBadge").textContent = WEEKS[1].label;
-document.getElementById("weekTitleLabel").textContent = WEEKS[1].label + " / " + WEEKS[1].dates;
-saveData();
-renderTable(false);
+// ====================================================
+// UTILS
+// ====================================================
+function fmt$(n) {
+  if (!n) return '$0';
+  return '$' + Math.round(n).toLocaleString();
+}
+
+function escHtml(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function updateTimestamp() {
+  const now = new Date();
+  document.getElementById('footer-timestamp').textContent = `Last updated: ${now.toLocaleTimeString()}`;
+}
+
+// Close modal on ESC
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.getElementById('month-modal').classList.remove('open');
+});
 </script>
 </body>
 </html>
