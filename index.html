@@ -1,946 +1,679 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>CoreTrack — Sales Commitment Tracker</title>
+<title>Sales Tracker</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap');
 
   :root {
-    --bg: #0A0C10;
-    --surface: #111318;
-    --surface2: #181C24;
-    --surface3: #1E2330;
-    --border: #1E2330;
-    --border2: #2A3040;
-    --accent: #00E5A0;
-    --accent2: #0099FF;
-    --accent3: #FF6B35;
-    --warn: #F5C842;
-    --text: #E8ECF4;
-    --text2: #8892A4;
-    --text3: #4A5568;
-    --commit-bg: #0A1628;
-    --upside-bg: #0A1A12;
-    --danger: #FF4D6A;
-    --admin-color: #FF6B35;
-    --viewer-color: #0099FF;
+    --bg: #0a0c10;
+    --surface: #13161d;
+    --surface2: #1c2030;
+    --border: #2a2f3e;
+    --accent: #f97316;
+    --accent2: #3b82f6;
+    --green: #22c55e;
+    --red: #ef4444;
+    --text: #e8eaf0;
+    --text2: #8b909e;
+    --text3: #555b6e;
+    --admin-color: #f97316;
+    --view-color: #3b82f6;
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
+    font-family: 'Manrope', sans-serif;
     background: var(--bg);
     color: var(--text);
-    font-family: 'Space Grotesk', sans-serif;
     min-height: 100vh;
     overflow-x: hidden;
   }
 
-  /* ===================== LOGIN SCREEN ===================== */
+  /* ─── LOGIN ─── */
   #login-screen {
-    position: fixed;
-    inset: 0;
-    background: var(--bg);
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 9999;
-    flex-direction: column;
-    gap: 0;
+    background: radial-gradient(ellipse at 30% 20%, #1a1030 0%, #0a0c10 60%),
+                radial-gradient(ellipse at 80% 80%, #0f1a20 0%, transparent 60%);
+    position: relative;
+    overflow: hidden;
   }
 
-  .login-bg-grid {
+  #login-screen::before {
+    content: '';
     position: absolute;
     inset: 0;
     background-image:
       linear-gradient(var(--border) 1px, transparent 1px),
       linear-gradient(90deg, var(--border) 1px, transparent 1px);
     background-size: 48px 48px;
-    opacity: 0.3;
-    pointer-events: none;
+    opacity: 0.25;
   }
 
-  .login-glow {
+  #login-screen::after {
+    content: '';
     position: absolute;
-    width: 600px;
-    height: 600px;
+    width: 600px; height: 600px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(0,229,160,0.06) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(249,115,22,0.08) 0%, transparent 70%);
+    top: -200px; left: -100px;
     pointer-events: none;
   }
 
   .login-card {
     position: relative;
+    z-index: 10;
     background: var(--surface);
-    border: 1px solid var(--border2);
+    border: 1px solid var(--border);
     border-radius: 20px;
-    padding: 48px 40px;
-    width: 440px;
-    max-width: 95vw;
-    box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,229,160,0.08);
+    padding: 52px 44px;
+    width: 420px;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
   }
 
   .login-logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 8px;
-  }
-
-  .login-logo-icon {
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .login-logo-icon svg { width: 22px; height: 22px; }
-
-  .login-title {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 22px;
-    font-weight: 700;
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
     color: var(--text);
     letter-spacing: -0.5px;
+    margin-bottom: 6px;
   }
 
-  .login-subtitle {
-    color: var(--text2);
+  .login-logo span { color: var(--accent); }
+
+  .login-tagline {
     font-size: 13px;
+    color: var(--text3);
     margin-bottom: 36px;
-    padding-left: 52px;
+    font-weight: 500;
   }
 
   .login-label {
+    display: block;
     font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 1.5px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
     color: var(--text2);
-    margin-bottom: 10px;
-    display: block;
+    margin-bottom: 8px;
   }
 
   .login-input {
     width: 100%;
     background: var(--surface2);
-    border: 1px solid var(--border2);
+    border: 1px solid var(--border);
     border-radius: 10px;
-    padding: 12px 16px;
+    padding: 13px 16px;
     color: var(--text);
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'DM Mono', monospace;
     font-size: 14px;
+    margin-bottom: 20px;
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
-    margin-bottom: 24px;
   }
 
   .login-input:focus {
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(0,229,160,0.1);
+    box-shadow: 0 0 0 3px rgba(249,115,22,0.12);
   }
-
-  .role-selector {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 28px;
-  }
-
-  .role-card {
-    border: 2px solid var(--border2);
-    border-radius: 12px;
-    padding: 16px;
-    cursor: pointer;
-    transition: all 0.2s;
-    background: var(--surface2);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .role-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
-
-  .role-card.admin-card::before {
-    background: linear-gradient(135deg, rgba(255,107,53,0.08), transparent);
-  }
-
-  .role-card.viewer-card::before {
-    background: linear-gradient(135deg, rgba(0,153,255,0.08), transparent);
-  }
-
-  .role-card:hover { transform: translateY(-2px); }
-
-  .role-card.selected.admin-card {
-    border-color: var(--admin-color);
-    box-shadow: 0 0 0 1px var(--admin-color), 0 8px 24px rgba(255,107,53,0.2);
-  }
-
-  .role-card.selected.viewer-card {
-    border-color: var(--viewer-color);
-    box-shadow: 0 0 0 1px var(--viewer-color), 0 8px 24px rgba(0,153,255,0.2);
-  }
-
-  .role-card.selected::before { opacity: 1; }
-
-  .role-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 10px;
-  }
-
-  .admin-card .role-icon { background: rgba(255,107,53,0.15); }
-  .viewer-card .role-icon { background: rgba(0,153,255,0.15); }
-
-  .role-name {
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    margin-bottom: 4px;
-  }
-
-  .admin-card .role-name { color: var(--admin-color); }
-  .viewer-card .role-name { color: var(--viewer-color); }
-
-  .role-desc {
-    font-size: 11px;
-    color: var(--text2);
-    line-height: 1.4;
-  }
-
-  .role-check {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
-
-  .admin-card .role-check { background: var(--admin-color); }
-  .viewer-card .role-check { background: var(--viewer-color); }
-  .role-card.selected .role-check { opacity: 1; }
-
-  .login-btn {
-    width: 100%;
-    padding: 14px;
-    border-radius: 10px;
-    border: none;
-    background: linear-gradient(135deg, var(--accent), #00b87a);
-    color: #000;
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .login-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 8px 24px rgba(0,229,160,0.3);
-  }
-
-  .login-btn:active { transform: translateY(0); }
 
   .login-error {
-    background: rgba(255,77,106,0.1);
-    border: 1px solid rgba(255,77,106,0.3);
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.3);
     border-radius: 8px;
     padding: 10px 14px;
     font-size: 12px;
-    color: var(--danger);
-    margin-bottom: 16px;
+    color: #ef4444;
+    margin-bottom: 18px;
     display: none;
   }
 
-  /* ===================== ROLE BADGE ===================== */
-  .role-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 11px;
+  .login-btn {
+    width: 100%;
+    background: var(--accent);
+    border: none;
+    border-radius: 10px;
+    padding: 14px;
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
     font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
+    color: #fff;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.2s, background 0.2s;
+    letter-spacing: 0.3px;
+    margin-top: 4px;
   }
 
-  .role-badge.admin {
-    background: rgba(255,107,53,0.15);
-    border: 1px solid rgba(255,107,53,0.4);
-    color: var(--admin-color);
+  .login-btn:hover {
+    background: #ea6c0a;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(249,115,22,0.3);
   }
 
-  .role-badge.viewer {
-    background: rgba(0,153,255,0.15);
-    border: 1px solid rgba(0,153,255,0.4);
-    color: var(--viewer-color);
-  }
-
-  .role-badge-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: currentColor;
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-
-  /* ===================== VIEW-ONLY BANNER ===================== */
-  #viewer-banner {
-    display: none;
-    background: linear-gradient(90deg, rgba(0,153,255,0.08), rgba(0,153,255,0.04));
-    border-bottom: 1px solid rgba(0,153,255,0.2);
-    padding: 8px 24px;
+  .login-hint {
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+    font-size: 11.5px;
+    color: var(--text3);
     text-align: center;
-    font-size: 12px;
-    color: var(--viewer-color);
-    letter-spacing: 0.5px;
+    line-height: 1.7;
   }
 
-  #viewer-banner strong { font-weight: 700; }
-
-  /* ===================== MAIN APP ===================== */
+  /* ─── APP ─── */
   #app { display: none; }
 
-  /* ===================== TOP BAR ===================== */
+  /* TOP BAR */
   .topbar {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 0 24px;
-    height: 56px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 0 28px;
+    height: 60px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
     position: sticky;
     top: 0;
     z-index: 100;
   }
 
-  .topbar-left { display: flex; align-items: center; gap: 16px; }
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
 
-  .logo {
+  .app-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+
+  .app-logo span { color: var(--accent); }
+
+  .role-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .role-badge.admin {
+    background: rgba(249,115,22,0.15);
+    color: var(--admin-color);
+    border: 1px solid rgba(249,115,22,0.3);
+  }
+
+  .role-badge.view {
+    background: rgba(59,130,246,0.15);
+    color: var(--view-color);
+    border: 1px solid rgba(59,130,246,0.3);
+  }
+
+  .topbar-center {
     display: flex;
     align-items: center;
     gap: 10px;
   }
 
-  .logo-icon {
-    width: 32px;
-    height: 32px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .logo-icon svg { width: 18px; height: 18px; }
-
-  .logo-text {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--text);
-    letter-spacing: -0.5px;
-  }
-
-  .topbar-sep {
-    width: 1px;
-    height: 24px;
-    background: var(--border2);
-  }
-
-  .topbar-right { display: flex; align-items: center; gap: 12px; }
-
-  .user-info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 6px 12px;
+  .month-nav-btn {
+    width: 32px; height: 32px;
     background: var(--surface2);
-    border: 1px solid var(--border2);
-    border-radius: 24px;
-  }
-
-  .user-avatar {
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    font-weight: 700;
-  }
-
-  .user-avatar.admin { background: rgba(255,107,53,0.2); color: var(--admin-color); }
-  .user-avatar.viewer { background: rgba(0,153,255,0.2); color: var(--viewer-color); }
-
-  .user-name {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text);
-  }
-
-  .logout-btn {
-    background: transparent;
-    border: 1px solid var(--border2);
+    border: 1px solid var(--border);
     border-radius: 8px;
-    padding: 6px 12px;
     color: var(--text2);
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 12px;
+    font-size: 15px;
     cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
   }
 
-  .logout-btn:hover {
-    border-color: var(--danger);
-    color: var(--danger);
+  .month-nav-btn:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
   }
 
-  /* ===================== MONTH NAV ===================== */
-  .month-nav-bar {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 0 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 52px;
-  }
-
-  .month-nav-left { display: flex; align-items: center; gap: 12px; }
-
-  .month-arrow {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    border: 1px solid var(--border2);
+  .month-display-btn {
     background: var(--surface2);
-    color: var(--text2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 14px;
-    user-select: none;
-  }
-
-  .month-arrow:hover { border-color: var(--accent); color: var(--accent); }
-  .month-arrow.view-locked { cursor: default; opacity: 0.4; }
-  .month-arrow.view-locked:hover { border-color: var(--border2); color: var(--text2); }
-
-  .month-display {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 18px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 6px 18px;
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
     font-weight: 700;
     color: var(--text);
     cursor: pointer;
-    padding: 6px 14px;
-    border-radius: 8px;
-    border: 1px solid transparent;
-    transition: all 0.2s;
-    letter-spacing: -0.5px;
+    transition: all 0.15s;
+    display: flex; align-items: center; gap: 8px;
   }
 
-  .month-display:hover { border-color: var(--border2); background: var(--surface2); }
-  .month-display.view-locked { cursor: default; pointer-events: none; }
-
-  /* ===================== WEEK TABS ===================== */
-  .week-tabs {
-    display: flex;
-    gap: 4px;
-    align-items: center;
-  }
-
-  .week-tab {
-    padding: 6px 14px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text2);
-    cursor: pointer;
-    border: 1px solid transparent;
-    transition: all 0.18s;
-    position: relative;
-    white-space: nowrap;
-  }
-
-  .week-tab:hover { background: var(--surface2); color: var(--text); }
-  .week-tab.active {
-    background: var(--surface2);
+  .month-display-btn:hover {
     border-color: var(--accent);
     color: var(--accent);
   }
 
-  .week-tab .dot {
-    width: 5px;
-    height: 5px;
-    background: var(--accent3);
-    border-radius: 50%;
-    position: absolute;
-    top: 4px;
-    right: 4px;
-  }
-
-  /* ===================== MONTH CALENDAR MODAL ===================== */
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.7);
-    z-index: 500;
-    display: none;
-    align-items: flex-start;
-    justify-content: center;
-    padding-top: 120px;
-    backdrop-filter: blur(4px);
-  }
-
-  .modal-overlay.open { display: flex; }
-
-  .month-modal {
-    background: var(--surface);
-    border: 1px solid var(--border2);
-    border-radius: 16px;
-    padding: 24px;
-    width: 340px;
-    box-shadow: 0 24px 64px rgba(0,0,0,0.7);
-  }
-
-  .modal-year-nav {
+  .topbar-right {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
+    gap: 14px;
   }
 
-  .modal-year {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--text);
-  }
-
-  .modal-year-btn {
-    width: 32px; height: 32px;
-    border-radius: 8px;
-    border: 1px solid var(--border2);
-    background: var(--surface2);
+  .user-chip {
+    font-size: 12px;
     color: var(--text2);
-    cursor: pointer;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
+    font-weight: 600;
   }
 
-  .modal-year-btn:hover { border-color: var(--accent); color: var(--accent); }
-
-  .month-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-  }
-
-  .month-cell {
-    padding: 10px 6px;
+  .signout-btn {
+    background: transparent;
+    border: 1px solid var(--border);
     border-radius: 8px;
-    text-align: center;
-    font-size: 13px;
+    padding: 6px 14px;
+    color: var(--text3);
+    font-family: 'Manrope', sans-serif;
+    font-size: 12px;
     font-weight: 600;
     cursor: pointer;
-    border: 1px solid var(--border2);
-    color: var(--text2);
-    transition: all 0.18s;
-    position: relative;
+    transition: all 0.15s;
   }
 
-  .month-cell:hover { border-color: var(--accent); color: var(--text); background: var(--surface2); }
-  .month-cell.current-month { color: var(--text); background: var(--surface2); }
-  .month-cell.selected-month { border-color: var(--accent); background: rgba(0,229,160,0.08); color: var(--accent); }
-  .month-cell .m-dot { width: 5px; height: 5px; background: var(--accent3); border-radius: 50%; position: absolute; top: 4px; right: 4px; }
+  .signout-btn:hover {
+    border-color: var(--red);
+    color: var(--red);
+  }
 
-  /* ===================== KPI STRIP ===================== */
+  /* VIEW ONLY BANNER */
+  .view-banner {
+    background: rgba(59,130,246,0.1);
+    border-bottom: 1px solid rgba(59,130,246,0.25);
+    padding: 9px 28px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12.5px;
+    color: var(--view-color);
+    font-weight: 600;
+  }
+
+  .view-banner-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--view-color);
+    animation: pulse-dot 2s infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* MAIN CONTENT */
+  .main-content { padding: 24px 28px; }
+
+  /* KPI STRIP */
   .kpi-strip {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1px;
-    background: var(--border);
-    border-bottom: 1px solid var(--border);
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px;
+    margin-bottom: 24px;
   }
 
   .kpi-card {
-    background: var(--surface2);
-    padding: 16px 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 22px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
   }
+
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--accent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .kpi-card:hover::before { opacity: 1; }
+  .kpi-card:hover { border-color: rgba(249,115,22,0.3); }
 
   .kpi-label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 1.2px;
-    text-transform: uppercase;
-    color: var(--text3);
-  }
-
-  .kpi-value {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 22px;
+    font-size: 10.5px;
     font-weight: 700;
-  }
-
-  .kpi-sub { font-size: 11px; color: var(--text2); }
-
-  /* ===================== MONTH SUMMARY BAR ===================== */
-  #month-summary {
-    background: var(--surface2);
-    border-bottom: 1px solid var(--border);
-    padding: 12px 24px;
-  }
-
-  .summary-title {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 1.2px;
+    letter-spacing: 1.1px;
     text-transform: uppercase;
     color: var(--text3);
-    margin-bottom: 8px;
+    margin-bottom: 12px;
   }
 
-  .summary-bars {
-    display: flex;
-    gap: 8px;
-    align-items: flex-end;
-    height: 40px;
+  /* INCREASED FONT SIZE FOR KPI VALUES */
+  .kpi-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1;
+    letter-spacing: -1px;
   }
 
-  .summary-week {
+  .kpi-value.green { color: var(--green); }
+  .kpi-value.red { color: var(--red); }
+  .kpi-value.orange { color: var(--accent); }
+  .kpi-value.blue { color: var(--accent2); }
+
+  .kpi-sub {
+    font-size: 12px;
+    color: var(--text3);
+    margin-top: 8px;
+    font-weight: 500;
+  }
+
+  /* WEEK TABS */
+  .section-header {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 4px;
-    flex: 1;
+    justify-content: space-between;
+    margin-bottom: 16px;
   }
 
-  .summary-bar-wrap {
-    width: 100%;
-    height: 28px;
-    background: var(--surface3);
-    border-radius: 4px;
-    overflow: hidden;
+  .week-tabs {
+    display: flex;
+    gap: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 5px;
+  }
+
+  .week-tab {
+    padding: 7px 16px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: 'DM Mono', monospace;
+    cursor: pointer;
+    color: var(--text2);
+    background: transparent;
+    border: none;
+    transition: all 0.15s;
     position: relative;
   }
 
-  .summary-bar-fill {
+  .week-tab.active {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .week-tab .dot {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(to top, var(--accent2), rgba(0,153,255,0.4));
-    border-radius: 4px;
-    transition: height 0.4s cubic-bezier(0.4,0,0.2,1);
+    top: 4px; right: 4px;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--green);
   }
 
-  .summary-bar-fill.active-week {
-    background: linear-gradient(to top, var(--accent), rgba(0,229,160,0.4));
+  .section-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
   }
 
-  .summary-week-label {
-    font-size: 9px;
-    color: var(--text3);
-    font-weight: 600;
-    letter-spacing: 0.5px;
+  .btn-export {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'Manrope', sans-serif;
   }
 
-  /* ===================== TABLE ===================== */
+  .btn-export:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .btn-add-rep {
+    background: var(--accent);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'Manrope', sans-serif;
+  }
+
+  .btn-add-rep:hover {
+    background: #ea6c0a;
+    transform: translateY(-1px);
+  }
+
+  /* TABLE */
   .table-wrap {
-    overflow-x: auto;
-    padding: 20px 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 20px;
   }
 
   table {
     width: 100%;
     border-collapse: collapse;
-    table-layout: fixed;
   }
 
-  colgroup col:nth-child(1) { width: 140px; }
-  colgroup col:nth-child(2) { width: 130px; }
-  colgroup col:nth-child(3) { width: 80px; }
-  colgroup col:nth-child(4) { width: 110px; }
-  colgroup col:nth-child(5) { width: 130px; }
-  colgroup col:nth-child(6) { width: 80px; }
-  colgroup col:nth-child(7) { width: 120px; }
-  colgroup col:nth-child(8) { width: 130px; }
-  colgroup col:nth-child(9) { width: 200px; }
-
-  thead tr { background: var(--surface2); }
-
-  th {
-    padding: 10px 12px;
+  thead th {
+    background: var(--surface2);
+    padding: 13px 14px;
     font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 1px;
+    font-weight: 700;
+    letter-spacing: 1.1px;
     text-transform: uppercase;
+    color: var(--text3);
     text-align: left;
-    white-space: nowrap;
     border-bottom: 1px solid var(--border);
+    white-space: nowrap;
   }
 
-  .th-commit { color: var(--accent2); }
-  .th-upside { color: var(--accent); }
-  .th-meta { color: var(--warn); }
-  .th-notes { color: var(--text2); }
+  thead th.notes-col {
+    min-width: 220px;
+  }
+
+  .view-badge-col {
+    font-size: 9px;
+    background: rgba(59,130,246,0.1);
+    color: var(--view-color);
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 4px;
+    letter-spacing: 0.5px;
+    vertical-align: middle;
+    display: inline-block;
+  }
 
   tbody tr {
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid rgba(42,47,62,0.5);
     transition: background 0.15s;
   }
 
-  tbody tr:hover { background: rgba(255,255,255,0.015); }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(255,255,255,0.02); }
 
-  td {
-    padding: 0;
+  tbody td {
+    padding: 10px 14px;
+    font-size: 13px;
     vertical-align: middle;
   }
 
-  .td-name {
-    padding: 10px 12px;
-    font-size: 14px;
-    font-weight: 600;
+  .rep-name-cell {
+    font-weight: 700;
+    font-size: 13.5px;
     color: var(--text);
+    white-space: nowrap;
   }
 
-  .td-name span {
-    display: block;
-    font-size: 10px;
-    color: var(--text3);
-    font-weight: 400;
-    margin-top: 1px;
-  }
-
-  /* INPUT CELLS */
-  .input-cell {
-    padding: 4px 6px;
-  }
-
+  /* EDITABLE INPUTS */
   .cell-input {
     width: 100%;
     background: transparent;
     border: 1px solid transparent;
     border-radius: 6px;
-    padding: 7px 10px;
+    padding: 5px 8px;
     color: var(--text);
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'DM Mono', monospace;
     font-size: 13px;
-    font-weight: 500;
     outline: none;
     transition: all 0.15s;
     -webkit-appearance: none;
     -moz-appearance: textfield;
     text-align: right;
+    min-width: 80px;
   }
 
-  .cell-input::-webkit-inner-spin-button,
-  .cell-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  .cell-input::-webkit-outer-spin-button,
+  .cell-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
   .cell-input:focus {
-    border-color: var(--border2);
-    background: var(--surface3);
+    border-color: var(--accent);
+    background: rgba(249,115,22,0.06);
   }
 
-  /* VIEW-ONLY: disable all editable elements */
-  body.view-only .cell-input {
+  .cell-input.readonly {
     pointer-events: none;
-    user-select: text;
     color: var(--text2);
-    cursor: default;
+    background: transparent;
+    border-color: transparent;
   }
 
-  body.view-only .stage-select {
+  /* STAGE SELECT */
+  .stage-select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 10px;
+    color: var(--text);
+    font-size: 11px;
+    font-weight: 600;
+    font-family: 'Manrope', sans-serif;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+
+  .stage-select:focus { border-color: var(--accent); }
+
+  .stage-select.readonly {
     pointer-events: none;
-    cursor: default;
-    opacity: 0.7;
-  }
-
-  body.view-only .notes-cell {
-    pointer-events: none;
+    opacity: 0.6;
     cursor: default;
   }
 
-  body.view-only .add-row-btn { display: none; }
-  body.view-only .delete-row-btn { display: none; }
-  body.view-only .export-btn.admin-only { display: none; }
-  body.view-only #viewer-banner { display: block; }
-  body.view-only .month-arrow { pointer-events: auto; }
+  /* COMPUTED CELLS */
+  .computed-cell {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--text2);
+    text-align: right;
+    padding-right: 8px;
+    white-space: nowrap;
+  }
 
-  /* VIEW-ONLY highlight */
-  body.view-only .cell-input:focus {
+  .computed-cell.highlight { color: var(--green); font-weight: 600; }
+
+  /* NOTES */
+  .notes-display {
+    cursor: pointer;
+    min-height: 36px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    transition: all 0.15s;
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--text2);
+    min-width: 200px;
+  }
+
+  .notes-display:hover {
+    border-color: var(--border);
+    background: rgba(255,255,255,0.03);
+  }
+
+  .notes-display.readonly {
+    cursor: default;
+  }
+
+  .notes-display.readonly:hover {
     border-color: transparent;
     background: transparent;
   }
 
-  .commit-cell { background: rgba(0,153,255,0.03); }
-  .upside-cell { background: rgba(0,229,160,0.03); }
-
-  .commit-val {
-    color: var(--accent2);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    font-weight: 700;
-  }
-
-  .upside-val {
-    color: var(--accent);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    font-weight: 700;
-  }
-
-  .confidence-val {
-    color: var(--warn);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    font-weight: 700;
-  }
-
-  .wtnd-val {
-    color: var(--warn);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    font-weight: 700;
-    padding: 10px 12px;
-    text-align: right;
-  }
-
-  /* ===================== STAGE SELECT ===================== */
-  .stage-wrap { padding: 4px 6px; }
-
-  .stage-select {
-    width: 100%;
-    background: var(--surface2);
-    border: 1px solid var(--border2);
-    border-radius: 6px;
-    padding: 7px 10px;
-    color: var(--text2);
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 12px;
-    font-weight: 500;
-    outline: none;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .stage-select:focus { border-color: var(--accent2); }
-
-  /* ===================== NOTES CELL ===================== */
-  .notes-cell {
-    padding: 4px 6px;
-    cursor: pointer;
-    position: relative;
-  }
-
-  .notes-display {
-    padding: 7px 10px;
-    border: 1px solid transparent;
-    border-radius: 6px;
-    min-height: 36px;
-    transition: border-color 0.15s;
-  }
-
-  .notes-cell:hover .notes-display {
-    border-color: var(--border2);
-    background: var(--surface3);
-  }
-
-  .notes-bullet-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-  }
-
-  .notes-bullet-list li {
+  .notes-bullet {
     display: flex;
     align-items: flex-start;
     gap: 6px;
-    font-size: 12px;
-    color: var(--text2);
-    line-height: 1.5;
+    margin-bottom: 3px;
   }
 
-  .notes-bullet-list li::before {
-    content: '';
-    width: 4px;
-    height: 4px;
+  .notes-bullet-dot {
+    width: 5px; height: 5px;
     border-radius: 50%;
-    background: var(--accent3);
-    flex-shrink: 0;
+    background: var(--accent);
     margin-top: 6px;
+    flex-shrink: 0;
   }
 
   .notes-placeholder {
-    font-size: 12px;
     color: var(--text3);
     font-style: italic;
+    font-size: 11.5px;
   }
 
   .notes-editor-wrap {
     display: none;
     flex-direction: column;
     gap: 6px;
-    padding: 4px 0;
+    min-width: 220px;
   }
 
+  .notes-editor-wrap.active { display: flex; }
+
   .notes-textarea {
-    width: 100%;
-    background: var(--surface3);
-    border: 1px solid var(--accent2);
-    border-radius: 6px;
-    padding: 8px 10px;
+    background: var(--surface2);
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    padding: 10px;
     color: var(--text);
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Manrope', sans-serif;
     font-size: 12px;
-    line-height: 1.6;
+    line-height: 1.7;
     resize: vertical;
-    min-height: 72px;
+    min-height: 90px;
     outline: none;
+    width: 100%;
+    box-shadow: 0 0 0 3px rgba(249,115,22,0.1);
   }
 
   .notes-actions {
@@ -949,959 +682,919 @@
   }
 
   .notes-save-btn {
-    padding: 4px 12px;
     background: var(--accent);
-    color: #000;
     border: none;
-    border-radius: 5px;
-    font-family: 'Space Grotesk', sans-serif;
+    border-radius: 6px;
+    padding: 5px 12px;
     font-size: 11px;
     font-weight: 700;
+    color: #fff;
     cursor: pointer;
-    transition: opacity 0.15s;
+    font-family: 'Manrope', sans-serif;
   }
-
-  .notes-save-btn:hover { opacity: 0.85; }
 
   .notes-cancel-btn {
-    padding: 4px 10px;
     background: transparent;
-    color: var(--text2);
-    border: 1px solid var(--border2);
-    border-radius: 5px;
-    font-family: 'Space Grotesk', sans-serif;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 12px;
     font-size: 11px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .notes-cancel-btn:hover { border-color: var(--danger); color: var(--danger); }
-
-  /* ===================== DELETE ROW BTN ===================== */
-  .delete-row-btn {
-    width: 22px;
-    height: 22px;
-    border-radius: 5px;
-    border: 1px solid transparent;
-    background: transparent;
+    font-weight: 600;
     color: var(--text3);
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.15s;
+    font-family: 'Manrope', sans-serif;
+  }
+
+  /* TOTALS ROW */
+  .totals-row td {
+    background: var(--surface2);
+    font-family: 'DM Mono', monospace;
     font-size: 13px;
-    margin: auto;
+    font-weight: 600;
+    color: var(--accent);
+    border-top: 2px solid var(--border);
+    padding: 12px 14px;
   }
 
-  .delete-row-btn:hover {
-    border-color: var(--danger);
-    color: var(--danger);
-    background: rgba(255,77,106,0.08);
-  }
-
-  /* ===================== TOTALS ROW ===================== */
-  .totals-row { background: var(--surface2) !important; }
-  .totals-row td { border-top: 2px solid var(--border2) !important; }
-
-  .totals-label {
-    padding: 10px 12px;
+  .totals-row td:first-child {
+    font-family: 'Syne', sans-serif;
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: var(--accent);
+    color: var(--text3);
   }
 
-  .totals-val {
-    padding: 10px 12px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 14px;
+  /* MONTH SUMMARY BAR */
+  .month-summary {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+  }
+
+  .month-summary-title {
+    font-size: 10.5px;
     font-weight: 700;
-    text-align: right;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 16px;
   }
 
-  /* ===================== ADD ROW ===================== */
-  .add-row-btn {
-    margin: 12px 24px 24px;
+  .summary-bars {
     display: flex;
+    gap: 12px;
+    align-items: flex-end;
+    height: 80px;
+  }
+
+  .summary-bar-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 8px;
-    padding: 10px 16px;
-    background: transparent;
-    border: 1px dashed var(--border2);
-    border-radius: 8px;
+    gap: 6px;
+    height: 100%;
+    justify-content: flex-end;
+  }
+
+  .summary-bar-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
     color: var(--text2);
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 13px;
-    cursor: pointer;
-    transition: all 0.2s;
-    width: calc(100% - 48px);
+    font-weight: 500;
   }
 
-  .add-row-btn:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-    background: rgba(0,229,160,0.04);
-  }
-
-  .add-icon {
-    width: 20px;
-    height: 20px;
-    border-radius: 5px;
+  .summary-bar-track {
+    width: 100%;
     background: var(--surface2);
-    border: 1px solid var(--border2);
+    border-radius: 6px 6px 0 0;
+    min-height: 4px;
+    position: relative;
+    transition: height 0.4s cubic-bezier(.4,0,.2,1);
+  }
+
+  .summary-bar-track.filled { background: var(--accent); opacity: 0.85; }
+
+  .summary-bar-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text3);
+    letter-spacing: 0.5px;
+  }
+
+  /* CALENDAR MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    z-index: 200;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
-    transition: all 0.2s;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
   }
 
-  .add-row-btn:hover .add-icon {
-    background: rgba(0,229,160,0.1);
-    border-color: var(--accent);
-    color: var(--accent);
+  .modal-overlay.open {
+    opacity: 1;
+    pointer-events: all;
   }
 
-  /* ===================== FOOTER / ACTIONS ===================== */
-  .footer-bar {
+  .calendar-modal {
     background: var(--surface);
-    border-top: 1px solid var(--border);
-    padding: 12px 24px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 28px;
+    width: 340px;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.7);
+    transform: translateY(10px);
+    transition: transform 0.2s;
+  }
+
+  .modal-overlay.open .calendar-modal { transform: translateY(0); }
+
+  .cal-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    position: sticky;
-    bottom: 0;
+    margin-bottom: 20px;
   }
 
-  .footer-left { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text2); }
+  .cal-year-nav {
+    width: 28px; height: 28px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text2);
+    font-size: 14px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
 
-  .footer-right { display: flex; gap: 10px; }
+  .cal-year-nav:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
 
-  .export-btn {
-    display: flex;
-    align-items: center;
+  .cal-year-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text);
+  }
+
+  .cal-months {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
     gap: 8px;
-    padding: 8px 18px;
+  }
+
+  .cal-month-btn {
+    padding: 10px 6px;
     border-radius: 8px;
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 13px;
+    border: 1px solid transparent;
+    background: var(--surface2);
+    color: var(--text2);
+    font-size: 12px;
     font-weight: 600;
     cursor: pointer;
-    border: 1px solid;
-    transition: all 0.2s;
+    transition: all 0.15s;
+    position: relative;
+    font-family: 'Manrope', sans-serif;
   }
 
-  .export-btn.week {
-    border-color: var(--border2);
+  .cal-month-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .cal-month-btn.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  .cal-month-btn .has-data {
+    position: absolute;
+    bottom: 4px; right: 4px;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--green);
+  }
+
+  .cal-close {
+    margin-top: 18px;
+    width: 100%;
     background: transparent;
-    color: var(--text2);
-  }
-
-  .export-btn.week:hover { border-color: var(--accent2); color: var(--accent2); }
-
-  .export-btn.month {
-    border-color: var(--border2);
-    background: transparent;
-    color: var(--text2);
-  }
-
-  .export-btn.month:hover { border-color: var(--accent); color: var(--accent); }
-
-  /* ===================== TOOLTIP ===================== */
-  .view-only-tooltip {
-    display: none;
-    position: fixed;
-    bottom: 80px;
-    right: 24px;
-    background: rgba(0,153,255,0.12);
-    border: 1px solid rgba(0,153,255,0.3);
-    color: var(--viewer-color);
-    padding: 10px 16px;
-    border-radius: 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px;
+    color: var(--text3);
     font-size: 12px;
-    z-index: 200;
-    backdrop-filter: blur(8px);
-    max-width: 260px;
-    line-height: 1.5;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Manrope', sans-serif;
+    transition: all 0.15s;
   }
 
-  body.view-only .view-only-tooltip { display: block; }
+  .cal-close:hover { border-color: var(--text2); color: var(--text2); }
 
-  /* ===================== PERMISSION SHIELD ===================== */
-  .perm-shield {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 10px;
-    color: var(--viewer-color);
-    background: rgba(0,153,255,0.08);
-    border: 1px solid rgba(0,153,255,0.2);
-    padding: 2px 8px;
-    border-radius: 12px;
-    margin-left: 8px;
-    vertical-align: middle;
+  /* LOCK TOOLTIP */
+  .lock-tooltip {
+    position: fixed;
+    bottom: 20px; right: 20px;
+    background: rgba(59,130,246,0.12);
+    border: 1px solid rgba(59,130,246,0.25);
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 11.5px;
+    color: var(--view-color);
+    font-weight: 600;
+    z-index: 50;
   }
 
-  body:not(.view-only) .perm-shield { display: none; }
-
-  /* ===================== SCROLLBAR ===================== */
+  /* SCROLLBAR */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+
+  /* RESPONSIVE */
+  @media (max-width: 1100px) {
+    .kpi-strip { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 768px) {
+    .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+    .main-content { padding: 16px; }
+    .topbar { padding: 0 16px; }
+  }
 </style>
 </head>
 <body>
 
-<!-- ===================== LOGIN SCREEN ===================== -->
+<!-- ═══════════════ LOGIN SCREEN ═══════════════ -->
 <div id="login-screen">
-  <div class="login-bg-grid"></div>
-  <div class="login-glow"></div>
   <div class="login-card">
-    <div class="login-logo">
-      <div class="login-logo-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round">
-          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-        </svg>
-      </div>
-      <div class="login-title">CoreTrack</div>
+    <div class="login-logo">Sales<span>Pro</span></div>
+    <div class="login-tagline">Performance Tracker — AED</div>
+
+    <label class="login-label">Username</label>
+    <input class="login-input" type="text" id="login-username" placeholder="Enter username" autocomplete="off"/>
+
+    <label class="login-label">Password</label>
+    <input class="login-input" type="password" id="login-password" placeholder="Enter password" autocomplete="off"/>
+
+    <div class="login-error" id="login-error">Incorrect username or password. Please try again.</div>
+
+    <button class="login-btn" onclick="doLogin()">Sign In</button>
+
+    <div class="login-hint">
+      Admin access is restricted.<br/>
+      All other users will have View Only access.
     </div>
-    <div class="login-subtitle">Sales Commitment Tracker</div>
-
-    <label class="login-label">Your Name</label>
-    <input class="login-input" id="login-name" type="text" placeholder="Enter your name" autocomplete="off"/>
-
-    <label class="login-label">Select Access Level</label>
-    <div class="role-selector">
-      <div class="role-card admin-card selected" onclick="selectRole('admin')">
-        <div class="role-check">
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-            <polyline points="1,5 4,8 9,2" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <div class="role-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF6B35" stroke-width="2" stroke-linecap="round">
-            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-          </svg>
-        </div>
-        <div class="role-name">Admin</div>
-        <div class="role-desc">Full edit access. Add rows, update data, export reports.</div>
-      </div>
-      <div class="role-card viewer-card" onclick="selectRole('viewer')">
-        <div class="role-check">
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-            <polyline points="1,5 4,8 9,2" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <div class="role-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0099FF" stroke-width="2" stroke-linecap="round">
-            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-            <circle cx="12" cy="12" r="3"/>
-          </svg>
-        </div>
-        <div class="role-name">View Only</div>
-        <div class="role-desc">Read-only access. Browse all data, no modifications.</div>
-      </div>
-    </div>
-
-    <div class="login-error" id="login-error">Please enter your name before continuing.</div>
-    <button class="login-btn" onclick="doLogin()">Enter Tracker</button>
   </div>
 </div>
 
-<!-- ===================== MAIN APP ===================== -->
+<!-- ═══════════════ APP SCREEN ═══════════════ -->
 <div id="app">
 
-  <!-- View-only banner -->
-  <div id="viewer-banner">
-    <strong>VIEW ONLY MODE</strong> — You are browsing as a read-only user. No changes can be made.
-    <span class="perm-shield">
-      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-      READ ONLY
-    </span>
-  </div>
-
-  <!-- Top Bar -->
+  <!-- TOP BAR -->
   <div class="topbar">
     <div class="topbar-left">
-      <div class="logo">
-        <div class="logo-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round">
-            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-          </svg>
-        </div>
-        <div class="logo-text">CoreTrack</div>
-      </div>
-      <div class="topbar-sep"></div>
-      <div id="current-role-badge"></div>
+      <div class="app-logo">Sales<span>Pro</span></div>
+      <div class="role-badge" id="role-badge"></div>
+    </div>
+    <div class="topbar-center">
+      <button class="month-nav-btn" onclick="shiftMonth(-1)">&#8249;</button>
+      <button class="month-display-btn" onclick="openCalendar()">
+        <span id="month-display-text">---</span>
+        <span style="font-size:10px; color:var(--text3);">&#9660;</span>
+      </button>
+      <button class="month-nav-btn" onclick="shiftMonth(1)">&#8250;</button>
     </div>
     <div class="topbar-right">
-      <div class="user-info" id="user-info-bar">
-        <div class="user-avatar" id="user-avatar-badge">AT</div>
-        <div class="user-name" id="user-name-display">Admin</div>
+      <span class="user-chip" id="user-chip"></span>
+      <button class="signout-btn" onclick="doSignOut()">Sign Out</button>
+    </div>
+  </div>
+
+  <!-- VIEW ONLY BANNER -->
+  <div class="view-banner" id="view-banner" style="display:none;">
+    <div class="view-banner-dot"></div>
+    View Only Mode — You cannot edit data in this session.
+  </div>
+
+  <div class="main-content">
+
+    <!-- KPI STRIP -->
+    <div class="kpi-strip" id="kpi-strip"></div>
+
+    <!-- MONTH SUMMARY -->
+    <div class="month-summary">
+      <div class="month-summary-title">Monthly Commit Overview — All Weeks</div>
+      <div class="summary-bars" id="summary-bars"></div>
+    </div>
+
+    <!-- TABLE SECTION -->
+    <div class="section-header">
+      <div class="week-tabs" id="week-tabs"></div>
+      <div class="section-actions">
+        <button class="btn-export" onclick="exportWeekCSV()">Export Week CSV</button>
+        <button class="btn-export" id="btn-export-month" onclick="exportMonthCSV()">Export Month CSV</button>
+        <button class="btn-add-rep" id="btn-add-rep" onclick="addRep()">+ Add Rep</button>
       </div>
-      <button class="logout-btn" onclick="doLogout()">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
-        </svg>
-        Sign Out
-      </button>
     </div>
+
+    <div class="table-wrap">
+      <table id="main-table">
+        <thead id="table-head"></thead>
+        <tbody id="table-body"></tbody>
+        <tfoot id="table-foot"></tfoot>
+      </table>
+    </div>
+
   </div>
 
-  <!-- Month Navigation Bar -->
-  <div class="month-nav-bar">
-    <div class="month-nav-left">
-      <div class="month-arrow" id="prev-month-btn" onclick="changeMonth(-1)">&lt;</div>
-      <div class="month-display" id="month-display" onclick="openMonthModal()">April 2026</div>
-      <div class="month-arrow" id="next-month-btn" onclick="changeMonth(1)">&gt;</div>
-    </div>
-    <div class="week-tabs" id="week-tabs"></div>
+  <!-- LOCK TOOLTIP (View Only) -->
+  <div class="lock-tooltip" id="lock-tooltip" style="display:none;">
+    Read Only — Contact admin to make changes
   </div>
 
-  <!-- Month Calendar Modal -->
-  <div class="modal-overlay" id="month-modal">
-    <div class="month-modal">
-      <div class="modal-year-nav">
-        <button class="modal-year-btn" onclick="changeModalYear(-1)">&lt;</button>
-        <div class="modal-year" id="modal-year-display">2026</div>
-        <button class="modal-year-btn" onclick="changeModalYear(1)">&gt;</button>
-      </div>
-      <div class="month-grid" id="month-grid"></div>
+</div>
+
+<!-- CALENDAR MODAL -->
+<div class="modal-overlay" id="cal-modal" onclick="closeCalendarOnOverlay(event)">
+  <div class="calendar-modal">
+    <div class="cal-header">
+      <button class="cal-year-nav" onclick="shiftCalYear(-1)">&#8249;</button>
+      <div class="cal-year-label" id="cal-year-label">2025</div>
+      <button class="cal-year-nav" onclick="shiftCalYear(1)">&#8250;</button>
     </div>
+    <div class="cal-months" id="cal-months"></div>
+    <button class="cal-close" onclick="closeCalendar()">Close</button>
   </div>
-
-  <!-- KPI Strip -->
-  <div class="kpi-strip">
-    <div class="kpi-card">
-      <div class="kpi-label">Total Commitment</div>
-      <div class="kpi-value commit-val" id="kpi-commit">$0</div>
-      <div class="kpi-sub" id="kpi-commit-dev">0 devices</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Total Upside</div>
-      <div class="kpi-value upside-val" id="kpi-upside">$0</div>
-      <div class="kpi-sub" id="kpi-upside-dev">0 devices</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Avg Confidence</div>
-      <div class="kpi-value confidence-val" id="kpi-confidence">0%</div>
-      <div class="kpi-sub" id="kpi-conf-sub">across all reps</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">WTND Forecast</div>
-      <div class="kpi-value" style="color:var(--warn)" id="kpi-wtnd">$0</div>
-      <div class="kpi-sub" id="kpi-pipeline-sub">weighted pipeline</div>
-    </div>
-  </div>
-
-  <!-- Month Summary Bar -->
-  <div id="month-summary">
-    <div class="summary-title">Month Overview — Commit by Week</div>
-    <div class="summary-bars" id="summary-bars"></div>
-  </div>
-
-  <!-- Table -->
-  <div class="table-wrap">
-    <table id="tracker-table">
-      <colgroup>
-        <col/><col/><col/><col/><col/><col/><col/><col/><col/>
-      </colgroup>
-      <thead>
-        <tr>
-          <th class="th-meta">Rep Name</th>
-          <th class="th-commit">Commit ($)</th>
-          <th class="th-commit">Dev</th>
-          <th class="th-commit">Confidence %</th>
-          <th class="th-upside">Upside ($)</th>
-          <th class="th-upside">Dev</th>
-          <th class="th-meta">Stage</th>
-          <th class="th-meta">WTND Forecast</th>
-          <th class="th-notes">Notes
-            <span class="perm-shield">
-              <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-              READ ONLY
-            </span>
-          </th>
-        </tr>
-      </thead>
-      <tbody id="table-body"></tbody>
-    </table>
-  </div>
-
-  <!-- Add Row Button (admin only) -->
-  <button class="add-row-btn" onclick="addRow()" id="add-row-btn">
-    <div class="add-icon">+</div>
-    Add Rep
-  </button>
-
-  <!-- Footer -->
-  <div class="footer-bar">
-    <div class="footer-left">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-      </svg>
-      <span id="footer-timestamp">Last updated: —</span>
-    </div>
-    <div class="footer-right">
-      <button class="export-btn week" onclick="exportCSV(false)">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-        </svg>
-        Export Week CSV
-      </button>
-      <button class="export-btn month admin-only" onclick="exportCSV(true)">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-        </svg>
-        Export Month CSV
-      </button>
-    </div>
-  </div>
-
-  <!-- View-only tooltip -->
-  <div class="view-only-tooltip">
-    <strong>View Only Mode</strong><br/>
-    You can browse all data but cannot make edits. Contact an Admin for access changes.
-  </div>
-
 </div>
 
 <script>
-// ====================================================
-// STATE
-// ====================================================
-let currentRole = 'admin';
-let currentUserName = '';
-let currentYear = 2026;
-let currentMonthIdx = 3; // April = index 3
-let currentWeek = 1;
-let modalYear = 2026;
+// ═══════════════════════════════════════════════════
+// AUTH — Ahmed / Liverp00l = Admin | everyone else = View
+// ═══════════════════════════════════════════════════
+const ADMIN_USER = 'Ahmed';
+const ADMIN_PASS = 'Liverp00l';
 
-const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-const STAGES = ['','Prospecting','Discovery','Demo','Proposal','Negotiation','Verbal','Closed Won','Closed Lost','On Hold'];
+let currentUser = '';
+let currentRole = 'view'; // 'admin' | 'view'
+const isAdmin = () => currentRole === 'admin';
 
-// Data store: { "2026-3": { 1: [...rows], 2: [...], 3: [...], 4: [...], 5: [...] } }
-let dataStore = {};
+function doLogin() {
+  const user = document.getElementById('login-username').value.trim();
+  const pass = document.getElementById('login-password').value;
+  const errEl = document.getElementById('login-error');
 
-function storeKey(year, monthIdx) { return `${year}-${monthIdx}`; }
-
-function getWeekData(year, monthIdx, week) {
-  const k = storeKey(year, monthIdx);
-  if (!dataStore[k]) dataStore[k] = {};
-  if (!dataStore[k][week]) {
-    dataStore[k][week] = defaultRows();
+  if (!user || !pass) {
+    errEl.textContent = 'Please enter both username and password.';
+    errEl.style.display = 'block';
+    return;
   }
-  return dataStore[k][week];
+
+  // Determine role
+  if (user === ADMIN_USER && pass === ADMIN_PASS) {
+    currentRole = 'admin';
+  } else {
+    // Everyone else is View Only — but they still need SOME credentials
+    currentRole = 'view';
+  }
+
+  currentUser = user;
+  errEl.style.display = 'none';
+
+  // Store session
+  sessionStorage.setItem('sp_user', currentUser);
+  sessionStorage.setItem('sp_role', currentRole);
+
+  launchApp();
+}
+
+function doSignOut() {
+  sessionStorage.removeItem('sp_user');
+  sessionStorage.removeItem('sp_role');
+  currentUser = '';
+  currentRole = 'view';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-username').value = '';
+  document.getElementById('login-password').value = '';
+  document.getElementById('login-error').style.display = 'none';
+}
+
+function launchApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+
+  // Role badge
+  const badge = document.getElementById('role-badge');
+  badge.textContent = isAdmin() ? 'Admin' : 'View Only';
+  badge.className = 'role-badge ' + (isAdmin() ? 'admin' : 'view');
+
+  // User chip
+  document.getElementById('user-chip').textContent = currentUser;
+
+  // View banner + lock
+  document.getElementById('view-banner').style.display = isAdmin() ? 'none' : 'flex';
+  document.getElementById('lock-tooltip').style.display = isAdmin() ? 'none' : 'block';
+
+  // Add rep button
+  document.getElementById('btn-add-rep').style.display = isAdmin() ? 'inline-flex' : 'none';
+
+  // Export month (admin only)
+  document.getElementById('btn-export-month').style.display = isAdmin() ? 'inline-flex' : 'none';
+
+  loadState();
+  renderAll();
+}
+
+// ═══════════════════════════════════════════════════
+// DATA & STATE
+// ═══════════════════════════════════════════════════
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const STAGES = ['Prospecting','Qualified','Proposal','Negotiation','Closed Won','Closed Lost'];
+const CURRENCY = 'AED';
+
+let curYear, curMonth, curWeek;
+let calYear;
+
+// allData[year][month][week] = [ {rep, target, pipeline, commit, stage, notes}, ... ]
+let allData = {};
+
+function monthKey(y, m) { return y + '-' + m; }
+function weekKey(y, m, w) { return y + '-' + m + '-' + w; }
+
+function ensureWeek(y, m, w) {
+  if (!allData[y]) allData[y] = {};
+  if (!allData[y][m]) allData[y][m] = {};
+  if (!allData[y][m][w]) allData[y][m][w] = defaultRows();
 }
 
 function defaultRows() {
   return [
-    { name:'Connor', commit:140000, commitDev:3, confidence:70, upside:60000, upsideDev:2, stage:'Proposal', notes:[] },
-    { name:'Jawdat', commit:180000, commitDev:4, confidence:90, upside:40000, upsideDev:1, stage:'Negotiation', notes:[] },
-    { name:'Wafiq',  commit:0,      commitDev:0, confidence:0,  upside:40000, upsideDev:1, stage:'Discovery',  notes:['Needs intro call','Follow up on Thursday'] },
-    { name:'Fatima', commit:160000, commitDev:3, confidence:80, upside:40000, upsideDev:1, stage:'Proposal',   notes:[] },
-    { name:'Marios', commit:0,      commitDev:0, confidence:0,  upside:40000, upsideDev:1, stage:'Prospecting',notes:['Pipeline building'] },
-    { name:'Hasan',  commit:0,      commitDev:0, confidence:0,  upside:40000, upsideDev:1, stage:'Discovery',  notes:[] },
+    { rep:'Ahmed Al-Farsi', target:50000, pipeline:35000, commit:28000, stage:'Proposal', notes:'' },
+    { rep:'Sara Malik',     target:45000, pipeline:40000, commit:38000, stage:'Negotiation', notes:'' },
+    { rep:'Omar Hassan',    target:55000, pipeline:20000, commit:15000, stage:'Qualified', notes:'' },
+    { rep:'Layla Nasser',   target:48000, pipeline:44000, commit:42000, stage:'Closed Won', notes:'' },
   ];
 }
 
-function saveToStorage() {
-  localStorage.setItem('coretrack_data_v2', JSON.stringify(dataStore));
-  localStorage.setItem('coretrack_month', JSON.stringify({ year: currentYear, monthIdx: currentMonthIdx }));
-  localStorage.setItem('coretrack_week', currentWeek);
+function getRows(y, m, w) {
+  ensureWeek(y, m, w);
+  return allData[y][m][w];
 }
 
-function loadFromStorage() {
-  const d = localStorage.getItem('coretrack_data_v2');
-  if (d) dataStore = JSON.parse(d);
-  const m = localStorage.getItem('coretrack_month');
-  if (m) { const p = JSON.parse(m); currentYear = p.year; currentMonthIdx = p.monthIdx; }
-  const w = localStorage.getItem('coretrack_week');
-  if (w) currentWeek = parseInt(w);
+function saveState() {
+  localStorage.setItem('sp_data', JSON.stringify(allData));
+  localStorage.setItem('sp_cur', JSON.stringify({ y: curYear, m: curMonth, w: curWeek }));
 }
 
-// ====================================================
-// LOGIN
-// ====================================================
-function selectRole(role) {
-  currentRole = role;
-  document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
-  document.querySelector(`.${role}-card`).classList.add('selected');
-}
-
-function doLogin() {
-  const nameInput = document.getElementById('login-name');
-  const err = document.getElementById('login-error');
-  const name = nameInput.value.trim();
-  if (!name) {
-    err.style.display = 'block';
-    nameInput.focus();
-    return;
+function loadState() {
+  const raw = localStorage.getItem('sp_data');
+  if (raw) { try { allData = JSON.parse(raw); } catch(e) {} }
+  const cur = localStorage.getItem('sp_cur');
+  if (cur) {
+    try {
+      const obj = JSON.parse(cur);
+      curYear = obj.y; curMonth = obj.m; curWeek = obj.w;
+    } catch(e) {}
   }
-  err.style.display = 'none';
-  currentUserName = name;
-
-  // Apply role to body
-  if (currentRole === 'viewer') {
-    document.body.classList.add('view-only');
-  } else {
-    document.body.classList.remove('view-only');
+  if (!curYear) {
+    const now = new Date();
+    curYear = now.getFullYear();
+    curMonth = now.getMonth();
+    curWeek = 0;
   }
-
-  // Update UI
-  const initials = name.split(' ').map(w => w[0].toUpperCase()).slice(0,2).join('');
-  document.getElementById('user-avatar-badge').textContent = initials;
-  document.getElementById('user-avatar-badge').className = `user-avatar ${currentRole}`;
-  document.getElementById('user-name-display').textContent = name;
-
-  const badge = document.getElementById('current-role-badge');
-  if (currentRole === 'admin') {
-    badge.innerHTML = `<div class="role-badge admin"><div class="role-badge-dot"></div>Admin</div>`;
-  } else {
-    badge.innerHTML = `<div class="role-badge viewer"><div class="role-badge-dot"></div>View Only</div>`;
-  }
-
-  // Hide login, show app
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-
-  loadFromStorage();
-  renderAll();
+  calYear = curYear;
 }
 
-function doLogout() {
-  saveToStorage();
-  document.body.classList.remove('view-only');
-  document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('login-name').value = '';
-  currentRole = 'admin';
-  document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
-  document.querySelector('.admin-card').classList.add('selected');
-}
-
-// ====================================================
-// MONTH NAVIGATION
-// ====================================================
-function changeMonth(dir) {
-  currentMonthIdx += dir;
-  if (currentMonthIdx > 11) { currentMonthIdx = 0; currentYear++; }
-  if (currentMonthIdx < 0)  { currentMonthIdx = 11; currentYear--; }
-  currentWeek = 1;
-  saveToStorage();
-  renderAll();
-}
-
-function openMonthModal() {
-  if (currentRole === 'viewer') {
-    // viewers can still open the calendar to navigate
-  }
-  modalYear = currentYear;
-  renderMonthModal();
-  document.getElementById('month-modal').classList.add('open');
-}
-
-document.getElementById('month-modal').addEventListener('click', function(e) {
-  if (e.target === this) this.classList.remove('open');
-});
-
-function changeModalYear(dir) {
-  modalYear += dir;
-  renderMonthModal();
-}
-
-function renderMonthModal() {
-  document.getElementById('modal-year-display').textContent = modalYear;
-  const grid = document.getElementById('month-grid');
-  grid.innerHTML = '';
-  const now = new Date();
-  MONTHS.forEach((m, i) => {
-    const cell = document.createElement('div');
-    cell.className = 'month-cell';
-    if (i === now.getMonth() && modalYear === now.getFullYear()) cell.classList.add('current-month');
-    if (i === currentMonthIdx && modalYear === currentYear) cell.classList.add('selected-month');
-    // dot if has data
-    const k = storeKey(modalYear, i);
-    if (dataStore[k]) {
-      const dot = document.createElement('div');
-      dot.className = 'm-dot';
-      cell.appendChild(dot);
-    }
-    const label = document.createElement('span');
-    label.textContent = m.slice(0,3);
-    cell.appendChild(label);
-    cell.addEventListener('click', () => {
-      currentYear = modalYear;
-      currentMonthIdx = i;
-      currentWeek = 1;
-      document.getElementById('month-modal').classList.remove('open');
-      saveToStorage();
-      renderAll();
+// ═══════════════════════════════════════════════════
+// WEEK DATE RANGES
+// ═══════════════════════════════════════════════════
+function getWeekRanges(y, m) {
+  const ranges = [];
+  const firstDay = new Date(y, m, 1);
+  let start = new Date(firstDay);
+  for (let w = 0; w < 5; w++) {
+    if (start.getMonth() !== m) break;
+    let end = new Date(start);
+    end.setDate(end.getDate() + 6);
+    if (end.getMonth() !== m) end = new Date(y, m + 1, 0);
+    ranges.push({
+      label: 'W' + (w+1),
+      range: start.getDate() + ' - ' + end.getDate() + ' ' + MONTHS[m]
     });
-    grid.appendChild(cell);
-  });
+    start.setDate(end.getDate() + 1);
+  }
+  return ranges;
 }
 
-// ====================================================
-// WEEK TABS
-// ====================================================
-function getWeekDates(year, monthIdx, week) {
-  const firstDay = new Date(year, monthIdx, 1);
-  const startOffset = (week - 1) * 7;
-  const start = new Date(firstDay.getTime() + startOffset * 86400000);
-  const end = new Date(start.getTime() + 6 * 86400000);
-  const fmt = d => `${d.getDate()} ${MONTHS[d.getMonth()].slice(0,3)}`;
-  if (start.getMonth() !== monthIdx) return `Week ${week}`;
-  return `${fmt(start)} - ${fmt(end)}`;
+// ═══════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════
+function renderAll() {
+  renderMonthDisplay();
+  renderWeekTabs();
+  renderKPIs();
+  renderSummaryBars();
+  renderTable();
+}
+
+function renderMonthDisplay() {
+  document.getElementById('month-display-text').textContent = MONTHS[curMonth] + ' ' + curYear;
 }
 
 function renderWeekTabs() {
-  const wrap = document.getElementById('week-tabs');
-  wrap.innerHTML = '';
-  const k = storeKey(currentYear, currentMonthIdx);
-  for (let w = 1; w <= 5; w++) {
-    const tab = document.createElement('div');
-    tab.className = 'week-tab' + (w === currentWeek ? ' active' : '');
-    tab.innerHTML = `W${w} <span style="font-size:10px;color:var(--text3);font-weight:400;">${getWeekDates(currentYear, currentMonthIdx, w)}</span>`;
-    // dot if has data
-    if (dataStore[k] && dataStore[k][w]) {
-      const anyData = dataStore[k][w].some(r => r.commit > 0 || r.upside > 0);
-      if (anyData) {
-        const dot = document.createElement('span');
-        dot.className = 'dot';
-        tab.appendChild(dot);
-      }
-    }
-    const wNum = w;
-    tab.addEventListener('click', () => {
-      currentWeek = wNum;
-      saveToStorage();
-      renderAll();
-    });
-    wrap.appendChild(tab);
-  }
-}
-
-// ====================================================
-// RENDER
-// ====================================================
-function renderAll() {
-  document.getElementById('month-display').textContent = `${MONTHS[currentMonthIdx]} ${currentYear}`;
-  renderWeekTabs();
-  renderTable();
-  renderKPIs();
-  renderSummaryBars();
-  updateTimestamp();
-}
-
-function renderTable() {
-  const rows = getWeekData(currentYear, currentMonthIdx, currentWeek);
-  const tbody = document.getElementById('table-body');
-  tbody.innerHTML = '';
-
-  rows.forEach((row, idx) => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = buildRowHTML(row, idx);
-    tbody.appendChild(tr);
+  const ranges = getWeekRanges(curYear, curMonth);
+  const container = document.getElementById('week-tabs');
+  container.innerHTML = '';
+  ranges.forEach((r, i) => {
+    const hasData = weekHasData(curYear, curMonth, i);
+    const btn = document.createElement('button');
+    btn.className = 'week-tab' + (i === curWeek ? ' active' : '');
+    btn.innerHTML = r.label + '<br><span style="font-size:9px;font-weight:500;opacity:0.7;">' + r.range + '</span>'
+      + (hasData ? '<span class="dot"></span>' : '');
+    btn.onclick = () => { curWeek = i; saveState(); renderAll(); };
+    container.appendChild(btn);
   });
-
-  // Totals row
-  const totals = calcTotals(rows);
-  const totalsRow = document.createElement('tr');
-  totalsRow.className = 'totals-row';
-  totalsRow.innerHTML = `
-    <td class="totals-label">TOTALS</td>
-    <td class="totals-val commit-val">${fmt$(totals.commit)}</td>
-    <td class="totals-val" style="color:var(--accent2);text-align:center">${totals.commitDev}</td>
-    <td class="totals-val confidence-val">${totals.avgConf}%</td>
-    <td class="totals-val upside-val">${fmt$(totals.upside)}</td>
-    <td class="totals-val" style="color:var(--accent);text-align:center">${totals.upsideDev}</td>
-    <td></td>
-    <td class="totals-val" style="color:var(--warn)">${fmt$(totals.wtnd)}</td>
-    <td></td>
-  `;
-  tbody.appendChild(totalsRow);
 }
 
-function buildRowHTML(row, idx) {
-  const isViewOnly = document.body.classList.contains('view-only');
-  const notesHTML = buildNotesHTML(row, idx, isViewOnly);
-  const stageOpts = STAGES.map(s => `<option value="${s}" ${s===row.stage?'selected':''}>${s||'-- Stage --'}</option>`).join('');
-  const wtnd = Math.round((row.commit || 0) * (row.confidence || 0) / 100);
-
-  return `
-    <td class="td-name">
-      ${isViewOnly
-        ? `<span>${row.name || '—'}</span>`
-        : `<input class="cell-input" style="text-align:left;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600"
-             value="${escHtml(row.name)}"
-             oninput="updateFieldSilent(${idx},'name',this.value)"
-             onblur="commitField(${idx},'name',this.value)"/>`
-      }
-    </td>
-    <td class="input-cell commit-cell">
-      <input class="cell-input commit-val" type="number" min="0" value="${row.commit}"
-        oninput="updateFieldSilent(${idx},'commit',this.value)"
-        onblur="commitField(${idx},'commit',this.value)"/>
-    </td>
-    <td class="input-cell commit-cell">
-      <input class="cell-input" type="number" min="0" style="color:var(--accent2);text-align:center" value="${row.commitDev}"
-        oninput="updateFieldSilent(${idx},'commitDev',this.value)"
-        onblur="commitField(${idx},'commitDev',this.value)"/>
-    </td>
-    <td class="input-cell commit-cell">
-      <input class="cell-input confidence-val" type="number" min="0" max="100" value="${row.confidence}"
-        oninput="updateFieldSilent(${idx},'confidence',this.value)"
-        onblur="commitField(${idx},'confidence',this.value)"/>
-    </td>
-    <td class="input-cell upside-cell">
-      <input class="cell-input upside-val" type="number" min="0" value="${row.upside}"
-        oninput="updateFieldSilent(${idx},'upside',this.value)"
-        onblur="commitField(${idx},'upside',this.value)"/>
-    </td>
-    <td class="input-cell upside-cell">
-      <input class="cell-input" type="number" min="0" style="color:var(--accent);text-align:center" value="${row.upsideDev}"
-        oninput="updateFieldSilent(${idx},'upsideDev',this.value)"
-        onblur="commitField(${idx},'upsideDev',this.value)"/>
-    </td>
-    <td class="stage-wrap">
-      <select class="stage-select" onchange="commitField(${idx},'stage',this.value)">${stageOpts}</select>
-    </td>
-    <td class="wtnd-val">${fmt$(wtnd)}</td>
-    <td class="notes-cell" id="notes-cell-${idx}">${notesHTML}</td>
-  `;
+function weekHasData(y, m, w) {
+  if (!allData[y]?.[m]?.[w]) return false;
+  return allData[y][m][w].some(r => r.commit > 0 || r.pipeline > 0);
 }
 
-function buildNotesHTML(row, idx, isViewOnly) {
-  const bullets = (row.notes || []).filter(n => n.trim());
-  const displayHTML = bullets.length
-    ? `<ul class="notes-bullet-list">${bullets.map(b => `<li>${escHtml(b)}</li>`).join('')}</ul>`
-    : `<span class="notes-placeholder">${isViewOnly ? 'No notes' : 'Click to add notes...'}</span>`;
-
-  if (isViewOnly) {
-    return `<div class="notes-display">${displayHTML}</div>`;
-  }
-
-  return `
-    <div class="notes-display" onclick="openNotesEditor(${idx})">${displayHTML}</div>
-    <div class="notes-editor-wrap" id="notes-editor-${idx}">
-      <textarea class="notes-textarea" id="notes-ta-${idx}" placeholder="One point per line...">${bullets.join('\n')}</textarea>
-      <div class="notes-actions">
-        <button class="notes-save-btn" onclick="saveNotes(${idx})">Save</button>
-        <button class="notes-cancel-btn" onclick="cancelNotes(${idx})">Cancel</button>
-      </div>
-    </div>
-  `;
-}
-
-function openNotesEditor(idx) {
-  if (document.body.classList.contains('view-only')) return;
-  const cell = document.getElementById(`notes-cell-${idx}`);
-  const display = cell.querySelector('.notes-display');
-  const editor = document.getElementById(`notes-editor-${idx}`);
-  if (!editor) return;
-  display.style.display = 'none';
-  editor.style.display = 'flex';
-  document.getElementById(`notes-ta-${idx}`).focus();
-}
-
-function saveNotes(idx) {
-  const ta = document.getElementById(`notes-ta-${idx}`);
-  const lines = ta.value.split('\n').map(l => l.replace(/^[-*]\s*/, '').trim()).filter(l => l);
-  const rows = getWeekData(currentYear, currentMonthIdx, currentWeek);
-  rows[idx].notes = lines;
-  saveToStorage();
-  renderTable();
-  renderKPIs();
-}
-
-function cancelNotes(idx) {
-  const cell = document.getElementById(`notes-cell-${idx}`);
-  const display = cell.querySelector('.notes-display');
-  const editor = document.getElementById(`notes-editor-${idx}`);
-  if (!editor) return;
-  display.style.display = '';
-  editor.style.display = 'none';
-}
-
-// ====================================================
-// FIELD UPDATES
-// ====================================================
-function updateFieldSilent(idx, field, rawVal) {
-  const rows = getWeekData(currentYear, currentMonthIdx, currentWeek);
-  if (!rows[idx]) return;
-  if (field === 'name' || field === 'stage') {
-    rows[idx][field] = rawVal;
-  } else {
-    rows[idx][field] = rawVal; // keep as string while typing
-  }
-}
-
-function commitField(idx, field, rawVal) {
-  const rows = getWeekData(currentYear, currentMonthIdx, currentWeek);
-  if (!rows[idx]) return;
-  if (field === 'name' || field === 'stage') {
-    rows[idx][field] = rawVal;
-  } else {
-    let num = parseFloat(String(rawVal).replace(/[^0-9.]/g,''));
-    if (isNaN(num) || num < 0) num = 0;
-    if (field === 'confidence' && num > 100) num = 100;
-    rows[idx][field] = num;
-  }
-  saveToStorage();
-  renderKPIs();
-  renderSummaryBars();
-  updateTimestamp();
-  // Only update wtnd cell for the changed row
-  const wtnd = Math.round((rows[idx].commit || 0) * (rows[idx].confidence || 0) / 100);
-  const tbody = document.getElementById('table-body');
-  const tr = tbody.rows[idx];
-  if (tr) {
-    const wtndCell = tr.cells[7];
-    if (wtndCell) wtndCell.textContent = fmt$(wtnd);
-  }
-  // Update totals row
-  const totals = calcTotals(rows);
-  const totalsRow = tbody.rows[rows.length];
-  if (totalsRow) {
-    totalsRow.cells[1].textContent = fmt$(totals.commit);
-    totalsRow.cells[2].textContent = totals.commitDev;
-    totalsRow.cells[3].textContent = totals.avgConf + '%';
-    totalsRow.cells[4].textContent = fmt$(totals.upside);
-    totalsRow.cells[5].textContent = totals.upsideDev;
-    totalsRow.cells[7].textContent = fmt$(totals.wtnd);
-  }
-}
-
-// ====================================================
-// ADD / DELETE ROW
-// ====================================================
-function addRow() {
-  if (document.body.classList.contains('view-only')) return;
-  const rows = getWeekData(currentYear, currentMonthIdx, currentWeek);
-  rows.push({ name:'', commit:0, commitDev:0, confidence:0, upside:0, upsideDev:0, stage:'', notes:[] });
-  saveToStorage();
-  renderAll();
-}
-
-// ====================================================
-// KPIs
-// ====================================================
-function calcTotals(rows) {
-  let commit = 0, commitDev = 0, upside = 0, upsideDev = 0, wtnd = 0, confSum = 0, confCount = 0;
-  rows.forEach(r => {
-    commit += Number(r.commit) || 0;
-    commitDev += Number(r.commitDev) || 0;
-    upside += Number(r.upside) || 0;
-    upsideDev += Number(r.upsideDev) || 0;
-    const c = Number(r.confidence) || 0;
-    wtnd += Math.round((Number(r.commit)||0) * c / 100);
-    if (c > 0) { confSum += c; confCount++; }
-  });
-  return { commit, commitDev, upside, upsideDev, wtnd, avgConf: confCount ? Math.round(confSum/confCount) : 0 };
+function monthHasData(y, m) {
+  for (let w = 0; w < 5; w++) { if (weekHasData(y, m, w)) return true; }
+  return false;
 }
 
 function renderKPIs() {
-  const rows = getWeekData(currentYear, currentMonthIdx, currentWeek);
-  const t = calcTotals(rows);
-  document.getElementById('kpi-commit').textContent = fmt$(t.commit);
-  document.getElementById('kpi-commit-dev').textContent = `${t.commitDev} devices`;
-  document.getElementById('kpi-upside').textContent = fmt$(t.upside);
-  document.getElementById('kpi-upside-dev').textContent = `${t.upsideDev} devices`;
-  document.getElementById('kpi-confidence').textContent = `${t.avgConf}%`;
-  document.getElementById('kpi-wtnd').textContent = fmt$(t.wtnd);
-}
+  const rows = getRows(curYear, curMonth, curWeek);
+  const totalTarget   = rows.reduce((s,r) => s + (+r.target || 0), 0);
+  const totalPipeline = rows.reduce((s,r) => s + (+r.pipeline || 0), 0);
+  const totalCommit   = rows.reduce((s,r) => s + (+r.commit || 0), 0);
+  const attainment    = totalTarget > 0 ? Math.round((totalCommit / totalTarget) * 100) : 0;
+  const gap           = totalTarget - totalCommit;
+  const attClass      = attainment >= 100 ? 'green' : attainment >= 70 ? 'orange' : 'red';
+  const gapClass      = gap <= 0 ? 'green' : 'red';
 
-// ====================================================
-// SUMMARY BARS
-// ====================================================
-function renderSummaryBars() {
-  const wrap = document.getElementById('summary-bars');
-  wrap.innerHTML = '';
-  let maxCommit = 1;
-  const weekTotals = [];
-  for (let w = 1; w <= 5; w++) {
-    const rows = getWeekData(currentYear, currentMonthIdx, w);
-    const t = calcTotals(rows);
-    weekTotals.push(t.commit);
-    if (t.commit > maxCommit) maxCommit = t.commit;
-  }
-  weekTotals.forEach((val, i) => {
-    const w = i + 1;
-    const pct = Math.round((val / maxCommit) * 100);
-    const div = document.createElement('div');
-    div.className = 'summary-week';
-    div.innerHTML = `
-      <div class="summary-bar-wrap">
-        <div class="summary-bar-fill${w===currentWeek?' active-week':''}" style="height:${pct}%"></div>
-      </div>
-      <div class="summary-week-label">W${w}</div>
-    `;
-    wrap.appendChild(div);
+  const fmt = v => CURRENCY + ' ' + Number(v).toLocaleString();
+
+  const kpis = [
+    { label:'Total Target',   value: fmt(totalTarget),    sub: curWeek+1+' of '+getWeekRanges(curYear,curMonth).length+' weeks', cls:'' },
+    { label:'Total Pipeline', value: fmt(totalPipeline),  sub: 'Active opportunities', cls:'blue' },
+    { label:'Total Commit',   value: fmt(totalCommit),    sub: 'Committed revenue', cls:'orange' },
+    { label:'Attainment',     value: attainment + '%',    sub: 'vs target', cls: attClass },
+    { label:'Gap to Target',  value: fmt(Math.abs(gap)),  sub: gap <= 0 ? 'Achieved!' : 'Remaining', cls: gapClass },
+  ];
+
+  const strip = document.getElementById('kpi-strip');
+  strip.innerHTML = '';
+  kpis.forEach(k => {
+    strip.innerHTML += `
+      <div class="kpi-card">
+        <div class="kpi-label">${k.label}</div>
+        <div class="kpi-value ${k.cls}">${k.value}</div>
+        <div class="kpi-sub">${k.sub}</div>
+      </div>`;
   });
 }
 
-// ====================================================
-// EXPORT CSV
-// ====================================================
-function exportCSV(allWeeks) {
-  let csv = '';
-  const months_to_export = allWeeks ? [currentMonthIdx] : null;
-  if (allWeeks) {
-    csv += `CoreTrack Export — ${MONTHS[currentMonthIdx]} ${currentYear}\n\n`;
-    for (let w = 1; w <= 5; w++) {
-      csv += `Week ${w} — ${getWeekDates(currentYear, currentMonthIdx, w)}\n`;
-      csv += 'Rep Name,Commit ($),Commit (Dev),Confidence %,Upside ($),Upside (Dev),Stage,WTND Forecast,Notes\n';
-      const rows = getWeekData(currentYear, currentMonthIdx, w);
-      rows.forEach(r => {
-        const wtnd = Math.round((r.commit||0)*(r.confidence||0)/100);
-        csv += `"${r.name}",${r.commit},${r.commitDev},${r.confidence}%,${r.upside},${r.upsideDev},"${r.stage}","${r.notes.join('; ')}"\n`;
-      });
-      csv += '\n';
+function renderSummaryBars() {
+  const container = document.getElementById('summary-bars');
+  container.innerHTML = '';
+  const ranges = getWeekRanges(curYear, curMonth);
+  const vals = ranges.map((r,i) => {
+    const rows = getRows(curYear, curMonth, i);
+    return rows.reduce((s,r2) => s + (+r2.commit || 0), 0);
+  });
+  const maxVal = Math.max(...vals, 1);
+  const fmt = v => v >= 1000 ? (v/1000).toFixed(0)+'k' : v;
+
+  vals.forEach((v, i) => {
+    const pct = Math.round((v / maxVal) * 68);
+    container.innerHTML += `
+      <div class="summary-bar-wrap">
+        <div class="summary-bar-val">${v > 0 ? CURRENCY+' '+fmt(v) : ''}</div>
+        <div class="summary-bar-track ${v > 0 ? 'filled' : ''}" style="height:${Math.max(pct,4)}px;"></div>
+        <div class="summary-bar-label">${ranges[i].label}</div>
+      </div>`;
+  });
+}
+
+function renderTable() {
+  const rows = getRows(curYear, curMonth, curWeek);
+  const head = document.getElementById('table-head');
+  const body = document.getElementById('table-body');
+  const foot = document.getElementById('table-foot');
+  const readOnly = !isAdmin();
+  const notesColExtra = readOnly ? `<span class="view-badge-col">READ ONLY</span>` : '';
+
+  head.innerHTML = `
+    <tr>
+      <th>Rep Name</th>
+      <th style="text-align:right;">Target (${CURRENCY})</th>
+      <th style="text-align:right;">Pipeline (${CURRENCY})</th>
+      <th style="text-align:right;">Commit (${CURRENCY})</th>
+      <th style="text-align:right;">Attainment</th>
+      <th style="text-align:right;">Gap (${CURRENCY})</th>
+      <th>Stage</th>
+      <th class="notes-col">Notes ${notesColExtra}</th>
+      ${isAdmin() ? '<th></th>' : ''}
+    </tr>`;
+
+  body.innerHTML = '';
+  rows.forEach((row, idx) => {
+    const target   = +row.target   || 0;
+    const pipeline = +row.pipeline || 0;
+    const commit   = +row.commit   || 0;
+    const att      = target > 0 ? Math.round((commit / target) * 100) : 0;
+    const gap      = target - commit;
+    const attCls   = att >= 100 ? 'style="color:var(--green)"' : att >= 70 ? 'style="color:var(--accent)"' : 'style="color:var(--red)"';
+    const gapCls   = gap <= 0 ? 'style="color:var(--green)"' : 'style="color:var(--red)"';
+    const fmt = v => Number(v).toLocaleString();
+
+    // Notes HTML
+    let notesHTML = '';
+    if (!readOnly) {
+      const bullets = parseNotes(row.notes);
+      const displayHTML = bullets.length > 0
+        ? bullets.map(b => `<div class="notes-bullet"><div class="notes-bullet-dot"></div><span>${escHtml(b)}</span></div>`).join('')
+        : `<span class="notes-placeholder">Click to add notes...</span>`;
+      notesHTML = `
+        <div class="notes-display" onclick="openNotesEditor(${idx})" id="notes-display-${idx}">${displayHTML}</div>
+        <div class="notes-editor-wrap" id="notes-editor-${idx}">
+          <textarea class="notes-textarea" id="notes-textarea-${idx}" rows="4" placeholder="Enter each point on a new line...">${escHtml(row.notes)}</textarea>
+          <div class="notes-actions">
+            <button class="notes-save-btn" onclick="saveNotes(${idx})">Save</button>
+            <button class="notes-cancel-btn" onclick="cancelNotes(${idx})">Cancel</button>
+          </div>
+        </div>`;
+    } else {
+      const bullets = parseNotes(row.notes);
+      const displayHTML = bullets.length > 0
+        ? bullets.map(b => `<div class="notes-bullet"><div class="notes-bullet-dot"></div><span>${escHtml(b)}</span></div>`).join('')
+        : `<span class="notes-placeholder">No notes</span>`;
+      notesHTML = `<div class="notes-display readonly">${displayHTML}</div>`;
     }
-  } else {
-    csv += `CoreTrack Export — ${MONTHS[currentMonthIdx]} ${currentYear} — Week ${currentWeek}\n`;
-    csv += 'Rep Name,Commit ($),Commit (Dev),Confidence %,Upside ($),Upside (Dev),Stage,WTND Forecast,Notes\n';
-    const rows = getWeekData(currentYear, currentMonthIdx, currentWeek);
-    rows.forEach(r => {
-      const wtnd = Math.round((r.commit||0)*(r.confidence||0)/100);
-      csv += `"${r.name}",${r.commit},${r.commitDev},${r.confidence}%,${r.upside},${r.upsideDev},"${r.stage}",${wtnd},"${(r.notes||[]).join('; ')}"\n`;
+
+    const stageOpts = STAGES.map(s =>
+      `<option value="${s}" ${s === row.stage ? 'selected' : ''}>${s}</option>`
+    ).join('');
+
+    const deleteBtn = isAdmin() ? `<td style="padding:6px 8px;">
+      <button onclick="deleteRep(${idx})" style="background:transparent;border:1px solid rgba(239,68,68,0.3);border-radius:5px;padding:4px 8px;color:var(--red);font-size:10px;cursor:pointer;font-family:Manrope,sans-serif;font-weight:700;transition:all 0.15s;"
+      onmouseover="this.style.background='rgba(239,68,68,0.1)'" onmouseout="this.style.background='transparent'">Del</button></td>` : '';
+
+    body.innerHTML += `
+      <tr>
+        <td class="rep-name-cell">${escHtml(row.rep)}</td>
+        <td>
+          <input type="number" class="cell-input ${readOnly ? 'readonly' : ''}"
+            value="${row.target}"
+            ${readOnly ? 'readonly tabindex="-1"' : `oninput="updateFieldSilent(${idx},'target',this.value)" onblur="commitField(${idx},'target',this.value)"`}
+            style="text-align:right;"/>
+        </td>
+        <td>
+          <input type="number" class="cell-input ${readOnly ? 'readonly' : ''}"
+            value="${row.pipeline}"
+            ${readOnly ? 'readonly tabindex="-1"' : `oninput="updateFieldSilent(${idx},'pipeline',this.value)" onblur="commitField(${idx},'pipeline',this.value)"`}
+            style="text-align:right;"/>
+        </td>
+        <td>
+          <input type="number" class="cell-input ${readOnly ? 'readonly' : ''}"
+            value="${row.commit}"
+            ${readOnly ? 'readonly tabindex="-1"' : `oninput="updateFieldSilent(${idx},'commit',this.value)" onblur="commitField(${idx},'commit',this.value)"`}
+            style="text-align:right;"/>
+        </td>
+        <td class="computed-cell" ${attCls}>${att}%</td>
+        <td class="computed-cell" ${gapCls}>${gap < 0 ? '+' : ''}${fmt(Math.abs(gap))}</td>
+        <td>
+          <select class="stage-select ${readOnly ? 'readonly' : ''}"
+            ${readOnly ? 'disabled' : `onchange="updateField(${idx},'stage',this.value)"`}>
+            ${stageOpts}
+          </select>
+        </td>
+        <td>${notesHTML}</td>
+        ${deleteBtn}
+      </tr>`;
+  });
+
+  // Totals
+  const totTarget   = rows.reduce((s,r) => s + (+r.target   || 0), 0);
+  const totPipeline = rows.reduce((s,r) => s + (+r.pipeline || 0), 0);
+  const totCommit   = rows.reduce((s,r) => s + (+r.commit   || 0), 0);
+  const fmt = v => Number(v).toLocaleString();
+
+  foot.innerHTML = `
+    <tr class="totals-row">
+      <td>Totals</td>
+      <td style="text-align:right;">${CURRENCY} ${fmt(totTarget)}</td>
+      <td style="text-align:right;">${CURRENCY} ${fmt(totPipeline)}</td>
+      <td style="text-align:right;">${CURRENCY} ${fmt(totCommit)}</td>
+      <td></td><td></td><td></td><td></td>
+      ${isAdmin() ? '<td></td>' : ''}
+    </tr>`;
+}
+
+// ═══════════════════════════════════════════════════
+// FIELD UPDATES
+// ═══════════════════════════════════════════════════
+function updateFieldSilent(idx, field, val) {
+  const rows = getRows(curYear, curMonth, curWeek);
+  rows[idx][field] = val; // store raw, no re-render
+}
+
+function commitField(idx, field, val) {
+  const rows = getRows(curYear, curMonth, curWeek);
+  const num = parseInt(val.toString().replace(/[^0-9]/g, ''), 10);
+  rows[idx][field] = isNaN(num) ? 0 : num;
+  saveState();
+  renderKPIs();
+  renderSummaryBars();
+  renderTable();
+}
+
+function updateField(idx, field, val) {
+  const rows = getRows(curYear, curMonth, curWeek);
+  rows[idx][field] = val;
+  saveState();
+  renderAll();
+}
+
+// ═══════════════════════════════════════════════════
+// NOTES
+// ═══════════════════════════════════════════════════
+function parseNotes(notes) {
+  if (!notes || !notes.trim()) return [];
+  return notes.split('\n')
+    .map(l => l.replace(/^[-*•]\s*/, '').trim())
+    .filter(l => l.length > 0);
+}
+
+function escHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function openNotesEditor(idx) {
+  document.getElementById('notes-display-' + idx).style.display = 'none';
+  document.getElementById('notes-editor-' + idx).classList.add('active');
+  document.getElementById('notes-textarea-' + idx).focus();
+}
+
+function saveNotes(idx) {
+  const val = document.getElementById('notes-textarea-' + idx).value;
+  updateField(idx, 'notes', val);
+}
+
+function cancelNotes(idx) {
+  document.getElementById('notes-display-' + idx).style.display = '';
+  document.getElementById('notes-editor-' + idx).classList.remove('active');
+}
+
+// ═══════════════════════════════════════════════════
+// REPS
+// ═══════════════════════════════════════════════════
+function addRep() {
+  if (!isAdmin()) return;
+  const name = prompt('Enter rep name:');
+  if (!name || !name.trim()) return;
+  const rows = getRows(curYear, curMonth, curWeek);
+  rows.push({ rep: name.trim(), target:0, pipeline:0, commit:0, stage:'Prospecting', notes:'' });
+  saveState();
+  renderAll();
+}
+
+function deleteRep(idx) {
+  if (!isAdmin()) return;
+  const rows = getRows(curYear, curMonth, curWeek);
+  if (!confirm('Remove ' + rows[idx].rep + '?')) return;
+  rows.splice(idx, 1);
+  saveState();
+  renderAll();
+}
+
+// ═══════════════════════════════════════════════════
+// MONTH NAVIGATION
+// ═══════════════════════════════════════════════════
+function shiftMonth(delta) {
+  curMonth += delta;
+  if (curMonth < 0)  { curMonth = 11; curYear--; }
+  if (curMonth > 11) { curMonth = 0;  curYear++; }
+  curWeek = 0;
+  calYear = curYear;
+  saveState();
+  renderAll();
+}
+
+// ═══════════════════════════════════════════════════
+// CALENDAR MODAL
+// ═══════════════════════════════════════════════════
+function openCalendar() {
+  calYear = curYear;
+  renderCalendar();
+  document.getElementById('cal-modal').classList.add('open');
+}
+
+function closeCalendar() {
+  document.getElementById('cal-modal').classList.remove('open');
+}
+
+function closeCalendarOnOverlay(e) {
+  if (e.target === document.getElementById('cal-modal')) closeCalendar();
+}
+
+function shiftCalYear(delta) {
+  calYear += delta;
+  renderCalendar();
+}
+
+function renderCalendar() {
+  document.getElementById('cal-year-label').textContent = calYear;
+  const container = document.getElementById('cal-months');
+  container.innerHTML = '';
+  MONTHS.forEach((m, i) => {
+    const isActive = calYear === curYear && i === curMonth;
+    const hasData = monthHasData(calYear, i);
+    const btn = document.createElement('button');
+    btn.className = 'cal-month-btn' + (isActive ? ' active' : '');
+    btn.innerHTML = m + (hasData ? '<span class="has-data"></span>' : '');
+    btn.onclick = () => { curYear = calYear; curMonth = i; curWeek = 0; saveState(); renderAll(); closeCalendar(); };
+    container.appendChild(btn);
+  });
+}
+
+// ═══════════════════════════════════════════════════
+// EXPORT
+// ═══════════════════════════════════════════════════
+function exportWeekCSV() {
+  const rows = getRows(curYear, curMonth, curWeek);
+  const ranges = getWeekRanges(curYear, curMonth);
+  const weekLabel = ranges[curWeek] ? ranges[curWeek].label + ' (' + ranges[curWeek].range + ')' : 'W'+(curWeek+1);
+  let csv = `Sales Tracker - ${MONTHS[curMonth]} ${curYear} - ${weekLabel}\n`;
+  csv += `Rep,Target (${CURRENCY}),Pipeline (${CURRENCY}),Commit (${CURRENCY}),Attainment,Gap,Stage,Notes\n`;
+  rows.forEach(r => {
+    const att = r.target > 0 ? Math.round((r.commit / r.target) * 100) : 0;
+    const gap = r.target - r.commit;
+    const notesFlat = parseNotes(r.notes).join(' | ');
+    csv += `"${r.rep}",${r.target},${r.pipeline},${r.commit},${att}%,${gap},"${r.stage}","${notesFlat}"\n`;
+  });
+  downloadCSV(csv, `sales-${curYear}-${MONTHS[curMonth]}-${weekLabel}.csv`);
+}
+
+function exportMonthCSV() {
+  if (!isAdmin()) return;
+  const ranges = getWeekRanges(curYear, curMonth);
+  let csv = `Sales Tracker - ${MONTHS[curMonth]} ${curYear} - Full Month\n`;
+  ranges.forEach((r, w) => {
+    const rows = getRows(curYear, curMonth, w);
+    csv += `\n${r.label} (${r.range})\n`;
+    csv += `Rep,Target (${CURRENCY}),Pipeline (${CURRENCY}),Commit (${CURRENCY}),Attainment,Gap,Stage,Notes\n`;
+    rows.forEach(row => {
+      const att = row.target > 0 ? Math.round((row.commit / row.target) * 100) : 0;
+      const gap = row.target - row.commit;
+      const notesFlat = parseNotes(row.notes).join(' | ');
+      csv += `"${row.rep}",${row.target},${row.pipeline},${row.commit},${att}%,${gap},"${row.stage}","${notesFlat}"\n`;
     });
-  }
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = allWeeks ? `CoreTrack_${MONTHS[currentMonthIdx]}_${currentYear}.csv` : `CoreTrack_W${currentWeek}_${MONTHS[currentMonthIdx]}_${currentYear}.csv`;
-  a.click();
+  });
+  downloadCSV(csv, `sales-${curYear}-${MONTHS[curMonth]}-full-month.csv`);
+}
+
+function downloadCSV(content, filename) {
+  const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
   URL.revokeObjectURL(url);
 }
 
-// ====================================================
-// UTILS
-// ====================================================
-function fmt$(n) {
-  if (!n) return '$0';
-  return '$' + Math.round(n).toLocaleString();
-}
+// ═══════════════════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════════════════
+(function init() {
+  const savedUser = sessionStorage.getItem('sp_user');
+  const savedRole = sessionStorage.getItem('sp_role');
+  if (savedUser && savedRole) {
+    currentUser = savedUser;
+    currentRole = savedRole;
+    launchApp();
+  }
 
-function escHtml(s) {
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-function updateTimestamp() {
-  const now = new Date();
-  document.getElementById('footer-timestamp').textContent = `Last updated: ${now.toLocaleTimeString()}`;
-}
-
-// Close modal on ESC
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') document.getElementById('month-modal').classList.remove('open');
-});
+  // Enter key on login
+  document.getElementById('login-password').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doLogin();
+  });
+  document.getElementById('login-username').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doLogin();
+  });
+})();
 </script>
 </body>
 </html>
