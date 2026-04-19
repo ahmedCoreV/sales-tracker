@@ -1287,7 +1287,8 @@ function openNotesEditor(td, ri, currentVal) {
 
 function renderTotalsRow(rows, tbody, isAdmin) {
   const totCommit  = rows.reduce((s,r) => s + (parseFloat(r.commitAED)||0), 0);
-  const totDevices = rows.reduce((s,r) => s + (parseFloat(r.devices)||0), 0);
+  const totDevices = rows.reduce((s,r) => s + (parseFloat(r.xs1)||0), 0);
+  const totDevices = rows.reduce((s,r) => s + (parseFloat(r.xp1)||0), 0);
   const totUp      = rows.reduce((s,r) => s + (parseFloat(r.upsideAED)||0), 0);
   const totUpDev   = rows.reduce((s,r) => s + (parseFloat(r.upsideDevices)||0), 0);
 
@@ -1310,7 +1311,8 @@ function renderTotalsRow(rows, tbody, isAdmin) {
 function renderKPIs() {
   const rows = getCurWeekRows();
   const totCommit  = rows.reduce((s,r) => s + (parseFloat(r.commitAED)||0), 0);
-  const totDevices = rows.reduce((s,r) => s + (parseFloat(r.devices)||0), 0);
+  const totDevices = rows.reduce((s,r) => s + (parseFloat(r.xs1)||0), 0);
+  const totDevices = rows.reduce((s,r) => s + (parseFloat(r.xp1)||0), 0);
   const totUp      = rows.reduce((s,r) => s + (parseFloat(r.upsideAED)||0), 0);
   const totUpDev   = rows.reduce((s,r) => s + (parseFloat(r.upsideDevices)||0), 0);
   const active     = rows.filter(r => r.rep && r.rep.trim()).length;
@@ -1370,7 +1372,7 @@ function exportCSV() {
   rows.forEach(r => {
     lines.push([
       `"${r.rep||''}"`, `"${r.stage||''}"`,
-      r.commitAED||0, r.devices||0, r.devices||0,`"${r.confidence||''}"`,
+      r.commitAED||0, r.xs1||0, r.xp1||0,`"${r.confidence||''}"`,
       r.upsideAED||0, r.upsideDevices||0,
       `"${(r.notes||'').replace(/"/g,'""')}"`
     ].join(','));
