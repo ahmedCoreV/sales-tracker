@@ -838,7 +838,7 @@ let modalYear = curYear;
 
 const defaultRow = () => ({
   rep: '', stage: 'Proposal',
-  commitAED: '', devices: '', devices: '', confidence: 'High',
+  commitAED: '', devices: '', confidence: 'High',
   upsideAED: '', upsideDevices: '',
   notes: ''
 });
@@ -1111,7 +1111,7 @@ function renderTable() {
   // HEAD
   const thead = document.getElementById('mainThead');
   thead.innerHTML = '';
-  const cols = ['Sales Rep','Stage','Commit (AED)','No. of XS1','No. of XP1', 'Confidence %',
+  const cols = ['Sales Rep','Stage','Commit (AED)','No. of XS1', 'Confidence %',
                  'Upside Value (AED)','Upside Devices','Notes'];
   if (isAdmin) cols.push('');
   const tr = document.createElement('tr');
@@ -1287,8 +1287,7 @@ function openNotesEditor(td, ri, currentVal) {
 
 function renderTotalsRow(rows, tbody, isAdmin) {
   const totCommit  = rows.reduce((s,r) => s + (parseFloat(r.commitAED)||0), 0);
-  const totDevices = rows.reduce((s,r) => s + (parseFloat(r.xs1)||0), 0);
-  const totDevices = rows.reduce((s,r) => s + (parseFloat(r.xp1)||0), 0);
+  const totDevices = rows.reduce((s,r) => s + (parseFloat(r.devices)||0), 0);
   const totUp      = rows.reduce((s,r) => s + (parseFloat(r.upsideAED)||0), 0);
   const totUpDev   = rows.reduce((s,r) => s + (parseFloat(r.upsideDevices)||0), 0);
 
@@ -1311,8 +1310,7 @@ function renderTotalsRow(rows, tbody, isAdmin) {
 function renderKPIs() {
   const rows = getCurWeekRows();
   const totCommit  = rows.reduce((s,r) => s + (parseFloat(r.commitAED)||0), 0);
-  const totDevices = rows.reduce((s,r) => s + (parseFloat(r.xs1)||0), 0);
-  const totDevices = rows.reduce((s,r) => s + (parseFloat(r.xp1)||0), 0);
+  const totDevices = rows.reduce((s,r) => s + (parseFloat(r.devices)||0), 0);
   const totUp      = rows.reduce((s,r) => s + (parseFloat(r.upsideAED)||0), 0);
   const totUpDev   = rows.reduce((s,r) => s + (parseFloat(r.upsideDevices)||0), 0);
   const active     = rows.filter(r => r.rep && r.rep.trim()).length;
@@ -1367,12 +1365,12 @@ function deleteRow(ri) {
 ══════════════════════════════════════ */
 function exportCSV() {
   const rows = getCurWeekRows();
-  const header = ['Sales Rep','Stage','Commit AED','No. of XS1','No. of XP1','Confidence','Upside AED','Upside Devices','Notes'];
+  const header = ['Sales Rep','Stage','Commit AED','No. of XS1','Confidence','Upside AED','Upside Devices','Notes'];
   const lines  = [header.join(',')];
   rows.forEach(r => {
     lines.push([
       `"${r.rep||''}"`, `"${r.stage||''}"`,
-      r.commitAED||0, r.xs1||0, r.xp1||0,`"${r.confidence||''}"`,
+      r.commitAED||0, r.devices||0, `"${r.confidence||''}"`,
       r.upsideAED||0, r.upsideDevices||0,
       `"${(r.notes||'').replace(/"/g,'""')}"`
     ].join(','));
