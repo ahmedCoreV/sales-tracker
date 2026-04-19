@@ -1295,13 +1295,13 @@ function openNotesEditor(td, ri, currentVal) {
 function renderTotalsRow(rows, tbody, isAdmin) {
   const totCommit  = rows.reduce((s,r) => s + (parseFloat(r.commitAED)||0), 0);
   const totDevices = rows.reduce((s,r) => s + (parseFloat(r.devices)||0), 0);
-  const totXp1 = rows.reduce((s,r) => (parseFloat(r.xp1)||0), 0);
+  const totXp1 = rows.reduce((s,r) => s+ (parseFloat(r.xp1)||0), 0);
   const totUp      = rows.reduce((s,r) => s + (parseFloat(r.upsideAED)||0), 0);
   const totUpDev   = rows.reduce((s,r) => s + (parseFloat(r.upsideDevices)||0), 0);
 
   const tr = document.createElement('tr'); tr.className = 'totals-row';
   const cells = [
-    'TOTALS', '', fmtNum(totCommit), fmtNum(totDevices), '', fmtNum(totXp1), '',fmtNum(totUp), fmtNum(totUpDev), ''
+    'TOTALS', '', fmtNum(totCommit), fmtNum(totDevices), fmtNum(totXp1), '',fmtNum(totUp), fmtNum(totUpDev), ''
   ];
   if (isAdmin) cells.push('');
   cells.forEach((c,i) => {
