@@ -1111,7 +1111,7 @@ function renderTable() {
   // HEAD
   const thead = document.getElementById('mainThead');
   thead.innerHTML = '';
-  const cols = ['Sales Rep','Stage','Commit (AED)','No. of XS1','No. of XP1','Confidence %',
+  const cols = ['Sales Rep','Stage','Commit (AED)','No. of Devices','Confidence %',
                  'Upside Value (AED)','Upside Devices','Notes'];
   if (isAdmin) cols.push('');
   const tr = document.createElement('tr');
@@ -1365,7 +1365,7 @@ function deleteRow(ri) {
 ══════════════════════════════════════ */
 function exportCSV() {
   const rows = getCurWeekRows();
-  const header = ['Sales Rep','Stage','Commit AED','No. of XS1','No. of XP1','Confidence','Upside AED','Upside Devices','Notes'];
+  const header = ['Sales Rep','Stage','Commit AED','No. of Devices','Confidence','Upside AED','Upside Devices','Notes'];
   const lines  = [header.join(',')];
   rows.forEach(r => {
     lines.push([
