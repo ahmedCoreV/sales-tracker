@@ -865,7 +865,7 @@ function renderTable() {
 
   const thead = document.getElementById('mainThead');
   thead.innerHTML = '';
-  const cols = ['Sales Rep','Stage','Commit (AED)','No. of XS1','No. of XP1','Confidence %','Upside Value (AED)','Upside Devices','Notes'];
+  const cols = ['Sales Rep','Stage','Commit (AED)','No. of XS1','No. of XP1','Confidence %','Upside Value (AED)','Upside Devices','Hot/Warm Deals'];
   if (isAdmin) cols.push('');
   const tr = document.createElement('tr');
   cols.forEach(c => { const th = document.createElement('th'); th.textContent = c; tr.appendChild(th); });
